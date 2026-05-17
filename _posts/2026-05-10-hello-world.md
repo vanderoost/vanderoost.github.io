@@ -15,9 +15,9 @@ Some more text
 
 ### H3 title looks like this
 
-Ciao ciao maybe
+First paragraph for spacing.
 
-Second paragraph.
+Second paragraph spacing.
 
 ### Some code
 
