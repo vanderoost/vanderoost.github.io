@@ -50,7 +50,7 @@ canonical_url: https://vanderoost.com
 
 <div class="profile-image-grid" markdown>
 
-![Richard van der Oost, AI Entrepreneur and Educator](assets/@daveebbelaar.jpg){ .profile-image alt="Portrait of Richard van der Oost, AI entrepreneur and educator" }
+![Richard van der Oost, AI Entrepreneur and Educator](assets/richardvanderoost.jpg){ .profile-image alt="Portrait of Richard van der Oost, AI entrepreneur and educator" }
 
 </div>
 
