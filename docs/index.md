@@ -1,30 +1,27 @@
 ---
 title: About Me
-description: Explore AI, data science, and entrepreneurship with Dave Ebbelaar. Learn about Datalumina, AI tutorials, freelancing, and innovative AI solutions for businesses.
-keywords: Dave Ebbelaar, AI entrepreneur, Datalumina, AI tutorials, Data Freelancer, GenAI Launchpad
-author: Dave Ebbelaar
-canonical_url: https://www.daveebbelaar.com/
+description: Explore AI, data science, and entrepreneurship with Richard van der Oost. Learn about Blendergrid, AI tutorials, freelancing, and innovative AI solutions for businesses.
+keywords: Richard van der Oost, AI entrepreneur, Blendergrid, AI tutorials, Data Freelancer, GenAI Launchpad
+author: Richard van der Oost
+canonical_url: https://vanderoost.com
 ---
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Dave Ebbelaar",
-  "url": "https://www.daveebbelaar.com/",
-  "image": "https://avatars.githubusercontent.com/u/34709402?v=4",
+  "name": "Richard van der Oost",
+  "url": "https://vanderoost.com",
+  "image": "https://avatars.githubusercontent.com/u/11665420?v=4",
   "sameAs": [
-    "https://www.youtube.com/channel/UCn8ujwUInbJkBhffxqAPBVQ",
-    "https://www.youtube.com/@daveebbelaar",
-    "https://www.linkedin.com/in/daveebbelaar/",
-    "https://github.com/daveebbelaar"
-    "https://www.skool.com/@daveebbelaar"
+    "https://www.linkedin.com/in/richardvdoost/",
+    "https://github.com/vanderoost"
   ],
-  "jobTitle": "Founder & CEO",
+  "jobTitle": "Founder",
   "worksFor": {
     "@type": "Organization",
-    "name": "Datalumina",
-    "url": "https://www.datalumina.com/"
+    "name": "Blendergrid",
+    "url": "https://blendergrid.com/"
   },
 }
 </script>
@@ -53,7 +50,7 @@ canonical_url: https://www.daveebbelaar.com/
 
 <div class="profile-image-grid" markdown>
 
-![Dave Ebbelaar, AI Entrepreneur and Educator](assets/@daveebbelaar.jpg){ .profile-image alt="Portrait of Dave Ebbelaar, AI entrepreneur and educator" }
+![Richard van der Oost, AI Entrepreneur and Educator](assets/@daveebbelaar.jpg){ .profile-image alt="Portrait of Richard van der Oost, AI entrepreneur and educator" }
 
 </div>
 
@@ -61,10 +58,8 @@ canonical_url: https://www.daveebbelaar.com/
 
 ## About me
 
-Hi! I'm Dave, an entrepreneur and educator from the Netherlands. I work with technical professionals facing the overwhelming pace of AI innovation and businesses struggling to translate AI hype into competitive advantage. Whether you're a developer watching your skills becoming obsolete or a company unsure how to implement AI effectively—the challenge is the same: how to effectively use this technology before your competitors do.
-
-My artificial intelligence journey spans over a decade, with bachelor's and master's degrees in the field and experience building custom data and AI systems across utilities, government, and e-commerce sectors. My tech stack includes Python, PostgreSQL, ML, FastAPI, OpenAI, Claude, Azure, vector databases, RAG, and LLM integration for enterprise applications.
-
+Hi! I'm Richard, a technical founder from the Netherlands. TODO
+
 ## Why work with me?
 
 Here's what sets me apart and how I can help drive value for your business:
@@ -75,7 +70,7 @@ Here's what sets me apart and how I can help drive value for your business:
 
     ---
 
-    As the founder of Datalumina, I bring entrepreneurial insight to every project. I understand both the technical and business sides of AI implementation, ensuring solutions that deliver real ROI and align with your business goals.
+    As the founder of Blendergrid, I bring entrepreneurial insight to every project. I understand both the technical and business sides of AI implementation, ensuring solutions that deliver real ROI and align with your business goals.
 
 -   :material-youtube:{ .lg .middle } Educator & Communicator
 
@@ -115,7 +110,7 @@ Here's what sets me apart and how I can help drive value for your business:
 
     ---
 
-    "Together with Datalumina, we developed a tailor-made program where I, as a school leader, can now bring together vast amounts of information in one place and automate key tasks. **Beyond the tremendous quality improvement for our organization, working with Datalumina was an extremely pleasant experience**."
+    "Together with Blendergrid, we developed a tailor-made program where I, as a school leader, can now bring together vast amounts of information in one place and automate key tasks. **Beyond the tremendous quality improvement for our organization, working with Blendergrid was an extremely pleasant experience**."
 
 -   :material-format-quote-open:{ .lg .middle } Rene Raaphorst
     
@@ -123,7 +118,7 @@ Here's what sets me apart and how I can help drive value for your business:
 
     ---
 
-    "My experience with Datalumina has been excellent. **They think along with you every step of the way, from proof of concept to a fully functional product**. I was amazed by the quality of the results and found the collaboration very enjoyable. I highly recommend Dave and Datalumina to everyone!"
+    "My experience with Blendergrid has been excellent. **They think along with you every step of the way, from proof of concept to a fully functional product**. I was amazed by the quality of the results and found the collaboration very enjoyable. I highly recommend Dave and Blendergrid to everyone!"
 
 -   :material-format-quote-open:{ .lg .middle } Kelsen
     
