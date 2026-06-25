@@ -1,7 +1,7 @@
 ---
 title: About Me
 description: Explore AI, data science, and entrepreneurship with Richard van der Oost. Learn about Blendergrid, AI tutorials, freelancing, and innovative AI solutions for businesses.
-keywords: Richard van der Oost, AI entrepreneur, Blendergrid, AI tutorials, Data Freelancer, GenAI Launchpad
+keywords: Richard van der Oost, Tech Founder, Blendergrid, Clik.fit
 author: Richard van der Oost
 canonical_url: https://vanderoost.com
 ---
@@ -30,9 +30,9 @@ canonical_url: https://vanderoost.com
 
 <div class="text-intro-grid" markdown>
 
-# Turn AI complexity into your competitive advantage
+# Automate your business operations
 
-### I have 5+ years experience doing just that
+### I have 10+ years experience doing just that
 
 - Are you struggling to keep up with the rapid pace of AI innovation?
 
@@ -44,7 +44,7 @@ canonical_url: https://vanderoost.com
 
 - Need someone who understands both technical and business perspectives?
 
-[Book Free Intro Call :material-arrow-top-right:](https://www.calendly.com){ .md-button .md-button--primary }
+[Book Free Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }
 
 </div>
 
@@ -159,6 +159,6 @@ Here's what sets me apart and how I can help drive value for your business:
     
     Want to see if we're a match? Let's have a chat and find out. Schedule a free 30-minute strategy session to discuss your AI challenges and explore how we can work together.
 
-    [Book Free Intro Call :material-arrow-top-right:](https://calendly.com){ .md-button .md-button--primary }
+    [Book Free Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }
 
 </div>

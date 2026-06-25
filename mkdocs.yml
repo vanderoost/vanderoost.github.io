@@ -1,6 +1,6 @@
-site_name: Your Site Name
-site_description: Your site description
-site_url: https://yourdomain.com
+site_name: Richard van der Oost
+site_description: I automate business operations with software and LLMs
+site_url: https://vanderoost.com
 
 nav:
   - Home:
@@ -52,13 +52,13 @@ extra:
   generator: true
   social:
     - icon: fontawesome/solid/building
-      link: https://company.com
+      link: https://blendergrid.com
     - icon: fontawesome/brands/github
-      link: https://github.com/
+      link: https://github.com/vanderoost
     - icon: fontawesome/brands/youtube
-      link: https://youtube.com/
+      link: https://www.youtube.com/@richardvdoost
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com
+      link: https://www.linkedin.com/in/richardvdoost/
   analytics:
     # provider: google
     # property: G-W9Y130NXVZ
@@ -102,4 +102,4 @@ extra_files:
   - docs/robots.txt
 
 copyright: |
-  &copy; 2024 <a href="https://www.linkedin.com" target="_blank" rel="noopener">John Doe</a>. All rights reserved.
+  &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
