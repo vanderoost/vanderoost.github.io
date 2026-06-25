@@ -1,0 +1,76 @@
+.profile-image {
+  width: 280px;
+  height: 380px;
+  object-fit: cover;
+  border-radius: 12px;
+  transform: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Grid Layout on index page */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.text-intro-grid {
+  grid-column: 1 / 2;
+  padding-right: 20px;
+}
+
+.profile-image-grid {
+  grid-column: 2 / 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Mobile layout */
+@media screen and (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  .profile-image {
+    width: 100%;
+    max-width: 350px;
+    height: 400px;
+    margin: 0 auto;
+  }
+
+  .text-intro-grid {
+    grid-row: 2;
+    grid-column: 1;
+    padding-right: 0;
+  }
+
+  .profile-image-grid {
+    grid-row: 1;
+    grid-column: 1;
+    justify-content: center; /* Center image on mobile */
+  }
+}
+
+/* Add styles for larger screens */
+@media screen and (min-width: 1200px) {
+  .grid-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .profile-image {
+    width: 400px;
+    height: 500px;
+  }
+}
