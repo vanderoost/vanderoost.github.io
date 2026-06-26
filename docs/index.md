@@ -15,7 +15,8 @@ canonical_url: https://vanderoost.com
   "image": "https://avatars.githubusercontent.com/u/11665420?v=4",
   "sameAs": [
     "https://www.linkedin.com/in/richardvdoost/",
-    "https://github.com/vanderoost"
+    "https://github.com/vanderoost",
+    "https://www.youtube.com/@richardvdoost"
   ],
   "jobTitle": "Founder",
   "worksFor": {
@@ -32,19 +33,15 @@ canonical_url: https://vanderoost.com
 
 # Automate your business operations
 
-### I have 10+ years experience doing just that
+### I have automated business workflows for the past 12 years
 
 - Are you struggling to keep up with the rapid pace of AI innovation?
 
-- Do you need help translating AI hype into real business results?
-
-- Want to implement AI effectively before competitors get ahead?
-
-- Looking for technical expertise and a clear roadmap for AI solutions?
+- Do you feel like the more you adapt AI, the busier you get?
 
 - Need someone who understands both technical and business perspectives?
 
-[Book Free Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }
+[Book an Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary :target="_blank"}
 
 </div>
 
@@ -58,11 +55,19 @@ canonical_url: https://vanderoost.com
 
 ## About me
 
-Hi! I'm Richard, a technical founder from the Netherlands. TODO
-
+Hi! I'm Richard, a technical founder from the Netherlands.
+
+I learned how to write software by hiring software engineers. For the past 12 years I've been turning repetitive manual workflows into software that runs itself.
+
 ## Why work with me?
 
-Here's what sets me apart and how I can help drive value for your business:
+I identify bottlenecks in companies, and put automated systems in place to remove friction. This allows teams to focus on what matters, without wasting time on repetitive busywork.
+
+Over the past 12 years, I’ve designed distributed cloud computing infrastructure, 3D production pipelines, digitalized 3D printing processes, and automated online marketing campaigns.
+
+If you’re interested in working together, [book a call](https://calendly.com/vanderoost/introduction-call).
+
+Here's how I can help you save time and make more money:
 
 <div class="grid cards" markdown>
 
@@ -70,19 +75,19 @@ Here's what sets me apart and how I can help drive value for your business:
 
     ---
 
-    As the founder of Blendergrid, I bring entrepreneurial insight to every project. I understand both the technical and business sides of AI implementation, ensuring solutions that deliver real ROI and align with your business goals.
+    As the founder of Blendergrid, I bring entrepreneurial insight to every project. I have shipped real software and always take full responsibility for delivering value to my clients while making a profit. I understand both the technical and business sides of workflow automations, ensuring solutions that deliver real ROI and align with your business goals.
 
 -   :material-youtube:{ .lg .middle } Educator & Communicator
 
     ---
 
-    My experience as a content creator and educator means I can break down complex technical concepts into clear, actionable insights. You'll always understand the 'why' behind technical decisions and get clear progress updates.
+    My experience in creating online training videos means I can break down complex technical concepts into clear, actionable insights. You'll always understand the 'why' behind technical decisions and get clear progress updates.
 
 -   :material-school:{ .lg .middle } Industry Expert
 
     ---
 
-    With over a decade in AI and data science, including work across utilities, government, and e-commerce sectors, I bring battle-tested expertise to your projects. My solutions are built on real-world experience, not just theory.
+    With over a decade in SaaS experience, I bring battle-tested expertise to your projects. My solutions are built on real-world experience, not just theory.
 
 -   :material-rocket:{ .lg .middle } Fast Implementation
 
@@ -96,37 +101,29 @@ Here's what sets me apart and how I can help drive value for your business:
 
 <div class="grid cards testimonials" markdown>
 
--   :material-format-quote-open:{ .lg .middle } Adrian Dragomir
-    
-    Founder at Sferal
+-   :material-format-quote-open:{ .lg .middle } Tyler Disney
+
+    Lead Visualization Engineer at Integral Group
 
     ---
 
-    "Dave is a true professional and my collaboration with him has been flawless. **He took his time and spent 3 days with me and my team in Mamaia, Romania where he was a guest for 3 sessions of my podcast Waves of AI**. He is one of the most competent people I know that has a real understanding of how AI works and how to integrate it quickly in your company."
+    "I'm glad you guys seem to be taking the approach of making something simple that works really well, and adding features slowly. I love being able to rely on your softwware to 'just work' when I need it to."
 
--   :material-format-quote-open:{ .lg .middle } Barbara van den Bosch
+-   :material-format-quote-open:{ .lg .middle } Ryan Vautier
     
-    Founder at Viverve
+    3D artist at ryanvautier.com
 
     ---
 
-    "Together with Blendergrid, we developed a tailor-made program where I, as a school leader, can now bring together vast amounts of information in one place and automate key tasks. **Beyond the tremendous quality improvement for our organization, working with Blendergrid was an extremely pleasant experience**."
+    "Without a shadow of a doubt the best render farm I've ever used. The customer support has been absolutely incredible, and they've gone above and beyond to help me with every single question I've had. Not only an amazing render farm, but also quite clearly run by incredible people!"
 
--   :material-format-quote-open:{ .lg .middle } Rene Raaphorst
+-   :material-format-quote-open:{ .lg .middle } Heather Meade
     
-    Founder at Crypto Insiders
+    3D animator at RainDropProducts.com
 
     ---
 
-    "My experience with Blendergrid has been excellent. **They think along with you every step of the way, from proof of concept to a fully functional product**. I was amazed by the quality of the results and found the collaboration very enjoyable. I highly recommend Dave and Blendergrid to everyone!"
-
--   :material-format-quote-open:{ .lg .middle } Kelsen
-    
-    Founder at Datavisum
-
-    ---
-
-    "I am thankful for having come across Dave and Data Freelancer, it was one of the best investment decisions I've made in 2024. **From effective ways to create inbound marketing strategies using social media, through solution architecture design to address all kinds of business challenges**, you will extract a great deal of value from diverse perspectives."
+    "Thank you so much! I can't tell you how much of a lifesaver this has been for us! Our computers wouldn’t have been able to handle this many frames in the amount of time we had. Your render farm was fast and affordable, and next time we have a project this big, I think we’ll probably use your service again instead of trying to scramble to get things done. Thank you again!"
 
 </div>
 
@@ -136,29 +133,22 @@ Here's what sets me apart and how I can help drive value for your business:
     I can typically begin new projects within 1-2 weeks of contract signing. For urgent matters, I maintain some flexibility for rapid response situations and can potentially start sooner - just let me know your timeline during our initial consultation.
 
 ??? note "Do you require a minimum project size or commitment?"
-    While I can accommodate projects of any size, I find that engagements of at least 20 hours allow for meaningful impact. This gives us enough time to understand your data, implement solutions, and deliver actionable results. We can start with a small pilot project to ensure we're a good fit.
-
-??? note "What industries do you have experience in?"
-    I've successfully delivered projects across e-commerce, manufacturing, healthcare, and financial services. While I specialize in data science fundamentals that apply across sectors, I particularly excel in projects involving customer behavior analysis, process optimization, and predictive modeling.
+    While I can accommodate projects of any size, I find that engagements of at least 20 hours allow for meaningful impact. This gives us enough time to understand your situation, implement solutions, and deliver actionable results. We can start with a small pilot project to ensure we're a good fit.
 
 ??? note "How do you handle data security and confidentiality?"
     I take data security extremely seriously. I sign comprehensive NDAs before starting any project, use enterprise-grade encryption for all data transfers, and follow industry best practices for data handling. I can also work within your existing security infrastructure and policies.
 
-??? note "What's your pricing structure?"
-    I offer both project-based and retainer pricing models. Project fees are based on scope, complexity, and value delivered rather than hours worked. For ongoing support, I offer flexible retainer packages. Let's discuss your specific needs during our consultation to determine the most cost-effective approach.
-
 ??? note "How do you communicate progress and results?"
-    I maintain clear communication through weekly progress updates and regular check-in meetings. You'll receive detailed documentation of all analyses, findings, and recommendations. For ongoing projects, I provide interactive dashboards and reports that allow you to track progress and results in real-time.
+    You will get weekly progress updates and regular check-in meetings. You'll receive detailed documentation of all analyses, findings, and recommendations. For ongoing projects, I provide interactive dashboards and reports that allow you to track progress and results in real-time.
 
 
 <div class="grid cards" style="margin-top: 3rem" markdown>
 
--   :material-coffee:{ .lg .middle } Let's have a virtual coffee together!
+-   :material-coffee:{ .lg .middle } Let's have an online coffee!
 
     ---
     
-    Want to see if we're a match? Let's have a chat and find out. Schedule a free 30-minute strategy session to discuss your AI challenges and explore how we can work together.
+    Want to see if we're a match? Let's have a chat. Schedule a free 30-minute strategy session to discuss your automation challenges.
 
-    [Book Free Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }
-
+    [Book an Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }
 </div>

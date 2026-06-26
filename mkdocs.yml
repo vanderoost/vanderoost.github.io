@@ -42,14 +42,14 @@ theme:
       primary: custom
       accent: custom
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Ubuntu
+    code: Ubuntu Mono
   icon:
     logo: material/slash-forward-box
   favicon: assets/favicon.png
 
 extra:
-  generator: true
+  generator: false
   social:
     - icon: fontawesome/solid/building
       link: https://blendergrid.com

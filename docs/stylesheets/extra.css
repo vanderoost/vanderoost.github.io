@@ -1,16 +1,16 @@
 /* Light theme custom colors */
 [data-md-color-scheme="default"] {
-  --md-primary-fg-color: #000111;
-  --md-accent-fg-color: #2856f7;
+  --md-primary-fg-color: oklch(62.3% 0.214 259.815);
+  --md-accent-fg-color: oklch(54.6% 0.245 262.881);
   --md-typeset-a-color: var(--md-accent-fg-color);
   --md-footer-bg-color: var(--md-primary-fg-color);
 }
 
 /* Dark theme custom colors */
 [data-md-color-scheme="slate"] {
-  --md-primary-fg-color: #000111;
-  --md-default-bg-color: #090d1d;
-  --md-accent-fg-color: #8e92f8;
+  --md-primary-fg-color: oklch(13% 0.028 261.692);
+  --md-default-bg-color: oklch(21% 0.034 264.665);
+  --md-accent-fg-color: oklch(62.3% 0.214 259.815);
   --md-typeset-a-color: var(--md-accent-fg-color);
 }
 
