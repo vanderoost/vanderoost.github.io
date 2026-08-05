@@ -1,10 +1,9 @@
 ---
-title: Automated cloud computing infrastructure for 3D rendering
-description: Development of a fully automated cloud computing infrastructure that
-monitors prices across 30 datacenters and automatically scales compute power accordingly
+title: Automated cloud computing infrastructure
+description: A network of 30+ datacenters across the world that automatically scales, and schedules workloads in the most efficient way.
 ---
 
-# Automated cloud computing infrastructure for 3D rendering
+# Automated cloud computing infrastructure
 
 *TODO*
 

@@ -1,7 +1,14 @@
 #!/bin/bash
 
+# Start Docker Desktop if it's not already running
+if ! docker desktop status &> /dev/null
+then
+    docker desktop start
+fi
+
 # Build the image if it doesn't exist
-if ! docker image inspect mkdocs-site >/dev/null 2>&1; then
+if ! docker image inspect mkdocs-site >/dev/null 2>&1
+then
     echo "Building Docker image..."
     docker build -t mkdocs-site .
 fi

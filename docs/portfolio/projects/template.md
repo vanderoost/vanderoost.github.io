@@ -1,5 +1,5 @@
 ---
-title: Digital 3D printing production pipeline
+title: Dental production pipeline
 description: Fully auotmated pipeline for 3D printing for the dental industry
 ---
 

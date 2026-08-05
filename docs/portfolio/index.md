@@ -1,24 +1,38 @@
 ---
 title: Case Studies
-description: Blendergrid is an online render farm for Blender. 
+description: Examples of workflow automation projects I've built.
 ---
 
-# Featured Projects
+# Case Studies
 
-Welcome to my portfolio of data science and AI projects. Each project demonstrates my expertise in delivering impactful solutions to real-world business challenges.
+<!-- TODO: Rewrite this a bit -->
+Welcome to my portfolio of data science and automation projects. Each project
+demonstrates my expertise in delivering impactful solutions to real-world business
+challenges.
+
 
 <div class="grid cards" markdown>
 
--   [AI Customer Care Bot for Dev X](projects/project-1.md)
+-   [Automating a dental production pipeline](projects/clik-production-pipeline.md)
 
     ---
 
-    An AI-powered chatbot solution for Dev X that enables customer service transformation, featuring Slack integration and sub-3 second response times. Built with OpenAI, Pinecone, and Azure cloud infrastructure to achieve 100% accuracy on initial datasets.
+    Automating a conventional manual dental process by creating a fully digital
+    workflow, from 3D scan to 3D print.
 
--   [Enterprise Chatbot for Company Y](projects/project-2.md)
+
+-   [Automated cloud computing infrastructure](projects/blendergrid-swarm-engine.md)
 
     ---
 
-    A private ChatGPT-like tool for the Company Y that revolutionizes mobility data analysis by combining structured SQL data with unstructured policy documents. Built with OpenAI and modern cloud architecture for comprehensive public sector policy evaluation.
+    A network of 30+ datacenters across the world that automatically scales, and
+    schedules workloads in the most efficient way.
+
+
+-   [Translating a Google Sheets workflow into a CRM](projects/clik-crm.md)
+
+    ---
+
+    TODO
 
 </div>
