@@ -125,6 +125,8 @@ it gets better as it runs.
 
 ## Visual Assets
 
+<!-- TODO: Pictures of 3D scans and mouthguards -->
+
 ```mermaid
 %%{init: {"flowchart": {"rankSpacing": 30, "nodeSpacing": 35, "subGraphTitleMargin": {"top": 14, "bottom": 14}}}}%%
 flowchart TD

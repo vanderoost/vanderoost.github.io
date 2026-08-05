@@ -8,8 +8,8 @@ nav:
   - Case Studies:
     - Overview: portfolio/index.md
     - Projects:
-      - portfolio/projects/project-1.md
-      - portfolio/projects/project-2.md
+      - portfolio/projects/clik-production-pipeline.md
+      - portfolio/projects/blendergrid-swarm-engine.md
   - Blog:
     - blog/index.md 
 
