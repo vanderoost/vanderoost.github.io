@@ -1,9 +1,11 @@
 ---
-title: AI Customer Care Bot for Dev X
-description: Implementation of an AI chatbot solution to revolutionize customer service operations and enable staff transition to relationship-focused roles
+title: Digital 3D printing production pipeline
+description: Fully auotmated pipeline for 3D printing for the dental industry
 ---
 
-# AI Customer Care Bot for Dev X
+# Digital 3D geometry processing pipeline
+
+*TODO*
 
 ??? tip "Portfolio Best Practices"
     This is a simplified example project. When creating your own portfolio:
