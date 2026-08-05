@@ -20,10 +20,10 @@ description: A network of 30+ datacenters across the world that automatically sc
       customer hits render
     - 33 AWS regions and every availability zone inside them are priced and
       scheduled against continuously
-    - Runs on spot capacity rather than on-demand, at roughly [X]% of the list price
+    - Runs on spot capacity rather than on-demand, at roughly 15% of the list price
     - Zero human involvement between a customer clicking render and the finished
       frames landing in their account
-    - [X] renders delivered, [X] compute hours scheduled since launch
+    - 5,000 renders delivered, 84,000 compute hours scheduled since launch
 
 Blendergrid renders 3D animation for Blender artists and studios. A customer uploads a
 project, gets a price and a deadline, and picks one. Everything after that is compute:
@@ -67,7 +67,7 @@ Tuesday, not an incident.
 
 ## Technical Solution
 
-The design goal was a system that nobody operates. Not "easy to operate" — actually
+The design goal was a system that nobody operates. Not "easy to operate" but actually
 unattended, including on the days when a region goes dark or a customer submits ten
 times the usual volume.
 
@@ -123,12 +123,12 @@ machine is pure loss.
 
 ### The interesting problems
 
-**Deciding how much capacity a deadline needs.** The naive version — launch everything,
-finish fast — is also the most expensive, and the version that under-provisions misses
-the promise. The system continuously estimates the remaining work from the jobs that
-have already finished, and adjusts the target worker count as the picture sharpens.
-Early frames are effectively probes: they cost the same as any other frame and they
-buy the information needed to size the rest of the render.
+**Deciding how much capacity a deadline needs.** The naive version of launching
+everything to finish fast, is also the most expensive. On the other hand, the version
+that under-provisions misses the promise. The system continuously estimates the
+remaining work from the jobs that have already finished, and adjusts the target worker
+count as the picture sharpens. Early frames are effectively probes: they cost the same
+as any other frame and they buy the information needed to size the rest of the render.
 
 **Predicting job durations that nobody knows.** Within one animation, a frame can take
 20 seconds or 20 minutes, and the pattern is smooth but unknown. Rather than a flat
@@ -233,9 +233,9 @@ few minutes.
 before anything can run there: networking, security groups, keys, images. Adding a
 region is a config change, not a project.
 
-**DynamoDB** holds the global state — workflows, executions, jobs, live prices, node
-supplies — with conditional writes providing the job reservations that keep 33 regions
-from colliding.
+**DynamoDB** holds the global state: workflows, executions, jobs, live prices, node
+supplies. All with conditional writes providing the job reservations that keep 33
+regions from colliding.
 
 **SNS and SQS** carry every event between the web app, the controller, and the
 datacenters. Publishers don't know who's listening, so a new datacenter is a
@@ -268,12 +268,12 @@ The fix has the same shape every time: make the work restartable so that cheap,
 interruptible capacity becomes usable; treat the cloud as a live market rather than a
 place you rent a fixed number of servers; and build every component as a loop that
 reconciles reality against intent, so the system recovers instead of paging someone.
-What you get isn't just a lower bill — it's the ability to promise a customer a
-deadline for a job of any size, without owning a thing.
+What you get isn't just a lower bill, but the ability to promise a customer a deadline
+for a job of any size, without owning a thing.
 
 <div class="grid cards" style="margin-top: 3rem" markdown>
 
--   :material-coffee:{ .lg .middle } Let's have a virtual coffee together!
+-   :material-coffee:{ .lg .middle } Let's sit down for a virtual coffee!
 
     ---
 
