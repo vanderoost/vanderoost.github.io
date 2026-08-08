@@ -91,4 +91,8 @@
     font-size: 0.9rem;
 }
 
+article {
 
+  max-width: 720px;
+  font-size: 1.0rem !important;
+}

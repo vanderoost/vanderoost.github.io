@@ -45,7 +45,7 @@ theme:
     text: Ubuntu
     code: Ubuntu Mono
   icon:
-    logo: material/slash-forward-box
+    logo: material/code-block-tags
   favicon: assets/favicon.png
 
 extra:
@@ -75,6 +75,10 @@ plugins:
       blog_dir: blog
       authors_file: "{blog}/.authors.yml"
       categories: true
+      categories_allowed:
+        - Automation
+        - Development
+  - tags
 
 markdown_extensions:
   - attr_list
@@ -101,9 +105,6 @@ markdown_extensions:
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js
-
-extra_files:
-  - docs/robots.txt
 
 copyright: |
   &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.

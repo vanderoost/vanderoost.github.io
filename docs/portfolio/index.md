@@ -29,10 +29,10 @@ challenges.
     schedules workloads in the most efficient way.
 
 
--   [Translating a Google Sheets workflow into a CRM](projects/clik-crm.md)
-
-    ---
-
-    TODO
+<!---   [Translating a Google Sheets workflow into a CRM](projects/clik-crm.md)-->
+<!---->
+<!--    ----->
+<!---->
+<!--    TODO-->
 
 </div>

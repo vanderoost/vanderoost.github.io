@@ -51,7 +51,7 @@ We developed an AI chatbot specifically for Dev X's internal use, designed to as
 
 ## Solution Overview
 
-![Architecture Diagram](../../assets/openai-end-to-end-aml-deployment.svg)
+<!--![Architecture Diagram](../../assets/openai-end-to-end-aml-deployment.svg)-->
 
 *Baseline OpenAI end-to-end chat reference architecture*
 
