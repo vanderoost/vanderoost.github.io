@@ -3,20 +3,18 @@ site_description: Automating business operations
 site_url: https://vanderoost.com
 
 nav:
-  - Home:
-    - About: index.md
+  - Articles: index.md
   - Case Studies:
     - Overview: portfolio/index.md
     - Projects:
       - portfolio/projects/clik-production-pipeline.md
       - portfolio/projects/blendergrid-swarm-engine.md
-  - Blog:
-    - blog/index.md 
+  - About:
+    - about/index.md 
 
 theme:
   name: material
   features:
-    - search.suggest
     - navigation.tabs
     - navigation.expand
     - navigation.sections
@@ -30,16 +28,12 @@ theme:
   palette:
     - scheme: default
       toggle:
-        icon: material/toggle-switch-off-outline 
-        name: Switch to dark mode
-      primary: custom
-      accent: custom  
+        icon: material/weather-night 
+        name: Dark mode
     - scheme: slate
       toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode    
-      primary: custom
-      accent: custom
+        icon: material/weather-sunny
+        name: Light mode    
   font:
     text: Ubuntu
     code: Ubuntu Mono
@@ -66,13 +60,12 @@ extra_css:
   - stylesheets/extra.css
   - stylesheets/hero.css
 plugins:
-  - search
   - social:
       cards_layout_options:
         background_color: "#111111"
   - blog:
-      blog_dir: blog
-      authors_file: "{blog}/.authors.yml"
+      blog_dir: .
+      authors_file: .authors.yml
       categories: true
       categories_allowed:
         - Automation
