@@ -36,43 +36,6 @@
   background-color: #000111;
 }
 
-/* Mermaid diagrams: cap the rendered width so tall flowcharts don't take over the
-   page. The SVG carries a viewBox, so constraining width scales it proportionally.
-   Mermaid writes max-width inline, hence the !important. */
-.md-typeset .mermaid {
-  text-align: center;
-}
-
-.md-typeset .mermaid svg {
-  max-width: min(100%, 26rem) !important;
-  height: auto;
-}
-
-/* Soften the node corners. rx/ry are SVG geometry properties, so they are
-   settable from CSS; browsers that ignore them just render square corners. */
-.md-typeset .mermaid .node rect {
-  rx: 6px;
-  ry: 6px;
-}
-
-.md-typeset .mermaid .cluster rect {
-  rx: 8px;
-  ry: 8px;
-}
-
-/* Drop the grey plate mermaid paints behind edge labels. It has no padding and
-   square corners, and it clashes with the subgraph fill. Mermaid routes the edge
-   around the label, so nothing is drawn through the text. !important is needed
-   because mermaid scopes its own rules behind an id selector. */
-.md-typeset .mermaid .edgeLabel,
-.md-typeset .mermaid .edgeLabel p,
-.md-typeset .mermaid .edgeLabel rect,
-.md-typeset .mermaid .labelBkg {
-  background-color: transparent !important;
-  fill: none !important;
-  opacity: 1 !important;
-}
-
 /* Testimonial cards */
 .grid.cards.testimonials {
     grid-template-columns: 1fr !important;
@@ -92,7 +55,5 @@
 }
 
 article {
-
-  max-width: 720px;
   font-size: 1.0rem !important;
 }

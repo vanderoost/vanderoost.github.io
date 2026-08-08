@@ -715,7 +715,7 @@ make sense.
 You might have noticed that we have an `rng.o` file sitting in our project directory
 now:
 
-``` hl_lines="3 4"
+``` hl_lines="3"
 ├── Makefile
 ├── main
 ├── rng.o

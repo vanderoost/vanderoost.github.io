@@ -1,5 +1,5 @@
 site_name: Richard van der Oost
-site_description: I automate business operations with software and LLMs
+site_description: Automating business operations
 site_url: https://vanderoost.com
 
 nav:
@@ -17,7 +17,6 @@ theme:
   name: material
   features:
     - search.suggest
-    - toc.integrate
     - navigation.tabs
     - navigation.expand
     - navigation.sections
