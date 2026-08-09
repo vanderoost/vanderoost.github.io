@@ -29,4 +29,4 @@ Disallow: /
 User-agent: curl
 Disallow: /
 
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://vanderoost.com/sitemap.xml

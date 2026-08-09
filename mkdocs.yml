@@ -1,42 +1,67 @@
 site_name: Richard van der Oost
-site_description: Automating business operations
+site_description: I automate online businesses
 site_url: https://vanderoost.com
 
 nav:
-  - Articles: index.md
+  - About: index.md 
+  - Articles: articles/index.md
   - Case Studies:
     - Overview: portfolio/index.md
     - Projects:
       - portfolio/projects/clik-production-pipeline.md
       - portfolio/projects/blendergrid-swarm-engine.md
-  - About:
-    - about/index.md 
 
 theme:
   name: material
+
   features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
     - navigation.tabs
     - navigation.expand
     - navigation.sections
-    - navigation.instant
-    - navigation.instant.prefetch
+    - navigation.top
     - content.tooltips
     - content.tabs.link
     - content.code.copy
     - navigation.footer
+
   language: en
+
   palette:
-    - scheme: default
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
       toggle:
-        icon: material/weather-night 
-        name: Dark mode
-    - scheme: slate
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: deep orange
+
       toggle:
-        icon: material/weather-sunny
-        name: Light mode    
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: deep orange
+
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
   font:
     text: Ubuntu
     code: Ubuntu Mono
+
   icon:
     logo: material/code-block-tags
   favicon: assets/favicon.png
@@ -64,13 +89,12 @@ plugins:
       cards_layout_options:
         background_color: "#111111"
   - blog:
-      blog_dir: .
-      authors_file: .authors.yml
+      blog_dir: articles
+      authors_file: articles/.authors.yml
       categories: true
       categories_allowed:
         - Automation
         - Development
-  - tags
 
 markdown_extensions:
   - attr_list

@@ -12,7 +12,7 @@ description: Makefile examples for automating C builds from simple to advanced
 slug: makefile-cheatsheet-7-levels-of-automation
 ---
 
-# Makefile cheatsheet - 7 levels of Make automation
+# The 7 levels of highly effective Makefile automation
 
 Make is a great tool for automating our life in the terminal.
 
@@ -69,7 +69,9 @@ proper project setup with subdirectories.
 
 ## Level 0 - Nothing
 
-Literally no `Makefile` at all, we can run `make` and use the default rules.
+Literally no `Makefile` at all, so this one doesn't count. But even without a
+`Makefile`, we can already start using `make` because it has some sensible default
+rules.
 
 So without a `Makefile`, our project directory contains only a single file:
 
