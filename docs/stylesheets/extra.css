@@ -1,3 +1,16 @@
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:             oklch(0.7 0.2486 40);
+  --md-primary-fg-color--dark:       oklch(0.625 0.2219 40);
+  --md-accent-fg-color:              oklch(0.65 0.2976 27.5);
+  --md-accent-fg-color--transparent: oklch(0.65 0.2976 27.5 / 0.1);
+}
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:             oklch(0.7 0.2486 40);
+  --md-primary-fg-color--dark:       oklch(0.625 0.2219 40);
+  --md-accent-fg-color:              oklch(0.65 0.2976 27.5);
+  --md-accent-fg-color--transparent: oklch(0.65 0.2976 27.5 / 0.1);
+}
+
 /* Testimonial cards */
 .grid.cards.testimonials {
     grid-template-columns: 1fr !important;

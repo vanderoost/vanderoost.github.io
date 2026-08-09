@@ -39,9 +39,7 @@ theme:
 
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: white
-      accent: deep orange
+      primary: custom
 
       toggle:
         icon: material/brightness-7
@@ -51,8 +49,7 @@ theme:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: black
-      accent: deep orange
+      primary: custom
 
       toggle:
         icon: material/brightness-4
