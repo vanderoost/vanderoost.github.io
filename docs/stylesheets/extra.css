@@ -41,9 +41,17 @@
    `0 .8rem`, and auto margins collapse to 0 once the column is narrower than
    the cap — text would touch the viewport edges on small screens. The second
    term keeps that .8rem gutter as the real limit until the cap takes over. */
+.md-content > article {
+  max-width: min(40rem, 100% - 1.6rem);
+}
 .md-content:not(.md-content--post) > article {
-  max-width: min(42rem, 100% - 1.6rem);
   margin-inline: auto;
+}
+
+/* Rounded corners for code snippets */
+div .highlight {
+  border-radius: 0.4rem;
+  overflow: clip;
 }
 
 /* Custom colors */
@@ -78,7 +86,7 @@
   --md-footer-bg-color: none;
   --md-footer-bg-color--dark: oklch(19% 0.016 264.665);
 
-  --md-code-bg-color:    oklch(27.8% 0.033 256.848);
+  --md-code-bg-color: #1a1b26;
 
   --rvo-h1-color: oklch(97% 0.001 106.424);
 }
