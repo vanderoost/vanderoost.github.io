@@ -101,6 +101,7 @@
      colour is taken from; the Material variable it feeds is the property. */
   --md-code-fg-color: #3760bf;                 /* Normal   */
   --md-code-bg-color: #e1e2e7;                 /* Normal   */
+  --md-code-bg-color--lighter: none;
 
   --md-code-hl-color:        #2e7de9;          /* Function — line marker */
   --md-code-hl-color--light: #2e7de91a;        /* highlighted-line background */
@@ -138,6 +139,7 @@
   /* Tokyo Night (night) */
   --md-code-fg-color: #c0caf5;                 /* Normal   */
   --md-code-bg-color: #1a1b26;                 /* Normal   */
+  --md-code-bg-color--lighter: none;
 
   --md-code-hl-color:        #7aa2f7;          /* Function — line marker */
   --md-code-hl-color--light: #7aa2f71a;        /* highlighted-line background */
