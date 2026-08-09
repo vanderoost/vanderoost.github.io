@@ -87,6 +87,7 @@ plugins:
   - blog:
       blog_dir: articles
       authors_file: articles/.authors.yml
+      blog_toc: true
       categories: true
       categories_allowed:
         - Automation

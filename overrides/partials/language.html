@@ -1,0 +1,9 @@
+{% import "partials/languages/" ~ config.theme.language ~ ".html" as lang %}
+{% import "partials/languages/en.html" as fallback %}
+{% set index = page.parent.title if page and page.parent else none %}
+{% set overrides = {
+  "toc": "On this page",
+  "blog.index": "Back to " ~ index if index else "Back",
+  "blog.meta": ""
+} %}
+{% macro t(key) %}{{ overrides.get(key, lang.t(key) or fallback.t(key) or key) }}{% endmacro %}

@@ -81,6 +81,13 @@
   background-color: var(--rvo-code-ins-color);
 }
 
+.md-nav__title {
+  margin: 0 0 1.0rem;
+}
+.md-nav__list .md-nav__item {
+  margin: 0.6rem 0;
+}
+
 /* Custom colors */
 [data-md-color-scheme="default"] {
   --md-primary-fg-color:             oklch(0.5458 0.2116 28.7);
