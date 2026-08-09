@@ -8,11 +8,11 @@ categories:
 tags:
   - Makefile
   - C
-description: Makefile examples for automating C builds from simple to advanced
-slug: makefile-cheatsheet-7-levels-of-automation
+description: Makefile cheatsheet for automating C builds from simple to advanced
+slug: levels-of-effective-makefile-cheatsheet
 ---
 
-# The 7 levels of highly effective Makefile automation
+# The 7 levels of highly effective Makefiles
 
 Make is a great tool for automating our life in the terminal.
 

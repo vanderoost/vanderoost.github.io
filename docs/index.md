@@ -31,15 +31,11 @@ hide:
 </script>
 
 <div class="hero-section grid-container" markdown>
-
 <div class="profile-image-grid" markdown>
-
 ![Richard van der Oost, AI Entrepreneur and Educator](assets/richardvanderoost.jpg){ .profile-image alt="Richard van der Oost, tech founder and entrepreneur" }
-
 </div>
 
 <div class="text-intro-grid" markdown>
-
 # I automate internet companies
 
 ### I'm focused on leveraging software to automate tedious work
@@ -51,9 +47,7 @@ hide:
 - Need someone who understands both technical and business perspectives?
 
 [Book an Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary :target="_blank"}
-
 </div>
-
 </div>
 
 ## About me

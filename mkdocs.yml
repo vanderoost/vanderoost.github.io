@@ -13,12 +13,14 @@ nav:
 
 theme:
   name: material
+  custom_dir: overrides
 
   features:
     - navigation.instant
     - navigation.instant.prefetch
     - navigation.tracking
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.expand
     - navigation.sections
     - navigation.top
@@ -59,8 +61,6 @@ theme:
     text: Ubuntu
     code: Ubuntu Mono
 
-  icon:
-    logo: material/code-block-tags
   favicon: assets/favicon.png
 
 extra:
