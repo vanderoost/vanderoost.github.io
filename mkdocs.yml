@@ -76,9 +76,6 @@ extra:
       link: https://www.youtube.com/@richardvdoost
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/richardvdoost/
-  analytics:
-    # provider: google
-    # property: G-W9Y130NXVZ
 
 extra_css:
   - stylesheets/extra.css

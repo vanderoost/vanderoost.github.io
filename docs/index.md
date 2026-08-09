@@ -147,7 +147,7 @@ Here's how I can help you save time and make more money:
 -   :material-coffee:{ .lg .middle } Let's have an online coffee!
 
     ---
-    
+
     Want to see if we're a match? Let's have a chat. Schedule a free 30-minute strategy session to discuss your automation challenges.
 
     [Book an Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }

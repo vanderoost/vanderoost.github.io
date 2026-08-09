@@ -17,6 +17,10 @@
   }
 }
 
+[dir=ltr] .md-header__title {
+    margin-left: .4rem;
+    margin-right: .4rem;
+}
 .md-header__topic:first-child {
     font-weight: 600;
 }
@@ -27,7 +31,7 @@
 /* Pages with `hide: [navigation, toc]` let .md-content expand to the full
    61rem grid. Cap and centre it. Regular pages are unaffected: their content
    column is only 36.8rem (61 − 2 × 12.1 sidebars), well under this cap. */
-.md-content {
+.md-content article {
   max-width: 42rem;
   margin-inline: auto;
 }
@@ -79,7 +83,7 @@
 
 /* Navigation tabs inside the header bar (see overrides/partials/header.html) */
 .md-header__inner {
-    justify-content: space-between;
+  justify-content: space-between;
 }
 
 .md-header__inner > .md-tabs {
@@ -105,12 +109,6 @@
 
 .md-header__inner > .md-tabs .md-tabs__link {
   margin-top: 0;
-}
-
-/* The header is a single row again, so undo the two-row offsets that come
-   with "navigation.tabs.sticky" (md-header--lifted) */
-.md-header--lifted ~ .md-container .md-sidebar {
-  top: 2.4rem;
 }
 
 .md-header--lifted ~ .md-container .md-typeset :target {
