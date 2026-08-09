@@ -30,26 +30,55 @@
 
 /* Pages with `hide: [navigation, toc]` let .md-content expand to the full
    61rem grid. Cap and centre it. Regular pages are unaffected: their content
-   column is only 36.8rem (61 − 2 × 12.1 sidebars), well under this cap. */
-.md-content article {
-  max-width: 42rem;
+   column is only 36.8rem (61 − 2 × 12.1 sidebars), well under this cap.
+
+   Blog posts are excluded: .md-content--post is a flex container, and an auto
+   inline margin on a flex item suppresses its stretch, so the article would
+   size to its max-content width instead of the column — several thousand
+   pixels wide, overflowing the viewport on mobile.
+
+   `margin-inline: auto` replaces Material's `.md-content__inner` margin of
+   `0 .8rem`, and auto margins collapse to 0 once the column is narrower than
+   the cap — text would touch the viewport edges on small screens. The second
+   term keeps that .8rem gutter as the real limit until the cap takes over. */
+.md-content:not(.md-content--post) > article {
+  max-width: min(42rem, 100% - 1.6rem);
   margin-inline: auto;
 }
 
 /* Custom colors */
 [data-md-color-scheme="default"] {
-  --md-primary-fg-color:             oklch(0.7 0.2486 40);
-  --md-primary-fg-color--dark:       oklch(0.625 0.2219 40);
-  --md-accent-fg-color:              oklch(0.6705 0.2758 33);
-  --md-accent-fg-color--transparent: oklch(0.6705 0.2758 33 / 0.1);
+  --md-primary-fg-color:             oklch(0.5458 0.2116 28.7);
+  --md-primary-fg-color--dark:       oklch(0.5167 0.2069 28.7);
+  --md-accent-fg-color:              oklch(0.6917 0.2116 28.7);
+  --md-accent-fg-color--transparent: oklch(0.6917 0.2116 28.7 / 0.1);
 
-  --rvo-h1-color: oklch(21.6% 0.006 56.043);
+  --md-default-fg-color: oklch(0.4 0 0);
+  --md-default-bg-color: oklch(0.9687 0.0106 100);
+
+  --md-footer-bg-color: none;
+  --md-footer-bg-color--dark: oklch(0.8667 0.026 75.31);
+  --md-footer-fg-color: oklch(0.4 0 0);
+  --md-footer-fg-color--light: oklch(0.3 0 0);
+  --md-footer-fg-color--lighter: oklch(0.2 0 0);
+
+  --md-code-bg-color:    #e1e2e7;
+
+  --rvo-h1-color: oklch(0.4 0 0);
 }
 [data-md-color-scheme="slate"] {
   --md-primary-fg-color:             oklch(0.7 0.2486 40);
   --md-primary-fg-color--dark:       oklch(0.625 0.2219 40);
   --md-accent-fg-color:              oklch(0.6705 0.2758 33);
   --md-accent-fg-color--transparent: oklch(0.6705 0.2758 33 / 0.1);
+
+  --md-hue: 220deg;
+  --md-default-bg-color: oklch(17% 0.017 264.665);
+
+  --md-footer-bg-color: none;
+  --md-footer-bg-color--dark: oklch(19% 0.016 264.665);
+
+  --md-code-bg-color:    oklch(27.8% 0.033 256.848);
 
   --rvo-h1-color: oklch(97% 0.001 106.424);
 }
