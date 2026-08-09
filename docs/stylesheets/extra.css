@@ -49,9 +49,36 @@
 }
 
 /* Rounded corners for code snippets */
-div .highlight {
-  border-radius: 0.4rem;
-  overflow: clip;
+@media screen and (min-width: 720px) {
+  div .highlight {
+    border-radius: 0.4rem;
+    overflow: clip;
+  }
+}
+
+/* Tokyo Night renders comments in italic (`hi Comment gui=italic`) */
+.highlight :is(.c, .c1, .ch, .cm, .cs, .sd) {
+  font-style: italic;
+}
+
+/* Material folds two tokens into buckets Tokyo Night colours differently: .kc
+   (True/False/None) rides along with plain names, and .sa (the f/b/r prefix on
+   a string literal) is unmapped and falls through to the default foreground. */
+.highlight .kc {
+  color: var(--md-code-hl-constant-color);
+}
+.highlight .sa {
+  color: var(--md-code-hl-keyword-color);
+}
+
+/* Diff highlighting. Material points .gd/.gi at --md-typeset-{del,ins}-color,
+   which is also used by ~~del~~ / ++ins++ in prose; Tokyo Night's DiffAdd and
+   DiffDelete are tuned to the code background, so they are scoped to code. */
+.highlight .gd {
+  background-color: var(--rvo-code-del-color);
+}
+.highlight .gi {
+  background-color: var(--rvo-code-ins-color);
 }
 
 /* Custom colors */
@@ -70,7 +97,29 @@ div .highlight {
   --md-footer-fg-color--light: oklch(0.3 0 0);
   --md-footer-fg-color--lighter: oklch(0.2 0 0);
 
-  --md-code-bg-color:    #e1e2e7;
+  /* Tokyo Night Day. Group names in comments are the Vim highlight groups the
+     colour is taken from; the Material variable it feeds is the property. */
+  --md-code-fg-color: #3760bf;                 /* Normal   */
+  --md-code-bg-color: #e1e2e7;                 /* Normal   */
+
+  --md-code-hl-color:        #2e7de9;          /* Function — line marker */
+  --md-code-hl-color--light: #2e7de91a;        /* highlighted-line background */
+
+  --md-code-hl-comment-color:     #848cb5;     /* Comment    */
+  --md-code-hl-keyword-color:     #9854f1;     /* Statement  */
+  --md-code-hl-string-color:      #587539;     /* String     */
+  --md-code-hl-number-color:      #b15c00;     /* Constant   */
+  --md-code-hl-constant-color:    #b15c00;     /* Constant   */
+  --md-code-hl-function-color:    #2e7de9;     /* Function   */
+  --md-code-hl-variable-color:    #387068;     /* green1     */
+  --md-code-hl-name-color:        #3760bf;     /* Normal     */
+  --md-code-hl-operator-color:    #006a83;     /* Operator   */
+  --md-code-hl-punctuation-color: #6172b0;     /* fg_dark    */
+  --md-code-hl-special-color:     #188092;     /* Special    */
+  --md-code-hl-generic-color:     #6172b0;     /* fg_dark    */
+
+  --rvo-code-del-color: #dababe;               /* DiffDelete */
+  --rvo-code-ins-color: #b7ced5;               /* DiffAdd    */
 
   --rvo-h1-color: oklch(0.4 0 0);
 }
@@ -86,7 +135,28 @@ div .highlight {
   --md-footer-bg-color: none;
   --md-footer-bg-color--dark: oklch(19% 0.016 264.665);
 
-  --md-code-bg-color: #1a1b26;
+  /* Tokyo Night (night) */
+  --md-code-fg-color: #c0caf5;                 /* Normal   */
+  --md-code-bg-color: #1a1b26;                 /* Normal   */
+
+  --md-code-hl-color:        #7aa2f7;          /* Function — line marker */
+  --md-code-hl-color--light: #7aa2f71a;        /* highlighted-line background */
+
+  --md-code-hl-comment-color:     #565f89;     /* Comment    */
+  --md-code-hl-keyword-color:     #bb9af7;     /* Statement  */
+  --md-code-hl-string-color:      #9ece6a;     /* String     */
+  --md-code-hl-number-color:      #ff9e64;     /* Constant   */
+  --md-code-hl-constant-color:    #ff9e64;     /* Constant   */
+  --md-code-hl-function-color:    #7aa2f7;     /* Function   */
+  --md-code-hl-variable-color:    #73daca;     /* green1     */
+  --md-code-hl-name-color:        #c0caf5;     /* Normal     */
+  --md-code-hl-operator-color:    #89ddff;     /* Operator   */
+  --md-code-hl-punctuation-color: #a9b1d6;     /* fg_dark    */
+  --md-code-hl-special-color:     #2ac3de;     /* Special    */
+  --md-code-hl-generic-color:     #a9b1d6;     /* fg_dark    */
+
+  --rvo-code-del-color: #4a272f;               /* DiffDelete */
+  --rvo-code-ins-color: #243e4a;               /* DiffAdd    */
 
   --rvo-h1-color: oklch(97% 0.001 106.424);
 }
