@@ -1,14 +1,53 @@
+/* Typography */
+.md-typeset {
+  font-size: 0.9rem; /* 0.8rem default → 17px */
+
+  h1 {
+    color: var(--rvo-h1-color);
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  h2 {
+    font-weight: 500;
+  }
+
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+.md-header__topic:first-child {
+    font-weight: 600;
+}
+.md-tabs__link {
+  font-size: 0.8rem;
+}
+
+/* Pages with `hide: [navigation, toc]` let .md-content expand to the full
+   61rem grid. Cap and centre it. Regular pages are unaffected: their content
+   column is only 36.8rem (61 − 2 × 12.1 sidebars), well under this cap. */
+.md-content {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+/* Custom colors */
 [data-md-color-scheme="default"] {
   --md-primary-fg-color:             oklch(0.7 0.2486 40);
   --md-primary-fg-color--dark:       oklch(0.625 0.2219 40);
-  --md-accent-fg-color:              oklch(0.65 0.2976 27.5);
-  --md-accent-fg-color--transparent: oklch(0.65 0.2976 27.5 / 0.1);
+  --md-accent-fg-color:              oklch(0.6705 0.2758 33);
+  --md-accent-fg-color--transparent: oklch(0.6705 0.2758 33 / 0.1);
+
+  --rvo-h1-color: oklch(21.6% 0.006 56.043);
 }
 [data-md-color-scheme="slate"] {
   --md-primary-fg-color:             oklch(0.7 0.2486 40);
   --md-primary-fg-color--dark:       oklch(0.625 0.2219 40);
-  --md-accent-fg-color:              oklch(0.65 0.2976 27.5);
-  --md-accent-fg-color--transparent: oklch(0.65 0.2976 27.5 / 0.1);
+  --md-accent-fg-color:              oklch(0.6705 0.2758 33);
+  --md-accent-fg-color--transparent: oklch(0.6705 0.2758 33 / 0.1);
+
+  --rvo-h1-color: oklch(97% 0.001 106.424);
 }
 
 /* Translucent, blurred header. Material has no header-background variable, so
@@ -94,8 +133,4 @@
     margin-top: -0.5rem;
     color: var(--md-default-fg-color--light);
     font-size: 0.9rem;
-}
-
-article {
-  font-size: 1.0rem !important;
 }

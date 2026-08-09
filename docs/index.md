@@ -1,5 +1,5 @@
 ---
-title: About Me
+title: About me
 description: Explore machine learning, software automation, and entrepreneurship with Richard van der Oost. Learn about Blendergrid, AI tutorials, freelancing, and innovative AI solutions for businesses.
 keywords: Richard van der Oost, Tech Founder, Blendergrid, Clik.fit
 author: Richard van der Oost
@@ -31,14 +31,17 @@ hide:
 </script>
 
 <div class="hero-section grid-container" markdown>
+
 <div class="profile-image-grid" markdown>
-![Richard van der Oost, AI Entrepreneur and Educator](assets/richardvanderoost.jpg){ .profile-image alt="Richard van der Oost, tech founder and entrepreneur" }
+<img src="/assets/richardvanderoost.jpg" alt="Richard van der Oost" class="profile-image" >
+
+[Book a call](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary :target="_blank"}
 </div>
 
 <div class="text-intro-grid" markdown>
-# I automate internet companies
+# I automate tech companies
 
-### I'm focused on leveraging software to automate tedious work
+### I'm focused on building software to automate the boring tasks
 
 - Are you struggling to keep up with the rapid pace of AI innovation?
 
@@ -46,8 +49,8 @@ hide:
 
 - Need someone who understands both technical and business perspectives?
 
-[Book an Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary :target="_blank"}
 </div>
+
 </div>
 
 ## About me
