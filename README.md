@@ -35,11 +35,24 @@ As you go through this setup, please find all the most up to date information in
    brew install cairo freetype libffi libjpeg libpng zlib pngquant
    ```
 
-3. **Preview your site**
+3. **Point Python at Homebrew's libcairo (Apple Silicon, one time)**
+
+   The `social` plugin rasterizes its cards through `cairosvg`, which loads
+   `libcairo` at runtime. A standalone interpreter — uv's CPython, for
+   instance — does not search `/opt/homebrew/lib`, so the build fails with
+   *"no library called cairo-2 was found"*. Link the library into a directory
+   macOS already searches by default:
    ```bash
-    # For MacOS M1/M2 users
-    export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib
-    mkdocs serve
+   mkdir -p ~/lib && ln -s /opt/homebrew/lib/libcairo.2.dylib ~/lib/
+   ```
+   `export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib` fixes it too, but has
+   to be repeated per shell, and macOS strips `DYLD_*` variables whenever a
+   command runs through a `/bin/sh` wrapper — which newer uv-generated entry
+   point scripts do.
+
+4. **Preview your site**
+   ```bash
+   mkdocs serve
    ```
    Visit `http://localhost:8000` to see your site.
 

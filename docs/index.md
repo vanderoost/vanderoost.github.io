@@ -41,7 +41,7 @@ hide:
 <div class="text-intro-grid" markdown>
 # I automate tech companies
 
-### I'm focused on building software to automate tedious work
+### I'm focused on building software that automates tedious work
 
 - Are you struggling to keep up with the rapid pace of AI innovation?
 

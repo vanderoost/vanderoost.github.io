@@ -87,6 +87,9 @@ plugins:
   - social:
       cards_layout_options:
         background_color: "#111111"
+        # Not the header icon: that one colors itself with CSS variables, which
+        # the card rasterizer cannot resolve. See docs/assets/social-logo.svg.
+        logo: docs/assets/social-logo.svg
   - blog:
       blog_dir: articles
       authors_file: articles/.authors.yml
