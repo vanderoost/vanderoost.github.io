@@ -45,6 +45,7 @@
 
   --rvo-code-del-color: #dababe;
   --rvo-code-ins-color: #b7ced5;
+  --rvo-code-selection-color: #b7c1e3;
 
   --rvo-h1-color: oklch(0.3 0 0);
   --rvo-h2-color: oklch(0.35 0 0);
@@ -84,6 +85,7 @@
 
   --rvo-code-del-color: #4a272f;
   --rvo-code-ins-color: #243e4a;
+  --rvo-code-selection-color: #283457;
 
   --rvo-h1-color: oklch(97% 0.001 106.424);
   --rvo-h2-color: oklch(95% 0.001 106.424);
@@ -109,7 +111,16 @@
     text-wrap: balance;
   }
 }
-
+*::selection {
+  color: var(--md-default-bg-color);
+  background-color: var(--md-primary-fg-color);
+}
+.highlight ::selection,
+.highlighttable ::selection,
+.md-typeset pre ::selection {
+  color: currentColor;
+  background-color: var(--rvo-code-selection-color);
+}
 header.md-header {
   border-bottom: 1px solid;
   border-color: #80808016;
@@ -131,21 +142,6 @@ header.md-header {
   margin-inline: auto;
 }
 
-/* The Google Fonts build of JetBrains Mono is a 229-codepoint Latin subset
-   with nothing in U+2500-257F, so box drawing, arrows and block elements were
-   falling through the stack to SF Mono / Menlo: visibly different stroke
-   weight, and verticals that break apart at tight line heights (their glyphs
-   are only 1.27-1.37em tall against JetBrains Mono's 1.52em).
-
-   This face supplies the symbol blocks from the real font. It is metrically
-   identical to the Google build -- 1000 upm, 1020/-300 vertical metrics,
-   0.6em advance -- so it drops in without shifting a column, and
-   `unicode-range` keeps it off the wire until a page actually uses one of
-   these characters. Subset from JetBrains Mono 2.305 (OFL-1.1, see
-   ../assets/fonts/OFL.txt) with:
-
-     pyftsubset JetBrainsMono-Regular.ttf --unicodes="U+2190-2BFF,U+E000-F8FF" \
-       --flavor=woff2 --name-IDs='*' */
 @font-face {
   font-family: "JetBrains Mono Symbols";
   src: url("../assets/fonts/JetBrainsMono-Symbols.woff2") format("woff2");
@@ -153,17 +149,9 @@ header.md-header {
   font-display: swap;
 }
 
-/* Prepended to Material's own stack. `var(--md-code-font)` is set from
-   `theme.font.code` in mkdocs.yml, so this stays in sync with it.
-
-   This must be declared on `body`, not `:root`: Material sets
-   --md-code-font-family on `body` itself. Custom properties inherit, so a
-   `:root` value reaches <html> but is shadowed by body's own declaration for
-   body and every descendant -- which is all of the content. */
 body {
-  --md-code-font-family:
-    "JetBrains Mono Symbols", var(--md-code-font, _), SFMono-Regular, Consolas,
-    Menlo, monospace;
+  --md-code-font-family: "JetBrains Mono Symbols", var(--md-code-font, _),
+    SFMono-Regular, Consolas, Menlo, monospace;
 }
 
 .md-typeset pre {
@@ -177,20 +165,13 @@ body {
 
 /* Rounded corners for code snippets */
 @media screen and (min-width: 720px) {
-  div .highlight {
+  .highlight {
     border-radius: 0.4rem;
     overflow: clip;
+
   }
 }
 
-/* Tokyo Night renders comments in italic (`hi Comment gui=italic`) */
-.highlight :is(.c, .c1, .ch, .cm, .cs, .sd) {
-  font-style: italic;
-}
-
-/* Material folds two tokens into buckets Tokyo Night colours differently: .kc
-   (True/False/None) rides along with plain names, and .sa (the f/b/r prefix on
-   a string literal) is unmapped and falls through to the default foreground. */
 .highlight .kc {
   color: var(--md-code-hl-constant-color);
 }
@@ -198,9 +179,6 @@ body {
   color: var(--md-code-hl-keyword-color);
 }
 
-/* Diff highlighting. Material points .gd/.gi at --md-typeset-{del,ins}-color,
-   which is also used by ~~del~~ / ++ins++ in prose; Tokyo Night's DiffAdd and
-   DiffDelete are tuned to the code background, so they are scoped to code. */
 .highlight .gd {
   background-color: var(--rvo-code-del-color);
 }
@@ -212,8 +190,6 @@ body {
   margin: 0 0 1.0rem;
 }
 
-/* The drawer title reserves 3rem of top padding for the logo, which
-   overrides/partials/nav.html removes. Reclaim that space. */
 @media screen and (max-width: 1219px) {
   .md-nav--primary .md-nav__title[for="__drawer"] {
     height: auto;
