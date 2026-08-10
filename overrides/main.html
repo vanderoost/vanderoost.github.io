@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{#-
+  Material builds all of its Open Graph tags from the social card layout, and
+  that layout has no concept of authorship — which is why LinkedIn's Post
+  Inspector reports "No author found" on blog posts even though the blog
+  plugin renders the byline in the page itself. Emitting the missing tags here
+  is cheaper than forking the card layout, a vendored file that would drift on
+  every Material upgrade.
+
+  Only the article:* tags belong here. The plain <meta name="author"> is the
+  theme's job, driven by site_author in mkdocs.yml, so duplicating it here
+  would emit the tag twice.
+
+  Guards: `page` is None on the 404 page, and only blog posts carry `authors`.
+-#}
+{% block extrahead %}
+  {{- super() }}
+  {%- if page and page.authors is defined and page.authors %}
+    {%- set author = page.authors | first %}
+    {%- if author.url %}
+  <meta property="article:author" content="{{ author.url }}" />
+    {%- endif %}
+    {%- if page.meta.date %}
+      {#- A post dates itself either as a bare value or as created/updated -#}
+      {%- set date = page.meta.date %}
+      {%- if date is mapping %}{% set date = date.created %}{% endif %}
+  <meta property="article:published_time" content="{{ date }}" />
+    {%- endif %}
+  {%- endif %}
+{% endblock %}

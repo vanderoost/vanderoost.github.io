@@ -4,7 +4,6 @@
   --rvo-code-line-height: 1.5;
 
   --rvo-h1-font-size: 2.2em;
-
 }
 /* Custom colors */
 [data-md-color-scheme="default"] {
@@ -92,7 +91,7 @@
 }
 
 [data-md-color-scheme] {
-  --rvo-separator-line-color: oklch(from var(--rvo-h1-color) l c h / 0.08);
+  --rvo-separator-line-color: oklch(from var(--rvo-h1-color) l c h / 0.05);
 }
 
 /* Typography */

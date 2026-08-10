@@ -26,7 +26,7 @@ hide:
     "@type": "Organization",
     "name": "Blendergrid",
     "url": "https://blendergrid.com/"
-  },
+  }
 }
 </script>
 

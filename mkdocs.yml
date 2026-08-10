@@ -1,6 +1,9 @@
 site_name: vanderoost
 site_description: I automate tech companies
 site_url: https://vanderoost.com
+# Gives every page a <meta name="author">; pages may override it per-page with
+# an "author" key. overrides/main.html adds the article:* tags on top.
+site_author: Richard van der Oost
 
 nav:
   - About: index.md 
