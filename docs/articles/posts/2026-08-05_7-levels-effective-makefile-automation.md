@@ -14,8 +14,8 @@ slug: levels-of-effective-makefile-cheatsheet
 
 # The 7 levels of highly effective Makefiles
 
-In this article we'll walk through 7 levels of Makefiles, from simple to advanced in the
-context of some C source code that needs to be compiled. I use it myself as a cheatsheet
+We're about to walk through 7 levels of Makefiles, from simple to advanced in the
+context of a small C project that needs to be compiled. I use it myself as a cheatsheet
 when I need to write a new `Makefile`.
 
 <!-- more -->
