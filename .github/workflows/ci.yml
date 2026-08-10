@@ -20,12 +20,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
       - uses: actions/cache@v4
         with:
           key: mkdocs-material-${{ env.cache_id }}
-          path: ~/.cache 
+          # The "social" plugin caches rendered cards in the repo's .cache
+          # directory, not the home one, so this path is what makes card
+          # generation incremental between runs.
+          path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material 
+      # The "social" plugin renders Open Graph cards through cairosvg and
+      # Pillow, both of which bind to system libraries that the runner image
+      # does not ship.
+      - name: Install imaging system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
+      # requirements.txt pins mkdocs-material[imaging]; installing the bare
+      # package leaves out Pillow and cairosvg, which silently downgrades the
+      # social plugin to a warning and ships the site with no preview cards.
+      - run: pip install -r requirements.txt
       - run: mkdocs gh-deploy --force
