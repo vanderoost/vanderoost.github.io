@@ -9,6 +9,7 @@
   }
 
   h2 {
+    color: var(--rvo-h2-color);
     font-weight: 500;
   }
 
@@ -143,7 +144,8 @@ header.md-header {
   --rvo-code-del-color: #dababe;               /* DiffDelete */
   --rvo-code-ins-color: #b7ced5;               /* DiffAdd    */
 
-  --rvo-h1-color: oklch(0.4 0 0);
+  --rvo-h1-color: oklch(0.3 0 0);
+  --rvo-h2-color: oklch(0.35 0 0);
 }
 [data-md-color-scheme="slate"] {
   --md-primary-fg-color:             oklch(0.7 0.2486 40);
@@ -182,6 +184,7 @@ header.md-header {
   --rvo-code-ins-color: #243e4a;               /* DiffAdd    */
 
   --rvo-h1-color: oklch(97% 0.001 106.424);
+  --rvo-h2-color: oklch(95% 0.001 106.424);
 }
 
 /* Translucent, blurred header. Material has no header-background variable, so
