@@ -1,4 +1,4 @@
-site_name: Richard van der Oost
+site_name: vanderoost
 site_description: I automate tech companies
 site_url: https://vanderoost.com
 
@@ -14,7 +14,6 @@ nav:
 
 theme:
   name: material
-  custom_dir: overrides
 
   features:
     - navigation.instant
@@ -64,6 +63,10 @@ theme:
     code: JetBrains Mono
 
   favicon: assets/favicon.png
+  icon:
+    logo: branding/vanderoost-icon
+
+  custom_dir: overrides
 
 extra:
   generator: false
@@ -113,6 +116,9 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      options:
+        custom_icons:
+          - overrides/.icons
   - def_list
   - pymdownx.keys
 
