@@ -14,19 +14,20 @@ slug: levels-of-effective-makefile-cheatsheet
 
 # The 7 levels of highly effective Makefiles
 
-Make is a great tool for automating our life in the terminal.
+In this article we'll walk through 7 levels of Makefiles, from simple to advanced in the
+context of some C source code that needs to be compiled. I use it myself as a cheatsheet
+when I need to write a new `Makefile`.
+
+<!-- more -->
+
+If you don't know what I'm talking about, Make is a great tool for automating our life
+in the terminal.
 
 The original use case of `make` is creating literal files. And a `Makefile` consists of
 rules on how to make certain files.
 
 But what `make` is also great at is just creating useful shortcuts to common terminal
 commands. For example, running tests, deploying, building Docker images, etc.
-
-In this article we'll walk through 7 levels of Makefiles, from simple to advanced in the
-context of some C source code that needs to be compiled. I use it myself as a cheatsheet
-when I need to write a new `Makefile`.
-
-<!-- more -->
 
 This is the final `Makefile` we'll end up with:
 
@@ -368,8 +369,8 @@ For me, programming is more productive and fun with a tight feedback loop. So wh
 make an edit, I want it to instantly compile and run (or crash).
 
 To do this, we can use a "file watcher" utility. I always use
-[`entr`](https://github.com/eradman/entr) for this, and set it up as a new rule in
-the `Makefile`.
+[`entr`](https://github.com/eradman/entr){ target="_blank" rel="noopener" } for this,
+and set it up as a new rule in the `Makefile`.
 
 So let's add a `watch` rule to the `Makefile`, because it "watches" our source files for
 changes:
