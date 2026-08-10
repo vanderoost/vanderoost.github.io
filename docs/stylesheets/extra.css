@@ -4,8 +4,8 @@
   --rvo-code-line-height: 1.5;
 
   --rvo-h1-font-size: 2.2em;
-}
 
+}
 /* Custom colors */
 [data-md-color-scheme="default"] {
   --md-primary-fg-color:             oklch(0.5458 0.2116 28.7);
@@ -17,7 +17,7 @@
   --md-default-bg-color: oklch(0.9687 0.0106 100);
 
   --md-footer-bg-color: none;
-  --md-footer-bg-color--dark: oklch(0.8667 0.026 75.31);
+  --md-footer-bg-color--dark: none;
   --md-footer-fg-color: oklch(0.4 0 0);
   --md-footer-fg-color--light: oklch(0.3 0 0);
   --md-footer-fg-color--lighter: oklch(0.2 0 0);
@@ -60,7 +60,7 @@
   --md-default-bg-color: oklch(17% 0.017 264.665);
 
   --md-footer-bg-color: none;
-  --md-footer-bg-color--dark: oklch(19% 0.016 264.665);
+  --md-footer-bg-color--dark: none;
 
   /* Tokyonight Night */
   --md-code-fg-color: #c0caf5;
@@ -89,6 +89,10 @@
 
   --rvo-h1-color: oklch(97% 0.001 106.424);
   --rvo-h2-color: oklch(95% 0.001 106.424);
+}
+
+[data-md-color-scheme] {
+  --rvo-separator-line-color: oklch(from var(--rvo-h1-color) l c h / 0.08);
 }
 
 /* Typography */
@@ -120,10 +124,6 @@
 .md-typeset pre ::selection {
   color: currentColor;
   background-color: var(--rvo-code-selection-color);
-}
-header.md-header {
-  border-bottom: 1px solid;
-  border-color: #80808016;
 }
 [dir=ltr] .md-header__title {
     margin-left: .4rem;
@@ -278,4 +278,19 @@ body {
     margin-top: -0.5rem;
     color: var(--md-default-fg-color--light);
     font-size: 0.9rem;
+}
+
+/* Separator lines */
+header.md-header {
+  border-bottom: 1px solid;
+  border-color: var(--rvo-separator-line-color);
+}
+footer.md-footer {
+  border-top: 1px solid;
+  border-color: var(--rvo-separator-line-color);
+
+  .md-footer-meta {
+    border-top: 1px solid;
+    border-color: var(--rvo-separator-line-color);
+  }
 }
