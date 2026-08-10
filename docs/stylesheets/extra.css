@@ -125,10 +125,6 @@
   color: currentColor;
   background-color: var(--rvo-code-selection-color);
 }
-[dir=ltr] .md-header__title {
-    margin-left: .4rem;
-    margin-right: .4rem;
-}
 .md-header__topic:first-child {
     font-weight: 600;
 }
@@ -228,14 +224,34 @@ body {
   background: var(--md-accent-fg-color);
 }
 
-/* Navigation tabs inside the header bar (see overrides/partials/header.html) */
+/* Navigation tabs inside the header bar (see overrides/partials/header.html).
+   The header is a three-zone flex row: [start zone] [tabs] [end zone]. Both
+   side zones get the same `flex: 1 1 0`, so they always resolve to the same
+   width and the tabs land exactly on the header's centre line — instead of
+   wherever the title and the header buttons happen to balance out. */
 .md-header__inner {
-  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.md-header__zone {
+  align-items: center;
+  display: flex;
+  flex: 1 1 0;
+}
+
+/* Without this a long page title grows the start zone past its fair share and
+   drags the tabs off centre; with it, the title ellipsises instead. */
+.md-header__zone--start {
+  min-width: 0;
+}
+
+.md-header__zone--end {
+  justify-content: flex-end;
 }
 
 .md-header__inner > .md-tabs {
   background-color: transparent;
-  flex-grow: 1;
+  flex: 0 0 auto;
   overflow: visible;
   width: auto;
 }
@@ -244,10 +260,6 @@ body {
   margin: 0;
   max-width: none;
   padding: 0;
-}
-
-.md-header__inner > .md-tabs .md-tabs__list {
-  margin-left: 0.6rem;
 }
 
 .md-header__inner > .md-tabs .md-tabs__item {
