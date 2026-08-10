@@ -1,3 +1,11 @@
+:root {
+  --rvo-font-size: 0.9rem;
+  --rvo-code-font-size: 0.8em;
+  --rvo-code-line-height: 1.5;
+
+  --rvo-h1-font-size: 2.2em;
+}
+
 /* Custom colors */
 [data-md-color-scheme="default"] {
   --md-primary-fg-color:             oklch(0.5458 0.2116 28.7);
@@ -83,9 +91,10 @@
 
 /* Typography */
 .md-typeset {
-  font-size: 0.9rem; /* 0.8rem default → 17px */
+  font-size: var(--rvo-font-size);
 
   h1 {
+    font-size: var(--rvo-h1-font-size);
     color: var(--rvo-h1-color);
     text-wrap: balance;
     font-weight: 600;
@@ -115,25 +124,55 @@ header.md-header {
 .md-tabs__link {
   font-size: 0.8rem;
 }
-
-/* Pages with `hide: [navigation, toc]` let .md-content expand to the full
-   61rem grid. Cap and centre it. Regular pages are unaffected: their content
-   column is only 36.8rem (61 − 2 × 12.1 sidebars), well under this cap.
-
-   Blog posts are excluded: .md-content--post is a flex container, and an auto
-   inline margin on a flex item suppresses its stretch, so the article would
-   size to its max-content width instead of the column — several thousand
-   pixels wide, overflowing the viewport on mobile.
-
-   `margin-inline: auto` replaces Material's `.md-content__inner` margin of
-   `0 .8rem`, and auto margins collapse to 0 once the column is narrower than
-   the cap — text would touch the viewport edges on small screens. The second
-   term keeps that .8rem gutter as the real limit until the cap takes over. */
 .md-content > article {
   max-width: min(40rem, 100% - 1.6rem);
 }
 .md-content:not(.md-content--post) > article {
   margin-inline: auto;
+}
+
+/* The Google Fonts build of JetBrains Mono is a 229-codepoint Latin subset
+   with nothing in U+2500-257F, so box drawing, arrows and block elements were
+   falling through the stack to SF Mono / Menlo: visibly different stroke
+   weight, and verticals that break apart at tight line heights (their glyphs
+   are only 1.27-1.37em tall against JetBrains Mono's 1.52em).
+
+   This face supplies the symbol blocks from the real font. It is metrically
+   identical to the Google build -- 1000 upm, 1020/-300 vertical metrics,
+   0.6em advance -- so it drops in without shifting a column, and
+   `unicode-range` keeps it off the wire until a page actually uses one of
+   these characters. Subset from JetBrains Mono 2.305 (OFL-1.1, see
+   ../assets/fonts/OFL.txt) with:
+
+     pyftsubset JetBrainsMono-Regular.ttf --unicodes="U+2190-2BFF,U+E000-F8FF" \
+       --flavor=woff2 --name-IDs='*' */
+@font-face {
+  font-family: "JetBrains Mono Symbols";
+  src: url("../assets/fonts/JetBrainsMono-Symbols.woff2") format("woff2");
+  unicode-range: U+2190-2BFF, U+E000-F8FF;
+  font-display: swap;
+}
+
+/* Prepended to Material's own stack. `var(--md-code-font)` is set from
+   `theme.font.code` in mkdocs.yml, so this stays in sync with it.
+
+   This must be declared on `body`, not `:root`: Material sets
+   --md-code-font-family on `body` itself. Custom properties inherit, so a
+   `:root` value reaches <html> but is shadowed by body's own declaration for
+   body and every descendant -- which is all of the content. */
+body {
+  --md-code-font-family:
+    "JetBrains Mono Symbols", var(--md-code-font, _), SFMono-Regular, Consolas,
+    Menlo, monospace;
+}
+
+.md-typeset pre {
+  line-height: var(--rvo-code-line-height);
+}
+.md-typeset pre > code,
+.md-typeset .highlighttable .linenos,
+.md-typeset .highlight span.filename {
+  font-size: var(--rvo-code-font-size);
 }
 
 /* Rounded corners for code snippets */

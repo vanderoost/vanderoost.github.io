@@ -34,14 +34,14 @@ theme:
   language: en
 
   palette:
-    # Palette toggle for automatic mode
+    # Automatic mode
     - media: "(prefers-color-scheme)"
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
 
 
-    # Palette toggle for light mode
+    # Light mode
     - media: "(prefers-color-scheme: light)"
       primary: custom
 
@@ -50,7 +50,7 @@ theme:
         name: Switch to dark mode
 
 
-    # Palette toggle for dark mode
+    # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: custom
@@ -61,7 +61,7 @@ theme:
 
   font:
     text: Ubuntu
-    code: Ubuntu Mono
+    code: JetBrains Mono
 
   favicon: assets/favicon.png
 
