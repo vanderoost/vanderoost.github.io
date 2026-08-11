@@ -36,7 +36,7 @@ modification timestamps of each file to determine what actually has to be made.
 
 So it's more efficient, and it has some other cool tricks that we'll dive into.
 
-**TL;DR** (spoiler alert): these are the Makefiles we're going to write, one per level:
+**TL;DR** (spoiler alert): this is the final Makefile we'll end up with:
 
 === "L1"
 
@@ -231,10 +231,10 @@ project setup with subdirectories. I use this post myself as a Makefile cheatshe
 
 ## Level 0 - Nothing
 
-Literally no `Makefile` at all, so this one doesn't count. But even without a
-`Makefile`, we can already start using `make` because it has a bunch of default rules.
+Literally no Makefile at all, so this one doesn't count. But even without a
+Makefile, we can already start using `make` because it has a bunch of default rules.
 
-So without a `Makefile`, our project directory contains only a single file:
+So without a Makefile, our project directory contains only a single file:
 
 ```
 └── main.c
@@ -263,7 +263,7 @@ all working:
 hello world
 ```
 
-And that works, but how did `make` know what to do without a `Makefile`?
+And that works, but how did `make` know what to do without a Makefile?
 
 There are some default pattern matching rules, and `make` magically figures it out.
 
@@ -286,7 +286,7 @@ curious.
 If your file is called `program.c` instead, you can run `make program`, and it
 spits out the file `program` as the executable.
 
-Making without a `Makefile` is a bit of a party trick, but would I ever use this in
+Making without a Makefile is a bit of a party trick, but would I ever use this in
 practice? Actually, yes. Every time I quickly write a `main.c` to test something, all I
 have to do is type `make main` and it's compiled.
 
@@ -308,29 +308,29 @@ Adding flags can be done with the `CFLAGS` variable:
 gcc -Wall -Wextra    main.c   -o main
 ```
 
-But at this point it's easier to just use a `Makefile`. So let's check out the next
+But at this point it's easier to just use a Makefile. So let's check out the next
 level.
 
 
 ## Level 1 - Bare minimum
 
-Now we actually write a `Makefile`, the configuration for `make`. For our "bare minimum"
+Now we actually write a Makefile, the configuration for `make`. For our "bare minimum"
 level I want to add three features:
 
 1. Automatically run after compiling
 2. Configure compile flags
 3. Cleanup to get back to the initial state
 
-The filename is just `Makefile` so our project directory looks like:
+The filename is just Makefile so our project directory looks like:
 
 ```
 ├── Makefile
 └── main.c
 ```
 
-A filename of `makefile` also works, but `Makefile` is the convention I'm sticking to.
+A filename of `makefile` also works, but Makefile is the convention I'm sticking to.
 
-A `Makefile` mainly consists of a bunch of *rules*. This is what a rule looks like:
+A Makefile mainly consists of a bunch of *rules*. This is what a rule looks like:
 
 ```makefile
 target: prerequisites
@@ -343,7 +343,7 @@ which are typically other files, but can also be other non-file targets. And fin
 
 One thing to watch out for: that indentation before the recipe has to be a literal tab
 character. Spaces will get you `Makefile:2: *** missing separator.  Stop.`, which is the
-most common way to break a fresh `Makefile`.
+most common way to break a fresh Makefile.
 
 To automatically run our program, feature 1, I'm going to add a target called `run`,
 with a prerequisite `main` because we need the main executable to run it. And the action
@@ -366,7 +366,7 @@ hello world
 First it gets compiled, then it runs `./main`. How does `make` know that it needs to
 compile? Because we said that `main` is a prerequisite of `run` (i.e. `run` depends on
 `main`). So it will try to `make main` first, before running it. And since `make main`
-already worked without a `Makefile`, this still works.
+already worked without a Makefile, this still works.
 
 But even better, when we run it a second time:
 
@@ -380,7 +380,7 @@ Now it only runs `main`, without compiling. Why? Because `make` is smart enough 
 at the prerequisites of our `run` target, `main`. And since it already exists, it's not
 going to "make" it again.
 
-We know that the targets in a `Makefile` are usually files, but `run` is not supposed to
+We know that the targets in a Makefile are usually files, but `run` is not supposed to
 be a file. What if there is a file in our project directory that's literally called
 `run`? Let's see what happens:
 
@@ -436,7 +436,7 @@ cc -Wall -Wextra    main.c   -o main
 ```
 
 Feature 3 is adding a cleanup shortcut to undo everything. I'll call it `clean` and you
-see this in 9 out of 10 `Makefile`s, so we're just sticking to the convention. This
+see this in 9 out of 10 Makefiles, so we're just sticking to the convention. This
 target is, like `run`, not supposed to be a file, so we mark it as `.PHONY`, and all I
 want it to do is remove our `main` executable:
 
@@ -493,13 +493,13 @@ rm -f main
 Before we go to the next level, I want to add one finishing touch here to change the
 behavior of running just `make` without anything else.
 
-When you have a `Makefile`, running `make` will run the first rule specified in the
+When you have a Makefile, running `make` will run the first rule specified in the
 file, which is `run` in our case.
 
 That's a bit confusing. I want to run the program with `make run`, but when I type
 `make`, it makes more sense to only compile (make) it, without running it.
 
-A common pattern to achieve this is using an `all` target at the top of the `Makefile`:
+A common pattern to achieve this is using an `all` target at the top of the Makefile:
 
 ```makefile title="Makefile" linenums="1" hl_lines="3 11"
 CFLAGS = -Wall -Wextra
@@ -536,9 +536,9 @@ make an edit, I want it to instantly compile and run (or crash).
 
 To do this, we can use a "file watcher" utility. I always use
 [`entr`](https://github.com/eradman/entr){ target="_blank" rel="noopener" } for this,
-and set it up as a new rule in the `Makefile`.
+and set it up as a new rule in the Makefile.
 
-So let's add a `watch` rule to the `Makefile`, because it "watches" our source files for
+So let's add a `watch` rule to the Makefile, because it "watches" our source files for
 changes:
 
 ```makefile title="Makefile" linenums="1" hl_lines="8-9 14"
@@ -646,7 +646,7 @@ We could compile this by hand like so:
 % cc main.c rng.c -o main
 ```
 
-Integrating this into the `Makefile` looks like this:
+Integrating this into the Makefile looks like this:
 
 ```makefile title="Makefile" linenums="1" hl_lines="5"
 CFLAGS = -Wall -Wextra
@@ -731,7 +731,7 @@ That breaks our build, because `make` can't find our source files anymore:
 make: *** No rule to make target `rng.c', needed by `main'.  Stop.
 ```
 
-Fixing this in our `Makefile` is surprisingly simple. We just have to tell it about the
+Fixing this in our Makefile is surprisingly simple. We just have to tell it about the
 new `src` directory by adding it to the `VPATH` variable:
 
 ```makefile title="Makefile" linenums="1" hl_lines="3 13"
@@ -767,7 +767,7 @@ cc -Wall -Wextra    src/main.c src/rng.c   -o main
 random float: 0.621248
 ```
 
-We're starting to see a bit of repetition in our `Makefile`, so let's take a moment
+We're starting to see a bit of repetition in our Makefile, so let's take a moment
 to add some variables to DRY things up:
 
 ```makefile title="Makefile" linenums="1" hl_lines="3-4 6 8 10 12 13 16 19"
@@ -832,7 +832,7 @@ cc rng.c -c -o rng.o
 cc main.c rng.o -o main
 ```
 
-Let's see what that would look like in our `Makefile`. There is one super simple
+Let's see what that would look like in our Makefile. There is one super simple
 tweak we can make:
 
 ```makefile title="Makefile" linenums="1" hl_lines="10"
@@ -934,9 +934,9 @@ on cleanup.
 
 ## Level 6 - Detect source files
 
-Our `Makefile` is in great shape, but one thing I don't like is that every time we
+Our Makefile is in great shape, but one thing I don't like is that every time we
 decide to write a new library in our project, we have to also remember to edit the
-`Makefile`. Wouldn't it be great if `make` could dynamically detect all source files?
+Makefile. Wouldn't it be great if `make` could dynamically detect all source files?
 
 To make this work, we're going to use some new Makefile features like `wildcard` and
 `patsubst` to find files using pattern matching.
@@ -963,7 +963,7 @@ The new project structure looks like this:
 
 So the convention is: Entrypoints that turn into an executable go directly under `src`,
 and all libraries in a subdirectory of `src`. By sticking to this rule, we can configure
-the `Makefile` to detect these files properly.
+the Makefile to detect these files properly.
 
 We also have to change any `#!c #include "rng.h"` in our `main.c` to
 `#!c #include "rng/rng.h"` after this reorganization.
@@ -1048,7 +1048,7 @@ clean:
 We're removing the executable, and the entire `obj` directory. Because we have the
 `mkdir -p` recipe, we make sure we always rebuild these `obj` directories when needed.
 
-If we add all of this to our `Makefile`, we get this:
+If we add all of this to our Makefile, we get this:
 
 ```makefile title="Makefile" linenums="1" hl_lines="5 7-8 14 16-18 24 27"
 CFLAGS = -Wall -Wextra
@@ -1169,13 +1169,13 @@ cc -Wall -Wextra    src/main.c obj/rng/rng.o obj/vec/vec.o   -o main
 ```
 
 And the great thing is: There is no trace of the word `rng` or `vec` anywhere in the
-`Makefile`, it's fully dynamic. So if we add more libraries later, they will be
+Makefile, it's fully dynamic. So if we add more libraries later, they will be
 picked up and compiled automatically.
 
 
 ## Level 7 - Header dependencies
 
-There is one flaw in our current `Makefile`: When you edit a header (`.h`) file, `make`
+There is one flaw in our current Makefile: When you edit a header (`.h`) file, `make`
 doesn't know it has to recompile that particular library.
 
 A simple way to test this is just updating the modification timestamp of one of the `.h`
@@ -1193,7 +1193,7 @@ make: Nothing to be done for `all'.
 
 It says "Nothing to be done", but we could have completely changed the header file.
 
-This is actually to be expected. We're not mentioning `.h` files in the `Makefile`. All
+This is actually to be expected. We're not mentioning `.h` files in the Makefile. All
 we do is say that the final executable depends on its corresponding `.c` file, and all
 `.o` files. Every `.o` file only depends on its corresponding `.c` file.
 
@@ -1241,7 +1241,7 @@ one we want, system headers are irrelevant in this case since we just want to kn
 files to recompile after we change one of our own header files.
 
 So now we want take those `.d` files, and treat them like rules in our Makefile. And
-guess what, we can *include* other files in our `Makefile` using the (you guessed it)
+guess what, we can *include* other files in our Makefile using the (you guessed it)
 `include`
 
 I'd also like to make the final executable files a bit more flexible, allowing multiple
