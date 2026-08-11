@@ -24,8 +24,8 @@ to set up a C build system.
 <!-- more -->
 
 If you don't know what I'm talking about, Make is a tool for *making files* based on
-certain *rules*. It can be abused to do more, and to automate other terminal shenanigans.
-Think of running your tests, deploying, building Docker images, etc.
+certain *rules*. It can be abused to do more, and to automate other terminal
+shenanigans. Think of running your tests, deploying, building Docker images, etc.
 
 Once you find yourself running certain commands repeatedly in a codebase, your first
 instinct might be to stash them away in some bash script.
@@ -36,7 +36,7 @@ modification timestamps of each file to determine what actually has to be made.
 
 So it's more efficient, and it has some other cool tricks that we'll dive into.
 
-**TL;DR** (spoiler alert): this is the Makefile we're going to write:
+**TL;DR** (spoiler alert): these are the Makefiles we're going to write, one per level:
 
 === "L1"
 
@@ -204,7 +204,7 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 
 	$(BINS): $(BIN)/%: $(OBJ)/%.o $(OBJS)
 		@mkdir -p $(@D)
-		$(CC) $^ $(LDFLAGS) -o $@
+		$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 	$(OBJ)/%.o: $(SRC)/%.c
 		@mkdir -p $(@D)
@@ -224,10 +224,9 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 	.PHONY: all run watch clean
 	```
 
-If this looks a bit intimidating, not to worry. We'll literally start from zero with
-only a `main.c` file and build it up step by step, to multiple `.c` and `.h` files in a
-proper project setup with subdirectories. I use this post myself as a Makefile
-cheatsheet.
+If this looks a bit intimidating, not to worry. We'll start from zero with only a
+`main.c` file and build it up step by step, to multiple `.c` and `.h` files in a proper
+project setup with subdirectories. I use this post myself as a Makefile cheatsheet.
 
 
 ## Level 0 - Nothing
@@ -277,18 +276,18 @@ this:
 ```
 
 The `%` picks up the target we want to make, `main` in this case. The `%.c` means it has
-a prerequisite of `main.c` where the `%` is the pattern. We happen to have a `main.c`, which is
-why this works. Then the actual "recipe" for making it is a bunch of variables
+a prerequisite of `main.c` where the `%` is the pattern. We happen to have a `main.c`,
+which is why this works. Then the actual "recipe" for making it is a bunch of variables
 that end up running `cc     main.c   -o main`.
 
 You can see all the implicit rules and default variables with `make -p` if you're
 curious.
 
-If your file were called `program.c` instead, you can run `make program`, and it
+If your file is called `program.c` instead, you can run `make program`, and it
 spits out the file `program` as the executable.
 
 Making without a `Makefile` is a bit of a party trick, but would I ever use this in
-practice? Actually, yes. Every time I quickly whip up a `main.c` to test something, all I
+practice? Actually, yes. Every time I quickly write a `main.c` to test something, all I
 have to do is type `make main` and it's compiled.
 
 What if you want to change the compiler, or add flags? No problem. The default behavior
@@ -322,7 +321,7 @@ level I want to add three features:
 2. Configure compile flags
 3. Cleanup to get back to the initial state
 
-The filename is literally `Makefile` so our project directory looks like:
+The filename is just `Makefile` so our project directory looks like:
 
 ```
 ├── Makefile
@@ -341,6 +340,10 @@ target: prerequisites
 So we have a `target` that's typically a file, like `main`. It can have prerequisites
 which are typically other files, but can also be other non-file targets. And finally the
 `recipe` which is the command to build the `target`, like a `cc` compile command.
+
+One thing to watch out for: that indentation before the recipe has to be a literal tab
+character. Spaces will get you `Makefile:2: *** missing separator.  Stop.`, which is the
+most common way to break a fresh `Makefile`.
 
 To automatically run our program, feature 1, I'm going to add a target called `run`,
 with a prerequisite `main` because we need the main executable to run it. And the action
@@ -707,6 +710,7 @@ cc -Wall -Wextra    main.c rng.c   -o main
 random float: 0.503928
 ```
 
+
 ## Level 4 - Source directory
 
 Let's take the first step into organizing our project a bit more, by moving our source
@@ -803,9 +807,13 @@ Right now we're taking all our `.c` source files, and compiling them in a single
 command. For this toy example that's totally fine and probably the fastest way, but for
 larger projects it could make sense to split this into multiple steps.
 
-This way, when you make an edit to one source file, you only have to re-compile that
-source file, and then link all compiled object files together, instead of compiling all source
-files on every edit.
+This way, when you make an edit to one source file, you only have to recompile that
+source file, and then link all compiled object files together, instead of compiling all
+source files on every edit.
+
+There's a second payoff too: because every `.o` file becomes an independent target with
+no dependencies on the others, `make -j` can compile them in parallel across multiple
+CPU cores.
 
 Manually, you can compile your `.c` files into object `.o` files, and then link them to
 get the final executable:
@@ -953,8 +961,8 @@ The new project structure looks like this:
         └── vec.h
 ```
 
-So the convention is: Entrypoints that turn into an executable directly under `src`, and
-all libraries in a sub-directory of `src`. By sticking to this rule, we can configure
+So the convention is: Entrypoints that turn into an executable go directly under `src`,
+and all libraries in a subdirectory of `src`. By sticking to this rule, we can configure
 the `Makefile` to detect these files properly.
 
 We also have to change any `#!c #include "rng.h"` in our `main.c` to
@@ -1168,7 +1176,7 @@ picked up and compiled automatically.
 ## Level 7 - Header dependencies
 
 There is one flaw in our current `Makefile`: When you edit a header (`.h`) file, `make`
-doesn't know it has to re-compile that particular library.
+doesn't know it has to recompile that particular library.
 
 A simple way to test this is just updating the modification timestamp of one of the `.h`
 files with `touch` and running `make` again:
@@ -1220,19 +1228,24 @@ And that `main.d` file is nothing complicated at all, it's just plain text:
 main.o: src/main.c src/rng/rng.h src/vec/vec.h
 ```
 
-This looks like a `make` rule. And it specifies that `main.o` depends on `main.c` but
-also the two header files `src/rng/rng.h` and `src/vec/vec.h`.
+This looks like a `make` rule. And it specifies that `main.o` depends on `src/main.c`
+but also the two header files `src/rng/rng.h` and `src/vec/vec.h`.
 
 The way the compiler "knows" this is by looking at the `main.c` file, which specifies
-things like `#!c #include "rng/rng.h" ` and `#!c #include "vec/vec.h"`.
+things like `#!c #include "rng/rng.h"` and `#!c #include "vec/vec.h"`.
 
-That's exactly what we need in our `Makefile`. And guess what, we can include other
-files in our `Makefile` using the `include` function.
+The `-MMD` flag actually has a few variations. Plain `-M` prints the dependency list to
+stdout and doesn't compile anything. `-MD` writes it to a `.d` file *and* compiles as
+usual. And `-MMD` does the same as `-MD`, but leaves out system headers. So that's the
+one we want, system headers are irrelevant in this case since we just want to know which
+files to recompile after we change one of our own header files.
 
-So let's start building our final `Makefile`.
+So now we want take those `.d` files, and treat them like rules in our Makefile. And
+guess what, we can *include* other files in our `Makefile` using the (you guessed it)
+`include`
 
-I'd like to start with making the final executable files a bit more flexible, allowing
-multiple final executables. And I want to store them in a subfolder called `bin`.
+I'd also like to make the final executable files a bit more flexible, allowing multiple
+final executables. And I want to store them in a subdirectory called `bin`.
 
 So this is the first thing I want to add:
 
@@ -1286,7 +1299,7 @@ all: $(BINS)
 There is currently only one file, `src/main.c`, but if we add more `.c` files directly
 under `src` they will be considered entrypoints and they will be compiled to binaries.
 
-Because of explicitly listing our source files like this, we don't have to specify
+Because we're explicitly listing our source files like this, we don't have to specify
 `#!makefile VPATH = $(SRC)` anymore.
 
 Now we're going to be a bit more explicit about how to link all `.o` files into the
@@ -1301,7 +1314,8 @@ $(BINS): $(BIN)/%: $(OBJ)/%.o $(OBJS)
 	$(CC) $^ -o $@
 ```
 
-This is some new exotic syntax we haven't seen before. We have:
+This is some new exotic syntax we haven't seen before, called a *static pattern rule*.
+We have:
 
 ```makefile
 targets: target-pattern: prerequisites
@@ -1418,7 +1432,7 @@ $(OBJ)/%.o: $(SRC)/%.c
 Now we're creating the `.d` files. You can see it by running make and checking the `obj`
 directory:
 
-``` hl_lines="4 7 10"
+``` hl_lines="5 8 11"
 ├── Makefile
 ├── bin
 │   └── main
@@ -1441,17 +1455,17 @@ directory:
         └── vec.h
 ```
 
-Now we need to include them into the Makefile:
+Now we can include them into the Makefile with this syntax:
 
 ```makefile
 -include $(DEPS)
 ```
 
-And that's why we wanted that `#!makefile $(DEPS)` variable.
+And that's why we created that `#!makefile $(DEPS)` variable.
 
 We're using `-include` here instead of `include`. This is so that when one of the `.d`
-files doesn't exist, it is silently ignored. If you use `include`, you might
-encounter something like this:
+files doesn't exist, it's silently ignored. If you use `include`, you might encounter
+something like this:
 
 ```console title="Terminal"
 % make
@@ -1461,7 +1475,7 @@ Makefile:37: obj/vec/vec.d: No such file or directory
 make: *** No rule to make target `obj/vec/vec.d'.  Stop.
 ```
 
-And now, lo and behold, we can make everything:
+And now, lo and behold, we can make everything with `make`:
 
 ```console title="Terminal"
 % make
@@ -1471,7 +1485,7 @@ cc -Wall -Wextra -MMD -c src/vec/vec.c -o obj/vec/vec.o
 cc obj/main.o obj/rng/rng.o obj/vec/vec.o -o bin/main
 ```
 
-And when we modify one of the header files, `make` knows we need to re-compile:
+And when we modify one of the header files, `make` knows we need to recompile:
 
 ```console title="Terminal"
 % touch src/rng/rng.h
@@ -1481,23 +1495,26 @@ cc -Wall -Wextra -MMD -c src/rng/rng.c -o obj/rng/rng.o
 cc obj/main.o obj/rng/rng.o obj/vec/vec.o -o bin/main
 ```
 
-It re-compiled `src/main.c` and `src/rng/rng.c` because they both include
+It recompiled `src/main.c` and `src/rng/rng.c` because they both include
 `src/rng/rng.h`.
 
 Our `watch` rule also works properly now. It was already running `make run` on a change
 of any file inside the `src` directory, so that was already working. But now, when a
 `.h` file is the one that's being edited, it will trigger `entr` and properly run a
-re-compile.
+recompile.
 
 A few final tweaks before we sign off.
 
-If your build needs linker flags, the convention is to store them in an `LDFLAGS`
-variable, and use it like this:
+If your build needs linker flags, the convention is to split them across two variables.
+`LDFLAGS` holds linker options like `-L/opt/lib` and goes *before* the object files.
+`LDLIBS` holds the libraries themselves, like `-lm`, and goes *after* them, because the
+linker resolves symbols in the order it sees them. That's the same ordering `make` uses
+in its own implicit link rule:
 
 ```makefile
 $(BINS): $(BIN)/%: $(OBJ)/%.o $(OBJS)
 	@mkdir -p $(@D)
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 ```
 
 We can simplify our `run` target:
@@ -1537,7 +1554,7 @@ all: $(BINS)
 
 $(BINS): $(BIN)/%: $(OBJ)/%.o $(OBJS)
 	@mkdir -p $(@D)
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(@D)
