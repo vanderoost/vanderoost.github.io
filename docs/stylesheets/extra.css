@@ -91,7 +91,7 @@
 }
 
 [data-md-color-scheme] {
-  --rvo-separator-line-color: oklch(from var(--rvo-h1-color) l c h / 0.05);
+  --rvo-divider-line-color: oklch(from var(--rvo-h1-color) l c h / 0.07);
 }
 
 /* Typography */
@@ -181,8 +181,16 @@ body {
   background-color: var(--rvo-code-ins-color);
 }
 
-.md-nav__title {
+/* The blog post "Back to ..." link is also a `.md-nav__title`, but sits inside
+   `.md-post__back`, which brings its own padding above the divider. */
+.md-nav__title:not(.md-nav__container) {
   margin: 0 0 1.0rem;
+}
+
+/* Drop the sidebar's "Metadata" label: the icons speak for themselves. Hiding
+   it here rather than blanking the translation avoids leaving an empty line. */
+.md-sidebar--post .md-post__meta:first-of-type .md-post__title {
+  display: none;
 }
 
 @media screen and (max-width: 1219px) {
@@ -291,17 +299,22 @@ body {
     font-size: 0.9rem;
 }
 
-/* Separator lines */
+/* divider lines */
 header.md-header {
   border-bottom: 1px solid;
-  border-color: var(--rvo-separator-line-color);
+  border-color: var(--rvo-divider-line-color);
 }
 footer.md-footer {
   border-top: 1px solid;
-  border-color: var(--rvo-separator-line-color);
+  border-color: var(--rvo-divider-line-color);
 
   .md-footer-meta {
     border-top: 1px solid;
-    border-color: var(--rvo-separator-line-color);
+    border-color: var(--rvo-divider-line-color);
   }
+}
+/* Under "Back to ..." in the blog post sidebar. Material already draws it at
+   .05rem (1px here), so only the color needs changing. */
+.md-post__back {
+  border-color: var(--rvo-divider-line-color);
 }
