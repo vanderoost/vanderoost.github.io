@@ -29,8 +29,10 @@ As you go through this setup, please find all the most up to date information in
 
 2. **Install MkDocs Material**
    ```bash
-   pip install "mkdocs-material[imaging]"
-   
+   # Installs the Python from .python-version and the exact versions in
+   # uv.lock — never a fresh resolve, so the build stays reproducible.
+   uv sync --locked
+
    # For MacOS, install required dependencies
    brew install cairo freetype libffi libjpeg libpng zlib pngquant
    ```
@@ -52,9 +54,14 @@ As you go through this setup, please find all the most up to date information in
 
 4. **Preview your site**
    ```bash
-   mkdocs serve
+   uv run mkdocs serve
    ```
    Visit `http://localhost:8000` to see your site.
+
+   Material 9.7 prints a banner about the upcoming MkDocs 2.0 rewrite on every
+   build. It concerns upstream MkDocs, not this site — Material 9.x requires
+   `mkdocs<2`, so nothing here can be pulled into that rewrite. Silence it with
+   `export NO_MKDOCS_2_WARNING=1` (CI already sets it).
 
 > **Note on Operating Systems**: 
 > - This setup has been thoroughly tested on MacOS (Intel and Apple Silicon)

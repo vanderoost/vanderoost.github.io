@@ -3,5 +3,13 @@ name = "vanderoost.com"
 version = "0.1.0"
 description = "vanderoost.com website"
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [ "mkdocs-material[imaging]>=9.7" ]
+
+# Pinned to one minor: .python-version asks uv for the same interpreter locally
+# and in CI, and this makes a mismatch an error instead of a surprise.
+requires-python = ">=3.13,<3.14"
+
+# uv.lock holds the exact version of every package; this bound only guards
+# "uv lock --upgrade" against stepping into the next major on its own. Material
+# 9.x itself requires "mkdocs<2", so the announced MkDocs 2.0 rewrite cannot
+# reach this site while we stay on 9.
+dependencies = [ "mkdocs-material[imaging]>=9.7.7,<10" ]

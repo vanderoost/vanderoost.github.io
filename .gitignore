@@ -91,3 +91,7 @@ target/
 
 # Exclude trained models
 /models/
+
+# MkDocs build output; the live site is published to the gh-pages branch by
+# CI, so the built copy has no reason to be tracked here.
+/site/

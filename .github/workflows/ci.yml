@@ -8,20 +8,36 @@ on:
 permissions:
   contents: write
 
+env:
+  # Material 9.7 prints a banner about the upcoming MkDocs 2.0 rewrite on every
+  # build. It is a notice from the theme's maintainer about upstream, not a
+  # problem with this site, and it only makes the log harder to read.
+  NO_MKDOCS_2_WARNING: "1"
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # Every version here is pinned exactly, including the runner image: this
+    # site is meant to keep deploying untouched for years, so nothing in the
+    # build should be free to change on its own. Bumping is a deliberate edit.
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
+
+      # uv installs the interpreter named in .python-version and the exact
+      # package versions in uv.lock, so CI builds what was built locally. The
+      # old setup resolved "mkdocs-material[imaging]" fresh on every deploy
+      # against Python "3.x", which meant a new release upstream could break or
+      # silently change the published site without a commit here.
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
-          python-version: 3.x
+          enable-cache: true
+
       - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6.1.0
         with:
           key: mkdocs-material-${{ env.cache_id }}
           # The "social" plugin caches rendered cards in the repo's .cache
@@ -38,8 +54,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
-      # requirements.txt pins mkdocs-material[imaging]; installing the bare
-      # package leaves out Pillow and cairosvg, which silently downgrades the
-      # social plugin to a warning and ships the site with no preview cards.
-      - run: pip install -r requirements.txt
-      - run: mkdocs gh-deploy --force
+
+      # --locked fails the build if uv.lock has drifted from pyproject.toml
+      # rather than quietly resolving something new.
+      - run: uv sync --locked
+      # --strict turns MkDocs warnings (broken internal links, missing nav
+      # pages) into failures, so a bad link stops the deploy instead of
+      # shipping.
+      - run: uv run mkdocs gh-deploy --force --strict
