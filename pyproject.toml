@@ -1,7 +1,7 @@
 [project]
-name = "mkdocs-website-template"
+name = "vanderoost.com"
 version = "0.1.0"
-description = "vanderoost.com"
+description = "vanderoost.com website"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [ "mkdocs-material[imaging]>=9.6.9" ]
+dependencies = [ "mkdocs-material[imaging]>=9.7" ]

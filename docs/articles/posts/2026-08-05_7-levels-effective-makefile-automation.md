@@ -39,47 +39,191 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 
 **TL;DR** (spoiler alert) This is the Makefile we're going to write:
 
-```makefile title="Makefile" linenums="1"
-CFLAGS = -Wall -Wextra
+=== "L1"
 
-NAME = main
-BIN = bin
-OBJ = obj
-SRC = src
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Werror -pedantic
 
-EXEC = $(BIN)/$(NAME)
+	all: main
 
-BIN_SRCS = $(wildcard $(SRC)/*.c)
-LIB_SRCS = $(wildcard $(SRC)/*/*.c)
-ALL_SRCS = $(BIN_SRCS) $(LIB_SRCS)
+	run: main
+		./main
 
-BINS = $(patsubst $(SRC)/%.c,$(BIN)/%,$(BIN_SRCS))
-OBJS = $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(LIB_SRCS))
-DEPS = $(patsubst $(SRC)/%.c,$(OBJ)/%.d,$(ALL_SRCS))
+	clean:
+		$(RM) main
 
-all: $(BINS)
+	# .PHONY: all run clean
+	```
 
-$(BINS): $(BIN)/%: $(OBJ)/%.o $(OBJS)
-	@mkdir -p $(@D)
-	$(CC) $^ $(LDFLAGS) -o $@
+=== "L2"
 
-$(OBJ)/%.o: $(SRC)/%.c
-	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -MMD -c $< -o $@
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Werror -pedantic
 
-run: $(EXEC)
-	$<
+	all: main
 
-watch:
-	find $(SRC) -type f | entr -c make run
+	run: main
+		./main
 
-clean:
-	$(RM) -r $(BIN) $(OBJ) 
+	watch:
+		ls *.c | entr -c make run
 
--include $(DEPS)
+	clean:
+		$(RM) main
 
-.PHONY: all run watch clean
-```
+	.PHONY: all run watch clean
+	```
+
+=== "L3"
+
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Werror -pedantic
+
+	all: main
+
+	main: rng.c
+
+	run: main
+		./main
+
+	watch:
+		ls *.c | entr -c make run
+
+	clean:
+		$(RM) main
+
+	.PHONY: all run watch clean
+	```
+
+=== "L4"
+
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Wextra
+
+	EXEC = main
+	SRC = src
+
+	VPATH = $(SRC)
+
+	all: $(EXEC)
+
+	$(EXEC): rng.c
+
+	run: $(EXEC)
+	    ./$(EXEC)
+
+	watch:
+	    ls $(SRC)/*.c | entr -c make run
+
+	clean:
+	    $(RM) $(EXEC)
+
+	.PHONY: all run watch clean
+	```
+
+=== "L5"
+
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Wextra
+
+	EXEC = main
+	SRC = src
+
+	VPATH = $(SRC)
+
+	all: $(EXEC)
+
+	$(EXEC): rng.o
+
+	run: $(EXEC)
+	    ./$(EXEC)
+
+	watch:
+	    ls $(SRC)/*.c | entr -c make run
+
+	clean:
+	    $(RM) $(EXEC) *.o
+
+	.PHONY: all run watch clean
+	```
+
+=== "L6"
+
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Wextra
+
+	EXEC = main
+	SRC = src
+	OBJ = obj
+
+	LIBS = $(wildcard $(SRC)/*/*.c)
+	OBJS = $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(LIBS))
+
+	VPATH = $(SRC)
+
+	all: $(EXEC)
+
+	$(EXEC): $(OBJS)
+
+	$(OBJ)/%.o: $(SRC)/%.c
+		@mkdir -p $(@D)
+		$(CC) $(CFLAGS) -c $< -o $@
+
+	run: $(EXEC)
+		./$(EXEC)
+
+	watch:
+		find $(SRC) -type f | entr -c make run
+
+	clean:
+		$(RM) -r $(EXEC) $(OBJ) 
+
+	.PHONY: all run watch clean
+	```
+
+===+ "L7"
+
+	```makefile title="Makefile" linenums="1"
+	CFLAGS = -Wall -Wextra
+
+	NAME = main
+	BIN = bin
+	OBJ = obj
+	SRC = src
+
+	EXEC = $(BIN)/$(NAME)
+
+	BIN_SRCS = $(wildcard $(SRC)/*.c)
+	LIB_SRCS = $(wildcard $(SRC)/*/*.c)
+	ALL_SRCS = $(BIN_SRCS) $(LIB_SRCS)
+
+	BINS = $(patsubst $(SRC)/%.c,$(BIN)/%,$(BIN_SRCS))
+	OBJS = $(patsubst $(SRC)/%.c,$(OBJ)/%.o,$(LIB_SRCS))
+	DEPS = $(patsubst $(SRC)/%.c,$(OBJ)/%.d,$(ALL_SRCS))
+
+	all: $(BINS)
+
+	$(BINS): $(BIN)/%: $(OBJ)/%.o $(OBJS)
+		@mkdir -p $(@D)
+		$(CC) $^ $(LDFLAGS) -o $@
+
+	$(OBJ)/%.o: $(SRC)/%.c
+		@mkdir -p $(@D)
+		$(CC) $(CFLAGS) -MMD -c $< -o $@
+
+	run: $(EXEC)
+		$<
+
+	watch:
+		find $(SRC) -type f | entr -c make run
+
+	clean:
+		$(RM) -r $(BIN) $(OBJ) 
+
+	-include $(DEPS)
+
+	.PHONY: all run watch clean
+	```
 
 If this looks a bit intimidating, not to worry. We'll literally start from zero with
 only a `main.c` file and build it up step by step, to multiple `.c` and `.h` files in a

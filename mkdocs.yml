@@ -111,6 +111,8 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.snippets
   - pymdownx.superfences:
       custom_fences:

@@ -1,0 +1,1559 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A network of 30+ datacenters across the world that automatically scales, and schedules workloads in the most efficient way.">
+      
+      
+        <meta name="author" content="Richard van der Oost">
+      
+      
+        <link rel="canonical" href="https://vanderoost.com/portfolio/projects/blendergrid-swarm-engine/">
+      
+      
+        <link rel="prev" href="../clik-production-pipeline/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Automated cloud computing infrastructure - vanderoost</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../stylesheets/hero.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Automated cloud computing infrastructure - vanderoost" />
+<meta property="og:description" content="A network of 30+ datacenters across the world that automatically scales, and schedules workloads in the most efficient way." />
+<meta property="og:image" content="https://vanderoost.com/assets/images/social/portfolio/projects/blendergrid-swarm-engine.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://vanderoost.com/portfolio/projects/blendergrid-swarm-engine/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="Automated cloud computing infrastructure - vanderoost" />
+<meta property="twitter:description" content="A network of 30+ datacenters across the world that automatically scales, and schedules workloads in the most efficient way." />
+<meta property="twitter:image" content="https://vanderoost.com/assets/images/social/portfolio/projects/blendergrid-swarm-engine.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#automated-cloud-computing-infrastructure" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header"><nav class="md-header__inner md-grid" aria-label="Header">
+    <div class="md-header__zone md-header__zone--start">
+      <a href="../../.." title="vanderoost" class="md-header__button md-logo" aria-label="vanderoost" data-md-component="logo">
+        
+  
+  <svg width="196" height="196" viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+<path d="M118 98.0001C118 109.046 109.046 118 98 118C86.9543 118 78.0001 109.046 78.0001 98.0001C78.0001 86.9544 86.9543 78.0001 98 78.0001C109.046 78.0001 118 86.9544 118 98.0001Z" style="fill:var(--md-primary-fg-color);fill-opacity:1;"/>
+<path d="M86.6864 154.569C92.9348 160.817 103.066 160.817 109.314 154.569L117.799 146.083C119.361 144.521 121.894 144.521 123.456 146.083L140.427 163.054C141.989 164.616 141.989 167.149 140.427 168.711L131.941 177.196C113.196 195.941 82.8042 195.941 64.059 177.196L55.5737 168.711C54.0116 167.149 54.0116 164.616 55.5737 163.054L72.5443 146.083C74.1064 144.521 76.6391 144.521 78.2012 146.083L86.6864 154.569Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M177.196 64.0589C195.941 82.8041 195.941 113.196 177.196 131.941L168.711 140.426C167.149 141.989 164.616 141.989 163.054 140.426L146.083 123.456C144.521 121.894 144.521 119.361 146.083 117.799L154.569 109.314C160.817 103.065 160.817 92.9347 154.569 86.6863L146.083 78.2011C144.521 76.639 144.521 74.1063 146.083 72.5442L163.054 55.5736C164.616 54.0115 167.149 54.0116 168.711 55.5736L177.196 64.0589Z" style="fill:var(--md-primary-fg-color);"/>
+<path d="M49.9169 72.5442C51.479 74.1063 51.479 76.639 49.9169 78.2011L41.4316 86.6863C35.1832 92.9347 35.1832 103.065 41.4316 109.314L49.9169 117.799C51.479 119.361 51.479 121.894 49.9169 123.456L32.9463 140.426C31.3842 141.989 28.8516 141.989 27.2895 140.426L18.8042 131.941C0.0590258 113.196 0.0590258 82.8041 18.8042 64.0589L27.2895 55.5736C28.8516 54.0115 31.3842 54.0115 32.9463 55.5736L49.9169 72.5442Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M64.059 18.8041C82.8042 0.0589638 113.196 0.0589428 131.941 18.8041L140.427 27.2894C141.989 28.8515 141.989 31.3841 140.427 32.9462L123.456 49.9168C121.894 51.4789 119.361 51.4789 117.799 49.9168L109.314 41.4315C103.065 35.1831 92.9348 35.1832 86.6864 41.4315L78.2012 49.9168C76.6391 51.4789 74.1064 51.4789 72.5443 49.9168L55.5737 32.9462C54.0116 31.3841 54.0116 28.8515 55.5737 27.2894L64.059 18.8041Z" style="fill:var(--md-default-fg-color);"/>
+</svg>
+
+      </a>
+      <label class="md-header__button md-icon" for="__drawer">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </label>
+
+      <div class="md-header__title" data-md-component="header-title">
+        <div class="md-header__ellipsis">
+
+          <a href="../../.." title="vanderoost" aria-label="vanderoost">
+            <div class="md-header__topic">
+              <span class="md-ellipsis">
+                vanderoost
+              </span>
+            </div>
+            <div class="md-header__topic" data-md-component="header-topic">
+              <span class="md-ellipsis">
+                
+                Automated cloud computing infrastructure
+                
+              </span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../articles/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Case Studies
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+
+    <div class="md-header__zone md-header__zone--end">
+      
+        
+          <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+        
+      
+
+      
+        <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      
+
+      
+
+      
+
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    vanderoost
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../articles/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../articles/archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../articles/category/automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../articles/category/development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clik-production-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automating a dental production pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated cloud computing infrastructure
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated cloud computing infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#business-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Business Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Solution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-principles-behind-the-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The principles behind the build
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-interesting-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The interesting problems
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results &amp; Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visual-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Assets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tech-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tech Stack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-looks-like-in-other-businesses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this looks like in other businesses
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#business-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Business Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Solution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Solution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-principles-behind-the-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The principles behind the build
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-interesting-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The interesting problems
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results &amp; Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visual-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Assets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tech-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tech Stack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-looks-like-in-other-businesses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this looks like in other businesses
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="automated-cloud-computing-infrastructure">Automated cloud computing infrastructure</h1>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<p><strong>Client</strong>: Blendergrid (my own company)<br />
+<strong>Website</strong>: <a href="https://blendergrid.com" target="_blank">blendergrid.com</a><br />
+<strong>Industry</strong>: Cloud computing / 3D rendering</p>
+<p><strong>Impact metrics</strong>:</p>
+<!-- TODO: replace the bracketed numbers with real ones, see questions at the
+     bottom of this file. Everything unbracketed is verifiable from the system
+     itself. -->
+<ul>
+<li>One always-on machine when idle, hundreds of cores within minutes when a
+  customer hits render</li>
+<li>33 AWS regions and every availability zone inside them are priced and
+  scheduled against continuously</li>
+<li>Runs on spot capacity rather than on-demand, at roughly 15% of the list price</li>
+<li>Zero human involvement between a customer clicking render and the finished
+  frames landing in their account</li>
+<li>5,000 renders delivered, 84,000 compute hours scheduled since launch</li>
+</ul>
+</div>
+<p>Blendergrid renders 3D animation for Blender artists and studios. A customer uploads a
+project, gets a price and a deadline, and picks one. Everything after that is compute:
+thousands of frames that each need a machine, for as short a time as possible, at the
+lowest cost that still meets the promised deadline.</p>
+<p>The Swarm Engine is the system that makes that promise keepable. It takes a workflow
+with a deadline, decides where in the world to run it, rents the machines, runs the
+jobs, and gives everything back when it's done.</p>
+<h2 id="business-problem">Business Problem</h2>
+<p>Rendering is the cleanest possible case of a workload that shouldn't need owned
+hardware: it's bursty, it's embarrassingly parallel, and demand is impossible to
+predict. A customer might submit nothing for a week and then a 4,000-frame animation
+on a Friday night.</p>
+<p>That leaves the usual bad trade-off:</p>
+<ol>
+<li><strong>Own or rent fixed capacity.</strong> You pay for it 24/7 and use it a fraction of the
+   time. The idle hours are the entire margin.</li>
+<li><strong>Size for the average.</strong> Every burst turns into a queue, and the customer with the
+   deadline is the one waiting.</li>
+<li><strong>Size for the peak.</strong> Now you're paying peak prices for capacity that's idle most
+   of the month.</li>
+</ol>
+<p>Cloud compute solves the elasticity part, but naively used it just moves the problem:
+on-demand instances cost several times what the same machine costs on the spot market,
+and a single region regularly has no spare capacity of the type you want at any price.</p>
+<p>The observation the whole system is built on: at any moment there are tens of thousands
+of distinct prices for the same compute. Every combination of region, availability
+zone, and instance type is its own market, and they all move independently, all day.
+Nobody can hand-pick from that. But a scheduler can, if you give it the prices and a
+deadline to optimise against.</p>
+<p>The catch is that cheap capacity is <em>interruptible</em> capacity. Spot machines can be
+taken away with two minutes' notice, and regions refuse to give you capacity at all.
+Any system that wants the price has to treat losing a machine mid-render as a normal
+Tuesday, not an incident.</p>
+<h2 id="technical-solution">Technical Solution</h2>
+<p>The design goal was a system that nobody operates. Not "easy to operate" but actually
+unattended, including on the days when a region goes dark or a customer submits ten
+times the usual volume.</p>
+<h3 id="the-principles-behind-the-build">The principles behind the build</h3>
+<p>These are the parts that transfer to any other infrastructure problem:</p>
+<p><strong>Buy compute like a commodity, not like a subscription.</strong> Prices for identical
+machines vary by a large multiple across regions and zones, and change continuously. A
+process that polls every market and always places work at the current cheapest point
+turns a fixed cost into a variable one.</p>
+<p><strong>Assume every machine will disappear.</strong> Jobs are individually reservable, restartable,
+and idempotent: inputs come from object storage, outputs go back to it, and nothing of
+value lives on a worker. Losing a node costs one frame's progress, so the system can
+use the cheapest, least reliable capacity on the market without putting a deadline at
+risk.</p>
+<p><strong>Make every component a reconciliation loop.</strong> Nothing in the system is a script that
+runs once and hopes. Each loop reads the desired state (open workflows, target worker
+counts, required managers), reads the actual state (running nodes, queued jobs, live
+swarms), and closes the gap. A missed event or a crashed process self-corrects on the
+next pass instead of leaving the system stuck.</p>
+<p><strong>Predict, then correct.</strong> Job durations are unknown up front and vary wildly within a
+single project. Rather than guessing once, the system predicts remaining job durations
+from the ones already finished, tracks how uncertain each prediction is, and re-derives
+the worker count it needs on every cycle.</p>
+<p><strong>Push decisions to where the information is.</strong> The central controller decides <em>what</em>
+should run and <em>roughly how much</em> capacity it needs. Each datacenter decides which
+specific jobs its own workers pull next, based on what its queues and machines are
+actually doing. Global coordination happens through job reservations, so two
+datacenters can never render the same frame.</p>
+<p><strong>Scale to zero, honestly.</strong> When there's no work, the fleet drains itself down to a
+single cheap always-on node. Workers monitor their own usefulness and shut themselves
+down when they stop being productive, because on a per-second billing model an idle
+machine is pure loss.</p>
+<h3 id="how-it-works">How it works</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Workflow submitted</strong></td>
+<td>The web app publishes an event: the render, its jobs, and its deadline.</td>
+</tr>
+<tr>
+<td><strong>Planning</strong></td>
+<td>The controller breaks the workflow into executions and jobs, picks the machine type that fits the project's memory and device requirements, and derives how many workers are needed to make the deadline.</td>
+</tr>
+<tr>
+<td><strong>Market lookup</strong></td>
+<td>Live spot prices for every instance type, in every zone of every region, are kept continuously up to date in the global state.</td>
+</tr>
+<tr>
+<td><strong>Placement</strong></td>
+<td>Capacity is launched at the cheapest points on the market that satisfy the requirements, falling back down the price-sorted list when a zone reports no capacity.</td>
+</tr>
+<tr>
+<td><strong>Reservation</strong></td>
+<td>Each datacenter claims jobs for itself, deadline-first, keeping its local queues just full enough to keep its workers busy and no fuller.</td>
+</tr>
+<tr>
+<td><strong>Execution</strong></td>
+<td>Workers run each job in a container: pull inputs from object storage, render, push results back, report timings.</td>
+</tr>
+<tr>
+<td><strong>Learning</strong></td>
+<td>Real job durations feed the duration model, which updates the predictions and the required worker count for what's left.</td>
+</tr>
+<tr>
+<td><strong>Wind-down</strong></td>
+<td>As work runs out, excess workers are drained and terminated; the fleet returns to a single always-on node.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-interesting-problems">The interesting problems</h3>
+<p><strong>Deciding how much capacity a deadline needs.</strong> The naive version of launching
+everything to finish fast, is also the most expensive. On the other hand, the version
+that under-provisions misses the promise. The system continuously estimates the
+remaining work from the jobs that have already finished, and adjusts the target worker
+count as the picture sharpens. Early frames are effectively probes: they cost the same
+as any other frame and they buy the information needed to size the rest of the render.</p>
+<p><strong>Predicting job durations that nobody knows.</strong> Within one animation, a frame can take
+20 seconds or 20 minutes, and the pattern is smooth but unknown. Rather than a flat
+average, durations for unfinished jobs are interpolated from the measured ones, with an
+uncertainty that grows with distance from anything actually observed. That uncertainty
+is used directly: it's what makes the worker-count estimate pessimistic in the right
+places rather than optimistic everywhere.</p>
+<p><strong>Coordinating datacenters that can't see each other.</strong> Swarms in 33 regions all draw
+from the same pool of pending jobs. Reservations are conditional writes against the
+shared store, so a job is claimed by exactly one swarm. When a swarm dies mid-render,
+its reservations are detected as stale and released back into the pool, and another
+region picks them up.</p>
+<p><strong>Making failure boring.</strong> Regions run out of capacity; spot nodes get reclaimed; a
+machine boots and never joins the cluster. Each of these is handled by a loop rather
+than an alert: zones that report no capacity go into a cooldown and the next-cheapest
+is tried, nodes that fail to join shut themselves down, jobs whose worker vanished get
+requeued, and swarms that stop sending heartbeats get torn down and rebuilt.</p>
+<h2 id="results-impact">Results &amp; Impact</h2>
+<ul>
+<li><strong>The cost base became variable.</strong> Spend tracks rendering demand almost exactly.
+  There is no idle fleet to amortise, so a quiet week costs close to nothing and a busy
+  week pays for itself.</li>
+<li><strong>Compute is bought at spot prices worldwide</strong> rather than on-demand prices in one
+  region, on infrastructure that treats interruption as routine.</li>
+<li><strong>Capacity is no longer a constraint on sales.</strong> A render ten times the usual size is
+  a scheduling decision, not a purchasing decision.</li>
+<li><strong>Availability comes from breadth.</strong> When a region has no capacity or fails outright,
+  work moves to the next-cheapest option automatically. There is no single datacenter
+  whose bad day becomes the customer's bad day.</li>
+<li><strong>It runs itself.</strong> The system has been in production since [YEAR], operated by
+  nobody. Renders that arrive overnight are placed, executed, and delivered without a
+  person in the loop.</li>
+</ul>
+<p>The strategic effect is bigger than the cost saving. Because capacity is rented per
+second and priced globally, the business can quote a price and a deadline for a job of
+almost any size without owning anything. Growth doesn't require capital, and a slow
+month doesn't hurt.</p>
+<h2 id="visual-assets">Visual Assets</h2>
+<pre class="mermaid"><code>%%{init: {"flowchart": {"rankSpacing": 40, "nodeSpacing": 35, "subGraphTitleMargin": {"top": 14, "bottom": 14}}}}%%
+flowchart TD
+    A([Customer submits a render with a deadline]) --&gt; B[Web app]
+
+    B --&gt;|Workflow started| M
+
+    subgraph control ["Master controller (always on)"]
+        direction TB
+        M[Plan: jobs, machine type, worker count]
+        P[(Live spot prices:&lt;br/&gt;every zone, every instance type)]
+        M --- P
+    end
+
+    M --&gt;|Launch capacity| S1
+    M --&gt;|Launch capacity| S2
+    M --&gt;|Launch capacity| S3
+
+    subgraph swarms ["33 regions worldwide"]
+        direction LR
+        S1[Swarm: cheapest zone]
+        S2[Swarm: next cheapest]
+        S3[Swarm: ...]
+    end
+
+    S1 --&gt; W[Workers: run job in container]
+    S2 --&gt; W
+    S3 --&gt; W
+
+    W &lt;--&gt;|Inputs and outputs| O[(Object storage)]
+    W --&gt;|Actual job durations| M
+    M --&gt;|Finished| B
+    B --&gt; D([Customer downloads frames])</code></pre>
+<p><em>Capacity is rented where it is cheapest right now, and returned the moment the work
+runs out. Measured job durations feed straight back into how much capacity the next
+minute needs.</em></p>
+<!-- TODO: add real visuals alongside the diagram. Strongest candidates, in order:
+     1. A Gantt chart from tools/gantt-workflow.py or gantt-node-lifecycle.py showing
+        nodes spinning up, rendering, and terminating over a real workflow. This is the
+        single most convincing image the system can produce.
+     2. A spot price map / spread across regions, showing how much variation the
+        scheduler is exploiting.
+     3. A screenshot of the Blendergrid render progress view from the customer side.
+     Drop files in docs/assets/ and reference them as ../../assets/<name>. -->
+
+<h2 id="tech-stack">Tech Stack</h2>
+<p><strong>Python</strong> across every service: the controller, the per-datacenter managers, and the
+workers. NumPy and SciPy do the duration prediction and worker-count maths.</p>
+<p><strong>AWS EC2 spot capacity</strong> in 33 regions is the compute itself, launched and terminated
+programmatically rather than declared statically, because the fleet changes shape every
+few minutes.</p>
+<p><strong>Terraform</strong> manages the static infrastructure that has to exist in every region
+before anything can run there: networking, security groups, keys, images. Adding a
+region is a config change, not a project.</p>
+<p><strong>DynamoDB</strong> holds the global state: workflows, executions, jobs, live prices, node
+supplies. All with conditional writes providing the job reservations that keep 33
+regions from colliding.</p>
+<p><strong>SNS and SQS</strong> carry every event between the web app, the controller, and the
+datacenters. Publishers don't know who's listening, so a new datacenter is a
+subscription rather than a code change.</p>
+<p><strong>Docker Swarm and Redis (RQ)</strong> run the local cluster inside each datacenter: managers
+hold the queues, workers pull jobs and run each one in an isolated container.</p>
+<p><strong>S3</strong> is the only place that job inputs and outputs live, which is what makes losing a
+worker mid-job a non-event.</p>
+<p><strong>ECS</strong> runs the always-on controller, <strong>CloudWatch</strong> collects logs from every node in
+every region, and <strong>Sentry</strong> catches what the loops can't.</p>
+<h2 id="what-this-looks-like-in-other-businesses">What this looks like in other businesses</h2>
+<p>The rendering specifics are incidental. This shape recurs wherever a business needs a
+lot of compute some of the time:</p>
+<ul>
+<li>Demand is spiky and hard to predict, so capacity is sized for the peak and paid for
+  during the trough.</li>
+<li>The work is parallel, but the infrastructure isn't elastic, so bursts become queues
+  and queues become missed commitments.</li>
+<li>The cheapest compute on the market goes unused because the system can't tolerate
+  losing a machine.</li>
+<li>Scaling the business means buying hardware or reserving instances, which means
+  growth needs capital and a forecast.</li>
+</ul>
+<p>The fix has the same shape every time: make the work restartable so that cheap,
+interruptible capacity becomes usable; treat the cloud as a live market rather than a
+place you rent a fixed number of servers; and build every component as a loop that
+reconciles reality against intent, so the system recovers instead of paging someone.
+What you get isn't just a lower bill, but the ability to promise a customer a deadline
+for a job of any size, without owning a thing.</p>
+<div class="grid cards" style="margin-top: 3rem">
+<ul>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 21h18v-2H2M20 8h-2V5h2m0-2H4v10a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-3h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"/></svg></span> Let's sit down for a virtual coffee!</p>
+<hr />
+<p>Want to see if we're a match? Let's have a chat and find out. Schedule a free
+30-minute strategy session to discuss your automation challenges and explore how
+we can work together.</p>
+<p><a class="md-button md-button--primary" href="https://calendly.com/vanderoost/introduction-call">Book Free Intro Call <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 17.59 15.59 7H9V5h10v10h-2V8.41L6.41 19z"/></svg></span></a></p>
+</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../clik-production-pipeline/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Automating a dental production pipeline">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Automating a dental production pipeline
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://blendergrid.com" target="_blank" rel="noopener" title="blendergrid.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm112 352h32c17.7 0 32 14.3 32 32v80h-96v-80c0-17.7 14.3-32 32-32M96 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16M96 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/vanderoost" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/@richardvdoost" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M549.7 124.1c-6.2-23.7-24.8-42.3-48.3-48.6C458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5c-23.5 6.3-42 24.9-48.3 48.6C15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8C117.3 448 288.1 448 288.1 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6V175.2l142.7 81.2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.indexes", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.sections", "navigation.top", "content.tooltips", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+      
+    
+  </body>
+</html>
