@@ -14,22 +14,21 @@ slug: levels-of-effective-makefile-cheatsheet
 
 # The 7 levels of highly effective Makefiles
 
-Rumour has it that all Makefiles in existence today have been written ages ago, when
-dinosaurs roamed the earth. Nobody *actually* writes new Makefiles anymore, right?
+Rumor has it that all Makefiles in use today were written in a time when dinosaurs
+roamed the earth. Nobody *actually* writes new Makefiles anymore, right?
 
-It's true. Most developers tremble at the idea of designing a new Makefile.
-
-But in this article, I will walk you through the humbling experience of writing a
-Makefile by hand, to set up a C build system.
+They remain among the most anxiety-inducing files you can find in a codebase. But
+in this article, I will walk you through the humbling experience of writing a Makefile
+to set up a C build system.
 
 <!-- more -->
 
 If you don't know what I'm talking about, Make is a tool for *making files* based on
-certain *rules*. It can be abused to do more, and automate other terminal shenanigans.
+certain *rules*. It can be abused to do more, and to automate other terminal shenanigans.
 Think of running your tests, deploying, building Docker images, etc.
 
-Once you repeteadly run certain commands in a codebase, your first instinct might be to
-stash them away in some bash script.
+Once you find yourself running certain commands repeatedly in a codebase, your first
+instinct might be to stash them away in some bash script.
 
 This works, but Makefiles give you some extra tech: `make` automatically creates a
 dependency graph of all the files you want to "make", and then uses the last
@@ -37,12 +36,12 @@ modification timestamps of each file to determine what actually has to be made.
 
 So it's more efficient, and it has some other cool tricks that we'll dive into.
 
-**TL;DR** (spoiler alert) This is the Makefile we're going to write:
+**TL;DR** (spoiler alert): this is the Makefile we're going to write:
 
 === "L1"
 
 	```makefile title="Makefile" linenums="1"
-	CFLAGS = -Wall -Werror -pedantic
+	CFLAGS = -Wall -Wextra
 
 	all: main
 
@@ -52,13 +51,13 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 	clean:
 		$(RM) main
 
-	# .PHONY: all run clean
+	.PHONY: all run clean
 	```
 
 === "L2"
 
 	```makefile title="Makefile" linenums="1"
-	CFLAGS = -Wall -Werror -pedantic
+	CFLAGS = -Wall -Wextra
 
 	all: main
 
@@ -77,7 +76,7 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 === "L3"
 
 	```makefile title="Makefile" linenums="1"
-	CFLAGS = -Wall -Werror -pedantic
+	CFLAGS = -Wall -Wextra
 
 	all: main
 
@@ -110,13 +109,13 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 	$(EXEC): rng.c
 
 	run: $(EXEC)
-	    ./$(EXEC)
+		./$(EXEC)
 
 	watch:
-	    ls $(SRC)/*.c | entr -c make run
+		ls $(SRC)/*.c | entr -c make run
 
 	clean:
-	    $(RM) $(EXEC)
+		$(RM) $(EXEC)
 
 	.PHONY: all run watch clean
 	```
@@ -136,13 +135,13 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 	$(EXEC): rng.o
 
 	run: $(EXEC)
-	    ./$(EXEC)
+		./$(EXEC)
 
 	watch:
-	    ls $(SRC)/*.c | entr -c make run
+		ls $(SRC)/*.c | entr -c make run
 
 	clean:
-	    $(RM) $(EXEC) *.o
+		$(RM) $(EXEC) *.o
 
 	.PHONY: all run watch clean
 	```
@@ -176,7 +175,7 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 		find $(SRC) -type f | entr -c make run
 
 	clean:
-		$(RM) -r $(EXEC) $(OBJ) 
+		$(RM) -r $(EXEC) $(OBJ)
 
 	.PHONY: all run watch clean
 	```
@@ -218,7 +217,7 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 		find $(SRC) -type f | entr -c make run
 
 	clean:
-		$(RM) -r $(BIN) $(OBJ) 
+		$(RM) -r $(BIN) $(OBJ)
 
 	-include $(DEPS)
 
@@ -227,7 +226,8 @@ So it's more efficient, and it has some other cool tricks that we'll dive into.
 
 If this looks a bit intimidating, not to worry. We'll literally start from zero with
 only a `main.c` file and build it up step by step, to multiple `.c` and `.h` files in a
-proper project setup with subdirectories.
+proper project setup with subdirectories. I use this post myself as a Makefile
+cheatsheet.
 
 
 ## Level 0 - Nothing
@@ -277,21 +277,21 @@ this:
 ```
 
 The `%` picks up the target we want to make, `main` in this case. The `%.c` means it has
-a prerequisite of `main.c` where the `%` is the pattern. We happen to have a `main.c`
-that's why this works. Then the actual "recipe" for making it is a bunch of variables
-that ends up running `cc     main.c   -o main`.
+a prerequisite of `main.c` where the `%` is the pattern. We happen to have a `main.c`, which is
+why this works. Then the actual "recipe" for making it is a bunch of variables
+that end up running `cc     main.c   -o main`.
 
 You can see all the implicit rules and default variables with `make -p` if you're
 curious.
 
-If your file would be called `program.c` instead, you can run `make program`, and it
+If your file were called `program.c` instead, you can run `make program`, and it
 spits out the file `program` as the executable.
 
-Making without a `Makefile` is a bit of a party trick, so would I ever use this in
-practice? In fact, yes. Every time I quickly whip up a `main.c` to test something, all I
+Making without a `Makefile` is a bit of a party trick, but would I ever use this in
+practice? Actually, yes. Every time I quickly whip up a `main.c` to test something, all I
 have to do is type `make main` and it's compiled.
 
-What if you want to change the compiler, or add flags? No problem. The default behaviour
+What if you want to change the compiler, or add flags? No problem. The default behavior
 of `make` is to compile with whatever is set in the `CC` environment variable, and it
 uses the flags from `CFLAGS`.
 
@@ -301,7 +301,8 @@ So if you want to compile with `gcc` instead of `cc`, you can run it like this:
 % CC=gcc make main
 gcc     main.c   -o main
 ```
-Adding flags can be done with variable `CFLAGS`:
+
+Adding flags can be done with the `CFLAGS` variable:
 
 ```console title="Terminal"
 % CC=gcc CFLAGS="-Wall -Wextra" make main
@@ -409,7 +410,7 @@ Now `make run` works again, regardless of our accidental `run` file:
 hello world
 ```
 
-Even though we probably never have a `run` file in the root of our project directory,
+Even though we'll probably never have a `run` file in the root of our project directory,
 it's good practice to mark all the non-file targets with `.PHONY` to clarify intent.
 
 Feature 2 is adding custom compiler flags, easy:
@@ -432,8 +433,8 @@ cc -Wall -Wextra    main.c   -o main
 ```
 
 Feature 3 is adding a cleanup shortcut to undo everything. I'll call it `clean` and you
-see this in 9 out of 10 `Makefile`s so we're just sticking to the convention. This
-target is, like `run` not supposed to be a file, so we mark it as `.PHONY`, and all I
+see this in 9 out of 10 `Makefile`s, so we're just sticking to the convention. This
+target is, like `run`, not supposed to be a file, so we mark it as `.PHONY`, and all I
 want it to do is remove our `main` executable:
 
 ```makefile title="Makefile" linenums="1" hl_lines="6-7 9"
@@ -454,6 +455,7 @@ So the target is `clean`, it has no prerequisites, and all it does is run `rm ma
 % make clean
 rm main
 ```
+
 But what if we run `make clean` and `main` doesn't exist?
 
 ```console title="Terminal"
@@ -486,7 +488,7 @@ rm -f main
 ```
 
 Before we go to the next level, I want to add one finishing touch here to change the
-behaviour of running just `make` without anything else.
+behavior of running just `make` without anything else.
 
 When you have a `Makefile`, running `make` will run the first rule specified in the
 file, which is `run` in our case.
@@ -609,7 +611,7 @@ This prevents the terminal from cluttering up too much.
 Now, whenever we mess up, there is instant feedback. Like a subtle slap on the wrist
 that instantly catches errors and bugs.
 
-It also allows for faster experimentation, just try something, hit save, and the
+It also allows for faster experimentation: just try something, hit save, and the
 instant compile + run shows you the result.
 
 Also good to know when using `entr`: Hitting <kbd>Space</kbd> re-runs the command.
@@ -640,6 +642,7 @@ We could compile this by hand like so:
 ```console title="Terminal"
 % cc main.c rng.c -o main
 ```
+
 Integrating this into the `Makefile` looks like this:
 
 ```makefile title="Makefile" linenums="1" hl_lines="5"
@@ -671,6 +674,7 @@ cc -Wall -Wextra    main.c rng.c   -o main
 ./main
 random float: 0.633477
 ```
+
 But there is a way to simplify this even more. We don't need to write out the `main.c`
 prerequisite, because that's also implied by `make` already. So the more compact version
 of the rule looks like this:
@@ -747,7 +751,7 @@ clean:
 .PHONY: all run watch clean
 ```
 
-On line 13 we're also fixing our `watch` rule and let it know about the new `src`
+On line 13 we're also fixing our `watch` rule and letting it know about the new `src`
 directory.
 
 And that fixes the build:
@@ -800,7 +804,7 @@ command. For this toy example that's totally fine and probably the fastest way, 
 larger projects it could make sense to split this into multiple steps.
 
 This way, when you make an edit to one source file, you only have to re-compile that
-source file, and then link all compiled assets together, instead of compiling all source
+source file, and then link all compiled object files together, instead of compiling all source
 files on every edit.
 
 Manually, you can compile your `.c` files into object `.o` files, and then link them to
@@ -863,7 +867,7 @@ random float: 0.143407
 
 We went from a single `cc` command to two. So if we now make an edit to `main.c` to
 change the message, and run `make run` again, it will skip compiling `rng.c` because
-it's `.o` file is already up to date:
+its `.o` file is already up to date:
 
 ```console title="Terminal"
 % make run
@@ -872,7 +876,7 @@ cc -Wall -Wextra    src/main.c rng.o   -o main
 the chance is: 0.226574
 ```
 
-For a project with two `.c` files and less than 20 lines of code, this sort of
+For a project with two `.c` files and fewer than 20 lines of code, this sort of
 optimization is kind of silly over-engineering. But as the project grows it starts to
 make sense.
 
@@ -916,7 +920,7 @@ clean:
 .PHONY: all run watch clean
 ```
 
-In case we're adding more than one library, we'll use `*.o` to remove all object files
+Since we might add more than one library, we'll use `*.o` to remove all object files
 on cleanup.
 
 
@@ -954,7 +958,7 @@ all libraries in a sub-directory of `src`. By sticking to this rule, we can conf
 the `Makefile` to detect these files properly.
 
 We also have to change any `#!c #include "rng.h"` in our `main.c` to
-`#!c #include "rng/rng.h"` after this reorganisation.
+`#!c #include "rng/rng.h"` after this reorganization.
 
 Our `.o` files can be organized in their own dedicated directory `obj` to reduce clutter
 in the root of the project.
@@ -1032,6 +1036,7 @@ Our `clean` rule also has to be updated to match the new directory structure:
 clean:
 	$(RM) -r $(EXEC) $(OBJ)
 ```
+
 We're removing the executable, and the entire `obj` directory. Because we have the
 `mkdir -p` recipe, we make sure we always rebuild these `obj` directories when needed.
 
@@ -1162,7 +1167,7 @@ picked up and compiled automatically.
 
 ## Level 7 - Header dependencies
 
-There is one flaw in our current makefile: When you edit a header (`.h`) file, `make`
+There is one flaw in our current `Makefile`: When you edit a header (`.h`) file, `make`
 doesn't know it has to re-compile that particular library.
 
 A simple way to test this is just updating the modification timestamp of one of the `.h`
@@ -1182,11 +1187,11 @@ It says "Nothing to be done", but we could have completely changed the header fi
 
 This is actually to be expected. We're not mentioning `.h` files in the `Makefile`. All
 we do is say that the final executable depends on its corresponding `.c` file, and all
-`.o` files. Every `.o` file only depend on its corresponding `.c` file.
+`.o` files. Every `.o` file only depends on its corresponding `.c` file.
 
 Fortunately, compilers and `make` can work together to fix this.
 
-When you compile say `main.c` to `main.o`, you can pass the `-MMD` flag to let the
+When you compile, say, `main.c` to `main.o`, you can pass the `-MMD` flag to let the
 compiler spit out not just the object file `main.o` but also a dependency file `main.d`.
 
 ```console title="Terminal"
@@ -1233,9 +1238,9 @@ So this is the first thing I want to add:
 
 ```makefile title="Makefile"
 NAME = main
-SRC = src
-OBJ = obj
 BIN = bin
+OBJ = obj
+SRC = src
 
 EXEC = $(BIN)/$(NAME)
 ```
@@ -1252,7 +1257,7 @@ BIN_SRCS = $(wildcard $(SRC)/*.c)
 LIB_SRCS = $(wildcard $(SRC)/*/*.c)
 ```
 
-We can now distinguish between the entryopint source files with `#!makefile
+We can now distinguish between the entrypoint source files with `#!makefile
 $(BIN_SRCS)`, and library source files with `#!makefile $(LIB_SRCS)`.
 
 Now we have to modify the `patsubst` line, and we'll add another one:
@@ -1277,6 +1282,7 @@ First of all, the `all` rule can now mean: Build all `BINS`:
 ```makefile title="Makefile"
 all: $(BINS)
 ```
+
 There is currently only one file, `src/main.c`, but if we add more `.c` files directly
 under `src` they will be considered entrypoints and they will be compiled to binaries.
 
@@ -1318,12 +1324,12 @@ update the `clean` rule to just remove those directories entirely:
 
 ```makefile
 clean:
-	$(RM) -r $(BIN) $(OBJ) 
+	$(RM) -r $(BIN) $(OBJ)
 ```
 
 The full Makefile now looks like this:
 
-```makefile title="Makefile" linenums="1" hl_lines="3-4 8 10-11 13-14 16 18-20"
+```makefile title="Makefile" linenums="1" hl_lines="3-4 8 10-11 13-14 16 18-20 33"
 CFLAGS = -Wall -Wextra
 
 NAME = main
@@ -1356,7 +1362,7 @@ watch:
 	find $(SRC) -type f | entr -c make run
 
 clean:
-	$(RM) -r $(BIN) $(OBJ) 
+	$(RM) -r $(BIN) $(OBJ)
 
 .PHONY: all run watch clean
 ```
@@ -1384,7 +1390,8 @@ called `ALL_SRCS`:
 ALL_SRCS = $(BIN_SRCS) $(LIB_SRCS)
 ```
 
-That's pretty simple, just concatenating the `#!makefile $(BIN_SRCS)` with the `#!makefile $(LIB_SRCS)`.
+That's pretty simple, just concatenating the `#!makefile $(BIN_SRCS)` with the
+`#!makefile $(LIB_SRCS)`.
 
 Now we use those for another `patsubst` to get a list of `.d` files that we'll store in
 `DEPS`:
@@ -1415,8 +1422,6 @@ directory:
 ├── Makefile
 ├── bin
 │   └── main
-├── main.d
-├── main.o
 ├── obj
 │   ├── main.d
 │   ├── main.o
@@ -1442,10 +1447,10 @@ Now we need to include them into the Makefile:
 -include $(DEPS)
 ```
 
-And that's why we wanted to  this `#!makefile $(DEPS)` variable.
+And that's why we wanted that `#!makefile $(DEPS)` variable.
 
-We're using `-include` here instead of `include`, this is so that when any of the `.d`
-files doesn't exist, it will silently be ignored. If you use `include`, you might
+We're using `-include` here instead of `include`. This is so that when one of the `.d`
+files doesn't exist, it is silently ignored. If you use `include`, you might
 encounter something like this:
 
 ```console title="Terminal"
@@ -1510,7 +1515,7 @@ runs the main executable.
 
 And that's it. We've finished our Makefile!
 
-```makefile title="Makefile" linenums="1" hl_lines="22 29"
+```makefile title="Makefile" linenums="1" hl_lines="12 16 22 26 29 37"
 CFLAGS = -Wall -Wextra
 
 NAME = main
@@ -1545,7 +1550,7 @@ watch:
 	find $(SRC) -type f | entr -c make run
 
 clean:
-	$(RM) -r $(BIN) $(OBJ) 
+	$(RM) -r $(BIN) $(OBJ)
 
 -include $(DEPS)
 
@@ -1561,4 +1566,5 @@ We can now:
 
 And the Makefile automatically detects our source files.
 
-Thanks for reading. I hope this gives you the courage to go out into your codebase, whip up a new Makefile from scratch, and automates some of those repetitive commands.
+Thanks for reading. I hope this gives you the courage to go out into your codebase, whip
+up a new Makefile from scratch, and automate some of those repetitive commands.
