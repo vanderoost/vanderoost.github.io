@@ -17,9 +17,8 @@ slug: levels-of-effective-makefile-cheatsheet
 Rumor has it that all Makefiles in use today were written in a time when dinosaurs
 roamed the earth. Nobody *actually* writes new Makefiles anymore, right?
 
-They remain among the most anxiety-inducing files you can find in a codebase. But
-in this article, I will walk you through the humbling experience of writing a Makefile
-to set up a C build system.
+Right. Makefiles cause a lot of anxiety, but in this article, I will walk you through
+the humbling experience of writing a Makefile from scrats. To automate a C build system.
 
 <!-- more -->
 
