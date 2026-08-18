@@ -86,6 +86,11 @@ extra:
 extra_css:
   - stylesheets/extra.css
   - stylesheets/hero.css
+# Reads redirects.yml and writes a forwarding page per entry. GitHub Pages
+# serves static files only, so a redirect has to be a page that forwards itself.
+hooks:
+  - hooks/redirects.py
+
 plugins:
   - social:
       cards_layout_options:

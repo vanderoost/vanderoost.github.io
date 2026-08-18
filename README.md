@@ -119,6 +119,15 @@ docs/
 └── assets/ # Images and other files
 ```
 
+### 3. Redirects
+
+Short URLs that forward somewhere else — `vanderoost.com/ai-tools` to a Google
+Doc, say — live in `redirects.yml` at the repo root, one `slug: url` line each.
+GitHub Pages serves static files only and cannot issue a real 301, so
+`hooks/redirects.py` writes a self-forwarding HTML page per entry at build
+time. It fails the build on a malformed entry, a duplicate slug, or a slug that
+collides with a page the site already publishes.
+
 ## Deployment
 
 I recommend publishing your site with GitHub Pages. If you want to keep your repo private, you need a GitHub Pro subscription. Public repos can be deployed with a free GitHub account.

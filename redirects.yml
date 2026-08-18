@@ -1,0 +1,8 @@
+# Short vanderoost.com URLs that forward somewhere else.
+#
+# Each entry becomes a page at https://vanderoost.com/<slug>/ that redirects to
+# the target. Slugs are bare paths and targets are absolute http(s) URLs;
+# hooks/redirects.py fails the build on anything else, on a slug listed twice,
+# and on a slug that collides with a real page.
+#
+# ai-tools: https://docs.google.com/document/d/XXXXXXXX/edit
