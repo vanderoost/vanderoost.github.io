@@ -5,4 +5,5 @@
 # hooks/redirects.py fails the build on anything else, on a slug listed twice,
 # and on a slug that collides with a real page.
 #
+coffee-chat: https://calendly.com/vanderoost/introduction-call
 ai-tools: https://docs.google.com/document/d/1wiCcXNlYI8SBDT_mtvwMmS_9GB86y9ynYamH_lXw8sw
