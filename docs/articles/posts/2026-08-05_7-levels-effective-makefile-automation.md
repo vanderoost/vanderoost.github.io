@@ -18,7 +18,8 @@ Rumor has it that all Makefiles in use today were written in a time when dinosau
 roamed the earth. Nobody *actually* writes new Makefiles anymore, right?
 
 Right. Makefiles cause a lot of anxiety, but in this article, I will walk you through
-the humbling experience of writing a Makefile from scrats. To automate a C build system.
+the humbling experience of writing a Makefile from scratch. To automate a C build
+system.
 
 <!-- more -->
 
