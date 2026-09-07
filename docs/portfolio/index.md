@@ -21,7 +21,7 @@ challenges.
     on our behalf.
 
 
--   [Automating a 3D printing pipeline](projects/clik-production-pipeline.md)
+-   [Automating a 3D printing pipeline](projects/3d-printing-pipeline.md)
 
     ---
 
