@@ -1,5 +1,5 @@
 ---
-title: Automated cloud computing infrastructure
+title: Cloud computing infrastructure
 description: A network of 30+ datacenters across the world that automatically scales, and schedules workloads in the most efficient way.
 ---
 

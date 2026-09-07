@@ -1,5 +1,5 @@
 ---
-title: Automating a dental production pipeline
+title: Automating a 3D printing pipeline
 description: Replacing a manual dental lab process with a fully digital pipeline that turns a 3D intraoral scan into a print-ready custom mouthguard, without a human in the loop.
 ---
 

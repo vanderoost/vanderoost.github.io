@@ -13,7 +13,15 @@ challenges.
 
 <div class="grid cards" markdown>
 
--   [Automating a dental production pipeline](projects/clik-production-pipeline.md)
+-   [Dentist appointment routing workflow](projects/dentist-appointment-routing.md)
+
+    ---
+
+    Replacing a manual email workflow with a fully automated system that sends emails
+    on our behalf.
+
+
+-   [Automating a 3D printing pipeline](projects/clik-production-pipeline.md)
 
     ---
 
@@ -21,7 +29,7 @@ challenges.
     workflow, from 3D scan to 3D print.
 
 
--   [Automated cloud computing infrastructure](projects/blendergrid-swarm-engine.md)
+-   [Cloud computing infrastructure](projects/blendergrid-swarm-engine.md)
 
     ---
 

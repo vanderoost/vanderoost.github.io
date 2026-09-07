@@ -318,3 +318,18 @@ footer.md-footer {
 .md-post__back {
   border-color: var(--rvo-divider-line-color);
 }
+
+/* The workflow diagram is a Figma PNG export with a transparent background, so
+   under the dark scheme its dark labels and arrows would sit on a dark ground.
+   The light card keeps a single export readable under both schemes, and reads
+   as deliberate rather than as a stray white rectangle. Drop this rule if the
+   diagram is ever redrawn as a scheme-aware SVG. */
+.md-typeset figure.rvo-diagram {
+  background-color: oklch(0.98 0.005 100);
+  border: 1px solid var(--rvo-divider-line-color);
+  border-radius: 0.4rem;
+  padding: 0.6rem;
+}
+.md-typeset figure.rvo-diagram img {
+  display: block;
+}

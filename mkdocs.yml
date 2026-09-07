@@ -12,7 +12,8 @@ nav:
   - Case Studies:
     - Overview: portfolio/index.md
     - Projects:
-      - portfolio/projects/clik-production-pipeline.md
+      - portfolio/projects/dentist-appointment-routing.md
+      - portfolio/projects/3d-printing-pipeline.md
       - portfolio/projects/blendergrid-swarm-engine.md
 
 theme:
