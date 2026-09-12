@@ -1,11 +1,10 @@
 ---
-date: 2026-09-30
+date: 2026-09-11
 authors:
   - richard
 categories:
   - Development
-tags:
-  - C
+  - C from scratch
 description: A simple C library for plotting histograms in the terminal.
 slug: histogram-plotting-in-the-terminal
 ---
@@ -13,8 +12,8 @@ slug: histogram-plotting-in-the-terminal
 # Plotting histograms in the terminal
 
 I was generating some random numbers the other day. And I really felt the urge to
-visualize them. Just to get an intuition, like, am I getting a uniform distribution, a
-normal, pyramid shaped? Is it noisy or smooth?
+visualize them. Just to get an intuition, like, what's the shape of the distribution? Is
+it noisy or smooth?
 
 When in Python, I would `pip install matplotlib` for this kind of stuff. But what are
 the options when you're in C?

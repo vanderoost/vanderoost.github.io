@@ -118,6 +118,7 @@ plugins:
       categories_allowed:
         - Automation
         - Development
+        - C from scratch
   - optimize
 
 markdown_extensions:
