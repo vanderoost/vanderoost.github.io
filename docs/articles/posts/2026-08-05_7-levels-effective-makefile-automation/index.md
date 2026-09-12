@@ -228,6 +228,9 @@ If this looks a bit intimidating, not to worry. We'll start from zero with only 
 `main.c` file and build it up step by step, to multiple `.c` and `.h` files in a proper
 project setup with subdirectories. I use this post myself as a Makefile cheatsheet.
 
+All the code can also be found in my [C Makefile
+template](https://github.com/vanderoost/c-makefile-template){ target="_blank" rel="noopener" } repo.
+
 
 ## Level 0 - Nothing
 

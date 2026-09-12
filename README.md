@@ -112,12 +112,27 @@ Edit `mkdocs.yml` to customize your site:
 
 ```bash
 docs/
-├── index.md # Your homepage
-├── about.md # About page
-├── portfolio/ # Your work
-├── blog/ # Blog posts
-└── assets/ # Images and other files
+├── index.md          # Homepage / about
+├── articles/         # Blog
+│   ├── index.md      # Article overview page
+│   ├── .authors.yml  # Author profiles
+│   └── posts/
+│       └── 2026-09-30_some-article/  # One folder per post
+│           ├── index.md              # The post itself
+│           └── diagram.png           # Images used by this post only
+├── portfolio/        # Case studies
+├── assets/           # Site-wide images: logo, favicon, author photo
+└── stylesheets/      # Custom CSS
 ```
+
+Each post is a folder containing an `index.md` plus the images that post uses.
+Co-locating them means an image is referenced by its bare filename —
+`![Diagram](diagram.png)` — with no `../../assets/` path to get right, and
+deleting a post takes its images with it, so orphaned files cannot pile up.
+Folder names are date-prefixed to keep posts in chronological order, while the
+published URL comes from the `slug` in the post's front matter.
+
+Only genuinely shared images belong in `docs/assets/`.
 
 ### 3. Redirects
 
