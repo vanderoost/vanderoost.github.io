@@ -35,7 +35,7 @@ hide:
 <div class="profile-image-grid" markdown>
 <img src="/assets/richardvanderoost.jpg" alt="Richard van der Oost" class="profile-image" >
 
-[Book a call](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary :target="_blank"}
+[Book a call](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary}
 </div>
 
 <div class="text-intro-grid" markdown>

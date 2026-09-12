@@ -229,7 +229,7 @@ If this looks a bit intimidating, not to worry. We'll start from zero with only 
 project setup with subdirectories. I use this post myself as a Makefile cheatsheet.
 
 All the code can also be found in my [C Makefile
-template](https://github.com/vanderoost/c-makefile-template){ target="_blank" rel="noopener" } repo.
+template](https://github.com/vanderoost/c-makefile-template) repo.
 
 
 ## Level 0 - Nothing
@@ -538,7 +538,7 @@ For me, programming is more productive and fun with a tight feedback loop. So wh
 make an edit, I want it to instantly compile and run (or crash).
 
 To do this, we can use a "file watcher" utility. I always use
-[`entr`](https://github.com/eradman/entr){ target="_blank" rel="noopener" } for this,
+[`entr`](https://github.com/eradman/entr) for this,
 and set it up as a new rule in the Makefile.
 
 So let's add a `watch` rule to the Makefile, because it "watches" our source files for

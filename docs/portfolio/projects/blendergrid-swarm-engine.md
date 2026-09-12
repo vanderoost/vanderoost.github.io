@@ -7,7 +7,7 @@ description: A network of 30+ datacenters across the world that automatically sc
 
 !!! abstract "Summary"
     **Client**: Blendergrid (my own company)  
-    **Website**: [blendergrid.com](https://blendergrid.com){ target="_blank" }  
+    **Website**: [blendergrid.com](https://blendergrid.com)  
     **Industry**: Cloud computing / 3D rendering
 
     **Impact metrics**:

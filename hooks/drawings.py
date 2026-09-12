@@ -51,6 +51,10 @@ def _themed(source: Path, src_path: str) -> str:
     return _CACHE[key]
 
 EMBED = re.compile(r"!\[(?P<title>[^\]]*)\]\(drawing:(?P<src>[^)\s]+)\)")
+
+# A drawing referenced as a plain image. No colon in the target, so this skips
+# drawing: and absolute URLs, and only relative paths to local files remain.
+PLAIN_SVG = re.compile(r'!\[[^\]]*\]\((?P<src>[^)\s:]+\.svg)(?:\s+"[^"]*")?\)')
 FENCE = re.compile(r"^\s*(?P<fence>```+|~~~+)")
 INLINE_CODE = re.compile(r"(`+[^`]*`+)")
 
@@ -84,9 +88,36 @@ def _inline(match: re.Match, page_dir: Path, src_path: str) -> str:
     return f'<div class="rvo-drawing">{svg}</div>'
 
 
+def _refuse_plain(match: re.Match, page_dir: Path, src_path: str, config) -> None:
+    """Fail on ![...](file.svg) when exclude_docs keeps that file off the site.
+
+    The <img> would 404, and MkDocs only reports a link to an excluded file at
+    INFO level, so even --strict lets the broken image through to production.
+    The fix is always the same missing prefix, so the message spells it out.
+    """
+    docs_dir = Path(config.docs_dir).resolve()
+    try:
+        target = (page_dir / match.group("src")).resolve().relative_to(docs_dir)
+    except ValueError:
+        return  # Outside docs/: MkDocs' own link validation covers that.
+
+    if config.exclude_docs and config.exclude_docs.match_file(target.as_posix()):
+        fixed = match.group(0).replace("](", "](drawing:", 1)
+        raise PluginError(
+            f"{src_path}: {match.group('src')} is referenced as a plain image, "
+            "but post SVGs are excluded from the built site, so it would 404. "
+            f"Use the drawing: prefix instead: {fixed}"
+        )
+
+
 def on_page_markdown(markdown: str, page, config, files) -> str:
     page_dir = Path(page.file.abs_src_path).parent
     src_path = page.file.src_path
+
+    def rewrite(part: str) -> str:
+        for match in PLAIN_SVG.finditer(part):
+            _refuse_plain(match, page_dir, src_path, config)
+        return EMBED.sub(lambda m: _inline(m, page_dir, src_path), part)
 
     out, fence = [], None
     for line in markdown.split("\n"):
@@ -97,9 +128,7 @@ def on_page_markdown(markdown: str, page, config, files) -> str:
             fence = None
         elif fence is None:
             line = "".join(
-                part
-                if part.startswith("`")
-                else EMBED.sub(lambda m: _inline(m, page_dir, src_path), part)
+                part if part.startswith("`") else rewrite(part)
                 for part in INLINE_CODE.split(line)
             )
         out.append(line)

@@ -7,7 +7,7 @@ description: Replacing a manual dental lab process with a fully digital pipeline
 
 !!! abstract "Summary"
     **Client**: Clik.Fit  
-    **Website**: [clik.fit](https://clik.fit){ target="_blank" }  
+    **Website**: [clik.fit](https://clik.fit)  
     **Industry**: Dental appliances / additive manufacturing
 
     **Impact metrics**:

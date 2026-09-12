@@ -101,6 +101,7 @@ hooks:
   - hooks/redirects.py
   - hooks/youtube.py
   - hooks/drawings.py
+  - hooks/external_links.py
 
 plugins:
   - social:
