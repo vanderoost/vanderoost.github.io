@@ -145,8 +145,47 @@ YouTube videos use the same image-like syntax, with a `youtube:` target and the
 youtube-nocookie.com, and fails the build on an id it does not recognise. The
 caption becomes the iframe's `title`, which is what screen readers announce.
 
+### 3. Drawings
 
-### 3. Redirects
+Drawings are made in [tldraw](https://tldraw.com) and exported as SVG. Drop the
+export straight into the post folder and reference it with a `drawing:` target:
+
+```markdown
+![Histogram buckets](drawing:histogram-buckets.svg)
+```
+
+There is no conversion step. A tldraw export bakes in the colors of whichever
+mode the canvas was in, so `hooks/drawings.py` re-themes it during the build,
+swapping each baked color for a CSS variable naming the tldraw palette entry it
+came from. The same hook inlines the SVG into the page, which is what lets
+those variables resolve at all: an `<img>` is a separate document and cannot
+see the page's stylesheet.
+
+Because the drawing is inlined, the SVG file itself is never fetched, so
+`exclude_docs` in `mkdocs.yml` keeps post drawings out of the built site — they
+would otherwise be duplicated into the `gh-pages` branch for nothing. An SVG
+meant to be served normally belongs in `docs/assets/`.
+
+Put `<!-- more -->` above the first drawing. Everything before it is the
+excerpt the blog index, the archive and each category page render, and a
+drawing above the separator is inlined into all of them at once.
+
+The 12 drawing colors are defined per scheme in `stylesheets/extra.css`, taken
+from tldraw's own light and dark themes so a drawing looks here the way it did
+on the canvas. Edit them there to restyle every drawing on the site at once:
+
+```bash
+tools/tldraw_theme.py css docs/articles/posts/*/*.svg   # regenerate the block
+tools/tldraw_theme.py convert <file>                    # theme a file on disk
+```
+
+`convert` is not needed for the site, which themes at build time; it is there
+for exporting a drawing somewhere else. `tools/tldraw-palette.json` is a copy
+of tldraw's `defaultThemes.ts` — if tldraw changes its palette, the build fails
+naming the color it did not recognise, rather than quietly leaving a drawing
+unthemed.
+
+### 4. Redirects
 
 Short URLs that forward somewhere else — `vanderoost.com/ai-tools` to a Google
 Doc, say — live in `redirects.yml` at the repo root, one `slug: url` line each.

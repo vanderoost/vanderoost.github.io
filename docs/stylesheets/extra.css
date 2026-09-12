@@ -348,3 +348,51 @@ footer.md-footer {
   border: 0;
   border-radius: 0.4rem;
 }
+
+/* tldraw drawing colors, lifted from tldraw's own light and dark
+   themes so a drawing looks the same here as it does on the canvas.
+   Written into exports by tools/tldraw_theme.py; edit the values here
+   to restyle every drawing on the site at once. */
+[data-md-color-scheme="default"] {
+  --rvo-draw-black: #1d1d1d;
+  --rvo-draw-blue: #4465e9;
+  --rvo-draw-green: #099268;
+  --rvo-draw-grey: #9fa8b2;
+  --rvo-draw-light-blue: #4ba1f1;
+  --rvo-draw-light-green: #4cb05e;
+  --rvo-draw-light-red: #f87777;
+  --rvo-draw-light-violet: #e085f4;
+  --rvo-draw-orange: #e16919;
+  --rvo-draw-red: #e03131;
+  --rvo-draw-violet: #ae3ec9;
+  --rvo-draw-yellow: #f1ac4b;
+  --rvo-draw-light-green-highlight: #65f641;
+}
+[data-md-color-scheme="slate"] {
+  --rvo-draw-black: #f2f2f2;
+  --rvo-draw-blue: #4f72fc;
+  --rvo-draw-green: #099268;
+  --rvo-draw-grey: #9398b0;
+  --rvo-draw-light-blue: #4dabf7;
+  --rvo-draw-light-green: #40c057;
+  --rvo-draw-light-red: #ff8787;
+  --rvo-draw-light-violet: #e599f7;
+  --rvo-draw-orange: #f76707;
+  --rvo-draw-red: #e03131;
+  --rvo-draw-violet: #ae3ec9;
+  --rvo-draw-yellow: #ffc034;
+  --rvo-draw-light-green-highlight: #00a000;
+}
+
+/* Inlined tldraw drawings (see hooks/drawings.py). CSS beats the width and
+   height attributes tldraw bakes into an export, so the viewBox alone decides
+   the aspect ratio and the drawing scales down on a phone. */
+.md-typeset .rvo-drawing {
+  margin: 2rem auto;
+  max-width: 28rem;
+}
+.md-typeset .rvo-drawing svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}

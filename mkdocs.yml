@@ -87,11 +87,20 @@ extra:
 extra_css:
   - stylesheets/extra.css
   - stylesheets/hero.css
+# Drawings are inlined into the page by hooks/drawings.py, so the SVG files
+# themselves are never fetched by a browser. Shipping them anyway duplicated
+# every drawing into the gh-pages branch — around 12 MB per 250 drawings. Only
+# post folders are excluded: an SVG meant to be served normally, as a plain
+# <img>, belongs in docs/assets/, which is untouched by this.
+exclude_docs: |
+  articles/posts/**/*.svg
+
 # Reads redirects.yml and writes a forwarding page per entry. GitHub Pages
 # serves static files only, so a redirect has to be a page that forwards itself.
 hooks:
   - hooks/redirects.py
   - hooks/youtube.py
+  - hooks/drawings.py
 
 plugins:
   - social:
