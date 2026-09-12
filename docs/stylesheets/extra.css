@@ -333,3 +333,18 @@ footer.md-footer {
 .md-typeset figure.rvo-diagram img {
   display: block;
 }
+
+/* YouTube embeds, written as ![Caption](youtube:VIDEO_ID); see hooks/youtube.py.
+   aspect-ratio reserves the 16:9 box before the iframe loads, so a lazy-loaded
+   video further down the page does not shift the text around it as it arrives. */
+.md-typeset .rvo-video {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  margin: 1.5em 0;
+}
+.md-typeset .rvo-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0.4rem;
+}

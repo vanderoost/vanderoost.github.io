@@ -134,6 +134,18 @@ published URL comes from the `slug` in the post's front matter.
 
 Only genuinely shared images belong in `docs/assets/`.
 
+YouTube videos use the same image-like syntax, with a `youtube:` target and the
+11-character video id — the part after `v=` in the watch URL:
+
+```markdown
+![A demo of the thing](youtube:dQw4w9WgXcQ)
+```
+
+`hooks/youtube.py` expands that into a lazy-loaded, responsive embed on
+youtube-nocookie.com, and fails the build on an id it does not recognise. The
+caption becomes the iframe's `title`, which is what screen readers announce.
+
+
 ### 3. Redirects
 
 Short URLs that forward somewhere else — `vanderoost.com/ai-tools` to a Google

@@ -91,6 +91,7 @@ extra_css:
 # serves static files only, so a redirect has to be a page that forwards itself.
 hooks:
   - hooks/redirects.py
+  - hooks/youtube.py
 
 plugins:
   - social:
