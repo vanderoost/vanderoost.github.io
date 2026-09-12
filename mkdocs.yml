@@ -118,6 +118,7 @@ plugins:
       categories_allowed:
         - Automation
         - Development
+  - optimize
 
 markdown_extensions:
   - attr_list

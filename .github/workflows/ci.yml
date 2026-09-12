@@ -48,12 +48,14 @@ jobs:
             mkdocs-material-
       # The "social" plugin renders Open Graph cards through cairosvg and
       # Pillow, both of which bind to system libraries that the runner image
-      # does not ship.
+      # does not ship. The "optimize" plugin shells out to pngquant to compress
+      # PNGs, and that binary is not on the runner either.
       - name: Install imaging system libraries
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
+            libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev \
+            pngquant
 
       # --locked fails the build if uv.lock has drifted from pyproject.toml
       # rather than quietly resolving something new.
