@@ -205,7 +205,7 @@ We have 8 different block elements, going from 1/8 height (`U+2581`), all the wa
 full block (`U+2588`):
 
 ```
-▁▂▃▄▅▆▇█
+▁ ▂ ▃ ▄ ▅ ▆ ▇ █
 ```
 
 All we have to do now is figure out some logic that prints out the correct unicode
