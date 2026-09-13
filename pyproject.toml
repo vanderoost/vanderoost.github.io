@@ -12,4 +12,7 @@ requires-python = ">=3.13,<3.14"
 # "uv lock --upgrade" against stepping into the next major on its own. Material
 # 9.x itself requires "mkdocs<2", so the announced MkDocs 2.0 rewrite cannot
 # reach this site while we stay on 9.
-dependencies = [ "mkdocs-material[imaging]>=9.7.7,<10" ]
+dependencies = [
+ "mkdocs-material[imaging]>=9.7.7,<10",
+ "mkdocs-rss-plugin>=1.19.0",
+]

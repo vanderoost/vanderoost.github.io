@@ -4,8 +4,9 @@ authors:
   - richard
 categories:
   - Automation
-  - Development
-  - C from scratch
+  - Tutorial
+tags:
+  - C
 description: Learn how to write a full-on Makefile from scratch to automate building C projects.
 slug: levels-of-effective-makefile-cheatsheet
 ---

@@ -1,8 +1,6 @@
 site_name: vanderoost
 site_description: I automate tech companies
 site_url: https://vanderoost.com
-# Gives every page a <meta name="author">; pages may override it per-page with
-# an "author" key. overrides/main.html adds the article:* tags on top.
 site_author: Richard van der Oost
 
 nav:
@@ -117,9 +115,14 @@ plugins:
       categories: true
       categories_allowed:
         - Automation
-        - Development
-        - C from scratch
+        - Tutorial
+  - tags
   - optimize
+  - rss:
+      match_path: "articles/posts/.*"
+      date_from_meta:
+        as_creation: date.created
+        as_update: date.updated
 
 markdown_extensions:
   - attr_list

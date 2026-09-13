@@ -2,11 +2,16 @@
 date: 2026-09-11
 authors:
   - richard
-categories:
-  - Development
-  - C from scratch
-description: A simple C library for plotting histograms in the terminal.
 slug: histogram-plotting-in-the-terminal
+description: A simple C library for plotting histograms in the terminal.
+categories:
+  - Tutorial
+tags:
+  - C
+  - CLI
+links:
+  - articles/posts/2026-08-05_7-levels-effective-makefile-automation/index.md
+  - plt.c on Github: https://github.com/vanderoost/plt.c
 ---
 
 # Plotting histograms in the terminal
@@ -67,8 +72,8 @@ To take a list of random numbers, and turn it into a histogram, we need to decid
 ![Histogram buckets](drawing:histogram-buckets.svg)
 
 Let's say all the little green dots are our random numbers, or samples. The buckets are
-drawn as columns, and we just have to could how many samples fall in each bucket. That
-will be the bar height of our histogram.
+drawn as columns, and we just have to count how many samples fall in each bucket. Those
+counts will correspond to the bar heights of our histogram.
 
 We can do that by looping over all samples:
 
@@ -249,7 +254,7 @@ elements in our array. I still want to do the math with 8 levels though. So when
 calculate `block_count` I subtract 1.
 
 Then when we're autoscaling, we don't want to set the max bucket height equal to `ROWS`,
-but to 8 times `ROWS`, so we multiply it with `block_count`:
+but to 8 times `ROWS`, so we multiply it by `block_count`:
 
 ```c
   for (size_t i = 0; i < cols; ++i) {
