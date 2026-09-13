@@ -2,25 +2,29 @@
 date: 2026-08-05
 authors:
   - richard
+description: Learn how to write a full-on Makefile from scratch to automate building C projects.
+slug: levels-of-effective-makefile-cheatsheet
 categories:
   - Automation
   - Tutorial
 tags:
   - C
-description: Learn how to write a full-on Makefile from scratch to automate building C projects.
-slug: levels-of-effective-makefile-cheatsheet
+links:
+  - C Makefile template on Github: https://github.com/vanderoost/c-makefile-template
 ---
 
 # The 7 levels of highly effective Makefiles
 
+![7 Levels of highly effective Makefiles](youtube:PPDyWuWz9VE)
+
 Rumor has it that all Makefiles in use today were written in a time when dinosaurs
 roamed the earth. Nobody *actually* writes new Makefiles anymore, right?
+
+<!-- more -->
 
 Right. Makefiles cause a lot of anxiety, but in this article, I will walk you through
 the humbling experience of writing a Makefile from scratch. To automate a C build
 system.
-
-<!-- more -->
 
 If you don't know what I'm talking about, Make is a tool for *making files* based on
 certain *rules*. It can be abused to do more, and to automate other terminal

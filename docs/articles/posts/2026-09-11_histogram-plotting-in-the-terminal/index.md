@@ -16,17 +16,20 @@ links:
 
 # Plotting histograms in the terminal
 
+![Histogram Plotting in C](youtube:aLNlyBNU0tw)
+
 I was generating some random numbers the other day. And I really felt the urge to
 visualize them. Just to get an intuition, like, what's the shape of the distribution? Is
 it noisy or smooth?
 
-When in Python, I would `pip install matplotlib` for this kind of stuff. But what are
-the options when you're in C?
+When in Python, I would usually bust out `pip install matplotlib` for this kind of tech.
+But what are the options when you're in C?
+
+<!-- more -->
 
 I ended up writing a plot library from scratch of course :) [plt.c on
 github](https://github.com/vanderoost/plt.c)
 
-<!-- more -->
 
 I wanted to keep it super simple, so I chose to plot in the terminal, using unicode
 block characters. No need for external graphics or imaging libraries.
@@ -36,10 +39,6 @@ This is what it looks like:
 ![Terminal plot example](plt_hist-example.png)
 
 In the rest of this article, we'll walk through the process of writing this library.
-
-I also recorded the entire process as a screencast:
-
-![Histogram Plotting in C](youtube:aLNlyBNU0tw)
 
 
 ## Generating test data
