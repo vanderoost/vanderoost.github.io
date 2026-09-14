@@ -5,7 +5,7 @@ authors:
 slug: histogram-plotting-in-the-terminal
 description: A simple C library for plotting histograms in the terminal.
 categories:
-  - Tutorial
+  - Tutorials
 tags:
   - C
   - CLI

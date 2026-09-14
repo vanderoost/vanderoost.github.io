@@ -115,7 +115,7 @@ plugins:
       categories: true
       categories_allowed:
         - Automation
-        - Tutorial
+        - Tutorials
   - tags
   - optimize
   - rss:

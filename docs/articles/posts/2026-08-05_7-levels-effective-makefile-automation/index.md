@@ -6,7 +6,7 @@ description: Learn how to write a full-on Makefile from scratch to automate buil
 slug: levels-of-effective-makefile-cheatsheet
 categories:
   - Automation
-  - Tutorial
+  - Tutorials
 tags:
   - C
 links:
