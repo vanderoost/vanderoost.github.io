@@ -11,11 +11,11 @@ tags:
   - AI
 ---
 
-# Why 85% of company AI projects fail
+# Why 95% of company AI projects fail
 
 It's an interesting time to be alive. The "AI transformation" is happening.
 
-Many business owners feel FOMO on AI adoption. Yet, allegedly 85% of AI projects in companies fail. Why is this?
+Many business owners feel FOMO on AI adoption. Yet, allegedly 95% of AI projects in companies fail, according to an MIT report. Why is this?
 
 I've talked to business owners and AI automation agencies. This is what I found.
 
