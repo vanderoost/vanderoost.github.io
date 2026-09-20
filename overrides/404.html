@@ -1,0 +1,34 @@
+{#-
+  GitHub Pages serves this file for every URL that does not exist, so a
+  mistyped or long-dead link lands here. A page saying "404 - Not found" —
+  Material's default — is a dead end: it tells a visitor what went wrong and
+  then leaves them to find their own way out. Sending them to the home page
+  instead costs them nothing and puts the whole site one click away.
+
+  Deliberately not the theme's chrome: rendering a full page that is about to
+  be replaced only shows the visitor a header and a footer that flash by. The
+  markup below is what redirects.yml entries get (see hooks/redirects.py), for
+  the same reasons — location.replace() keeps the miss out of the history, so
+  Back returns to wherever the bad link was, and the meta refresh covers
+  browsers without JavaScript.
+
+  base_url, not a hardcoded "/": mkdocs points it at the site root for this
+  one template, so `mkdocs serve` forwards to the local home page rather than
+  to production. It arrives with or without a trailing slash depending on
+  where the site is published, and "//" would read as a protocol-relative URL
+  pointing at no host at all, so strip it and add exactly one back.
+-#}
+{%- set home = base_url.rstrip("/") ~ "/" -%}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecting…</title>
+    <meta name="robots" content="noindex">
+    <meta http-equiv="refresh" content="0; url={{ home }}">
+    <script>location.replace("{{ home }}")</script>
+  </head>
+  <body>
+    <p>Redirecting to <a href="{{ home }}">the home page</a>…</p>
+  </body>
+</html>

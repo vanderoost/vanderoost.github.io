@@ -107,7 +107,9 @@ you want to generate 32-bit random numbers, having a state of 64 bits would be a
 idea.
 
 I've searched around for different approaches to generating pseudo random numbers, and
-the best one I found in terms of simplicity, performance, quality, is the [PCG family](https://pcg-random.org). They share a basic C implementation that looks like this:
+the best one I found in terms of simplicity, performance, quality, is the [PCG
+family](https://pcg-random.org). They share a basic C implementation that looks like
+this:
 
 ```c
 // *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
@@ -132,3 +134,12 @@ As you can see, for the state we use a struct called `pcg32_random_t` that holds
 
 And calling the function `pcg32_random_r` scrambles the state a lot more than simply
 multiplying it by a constant.
+
+
+## Adding our own wrappers
+
+When I need a random number, I just want to call a short function, and don't worry about
+passing it anything. The `pcg32_random_r(pcg32_random_t* rng)` is not great for this, so
+let's wrap it with `rng_u` for *unsigned*.
+
+
