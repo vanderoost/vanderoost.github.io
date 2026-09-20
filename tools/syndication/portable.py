@@ -230,6 +230,35 @@ def _take_body(lines: list[str], start: int) -> tuple[list[str], int]:
     return _dedent(body), index
 
 
+def _tab_group(
+    lines: list[str], states: list[bool], start: int
+) -> tuple[list[tuple[str, list[str]]], int]:
+    """Read a run of content tabs, default-selected one first.
+
+    Material shows the tab marked with "===+" when the page loads, so that is
+    the content a reader of the original meets first. Flattened in source
+    order instead, the Makefile article opened its "this is the final Makefile
+    we'll end up with" on L1, a ten-line stub, with the actual final version
+    seven code blocks further down. Order here is what the reader sees, not
+    what the file happens to list.
+    """
+    tabs: list[tuple[str, list[str]]] = []
+    selected = None
+    index = start
+    while index < len(lines):
+        match = None if states[index] else TAB.match(lines[index])
+        if not match:
+            break
+        body, index = _take_body(lines, index + 1)
+        if match.group("marker").endswith("+") and selected is None:
+            selected = len(tabs)
+        tabs.append((match.group("label"), body))
+
+    if selected is not None:
+        tabs.insert(0, tabs.pop(selected))
+    return tabs, index
+
+
 def _blocks(text: str, where: str, depth: int = 0) -> str:
     """Flatten content tabs and admonitions into plain headings and quotes.
 
@@ -250,9 +279,10 @@ def _blocks(text: str, where: str, depth: int = 0) -> str:
         note = None if in_code else ADMONITION.match(line)
 
         if tab:
-            body, index = _take_body(lines, index + 1)
-            out += ["", f"#### {tab.group('label')}", ""]
-            out += _blocks("\n".join(body), where, depth + 1).split("\n")
+            group, index = _tab_group(lines, states, index)
+            for label, body in group:
+                out += ["", f"#### {label}", ""]
+                out += _blocks("\n".join(body), where, depth + 1).split("\n")
         elif note:
             body, index = _take_body(lines, index + 1)
             title = note.group("title") or note.group("type").capitalize()
