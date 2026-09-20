@@ -34,6 +34,12 @@ MAX_BACKOFF = 120
 MAX_REQUESTS = 200
 _sent = 0
 
+# Both APIs sit behind Cloudflare, and urllib's default "Python-urllib/3.x"
+# is on its banned-signature list -- Hashnode answers it with a 403 error 1010
+# before the request ever reaches GraphQL. Identifying the tool honestly gets
+# through, and gives whoever reads their logs something to recognise.
+USER_AGENT = "vanderoost-syndication (+https://vanderoost.com)"
+
 
 class MissingCredentials(RuntimeError):
     """A platform with no token configured. Skipped, not fatal."""
@@ -108,7 +114,7 @@ def request(
     """One JSON call, retried on the failures that are worth retrying."""
     global _sent
     body = json.dumps(payload).encode("utf-8") if payload is not None else None
-    sent = {"Accept": "application/json", **headers}
+    sent = {"Accept": "application/json", "User-Agent": USER_AGENT, **headers}
     if body is not None:
         sent["Content-Type"] = "application/json"
 

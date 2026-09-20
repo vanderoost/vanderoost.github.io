@@ -4,6 +4,12 @@ Two things here differ from dev.to enough to be worth naming. Hashnode answers
 a failed mutation with HTTP 200 and an "errors" array, so the status code alone
 never means success; and it sometimes answers with an HTML error page, which is
 why base._decode refuses to parse a non-JSON body.
+
+Note that this API is not free. Hashnode retired free access on 2026-05-13 and
+now requires a Pro plan on the publication for every request, reads included.
+A publication without one is redirected to an announcement page rather than
+being given a GraphQL error, which _pro_required() below turns back into a
+sentence that says what to do.
 """
 
 from __future__ import annotations
@@ -26,6 +32,11 @@ log = logging.getLogger("syndication.hashnode")
 API = "https://gql.hashnode.com/"
 
 MAX_TAGS = 5
+
+# Where a publication without Pro is sent instead of being answered. The
+# redirect lands on HTML, so without this the failure surfaces as a complaint
+# about content types rather than about billing.
+PAYWALL = "announcements/graphql-api"
 
 DIALECT = Dialect(
     name="hashnode",
@@ -83,12 +94,24 @@ class Hashnode:
             raise MissingCredentials("HASHNODE_PUBLICATION_ID is not set")
 
     def graphql(self, query: str, variables: dict) -> dict:
-        data = request(
-            "POST",
-            API,
-            headers={"Authorization": self._token},
-            payload={"query": query, "variables": variables},
-        )
+        try:
+            data = request(
+                "POST",
+                API,
+                headers={"Authorization": self._token},
+                payload={"query": query, "variables": variables},
+            )
+        except TransportError as error:
+            if PAYWALL in str(error) or "html" in str(error).lower():
+                raise TransportError(
+                    "hashnode: the API refused this request before reaching "
+                    "GraphQL. Either HASHNODE_TOKEN is wrong, or the "
+                    "publication has no Pro plan -- Hashnode retired free API "
+                    "access on 2026-05-13, so every call now needs one. Check "
+                    "Billing in the blog dashboard, or drop hashnode from "
+                    "--platform."
+                ) from error
+            raise
         # A GraphQL failure arrives as HTTP 200 with an errors array, so this
         # check is the only thing standing between a failed mutation and a run
         # that reports success.
@@ -142,7 +165,10 @@ class Hashnode:
 
     def find_existing(self, canonical_url: str) -> Remote | None:
         if self._mine is None:
-            self._mine = {}
+            # Only cached once every page has been read. A lookup that failed
+            # halfway through must not look like a publication with nothing in
+            # it, or the next step would publish everything again.
+            found: dict[str, Remote] = {}
             cursor = None
             for _ in range(20):
                 page = self.graphql(
@@ -152,10 +178,11 @@ class Hashnode:
                     node = edge["node"]
                     url = node.get("canonicalUrl")
                     if url:
-                        self._mine[url.rstrip("/")] = self._remote(node)
+                        found[url.rstrip("/")] = self._remote(node)
                 if not page["pageInfo"]["hasNextPage"]:
                     break
                 cursor = page["pageInfo"]["endCursor"]
+            self._mine = found
         return self._mine.get(canonical_url.rstrip("/"))
 
     @staticmethod

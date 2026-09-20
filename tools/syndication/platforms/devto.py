@@ -111,7 +111,11 @@ class DevTo:
         already uses, so creating blind would fail anyway.
         """
         if self._mine is None:
-            self._mine = {}
+            # Built locally and only published to self._mine once the whole
+            # walk succeeded. A half-read list cached as if it were complete
+            # would answer "no such article" for everything it never reached,
+            # and every one of those would then be created a second time.
+            found: dict[str, Remote] = {}
             for page in range(1, 11):
                 articles = request(
                     "GET",
@@ -121,9 +125,10 @@ class DevTo:
                 for item in articles or []:
                     url = item.get("canonical_url")
                     if url:
-                        self._mine[url.rstrip("/")] = Remote(
+                        found[url.rstrip("/")] = Remote(
                             id=str(item["id"]), url=item["url"]
                         )
                 if len(articles or []) < 100:
                     break
+            self._mine = found
         return self._mine.get(canonical_url.rstrip("/"))
