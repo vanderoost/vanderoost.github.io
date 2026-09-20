@@ -18,6 +18,7 @@ carry a copy; this package has no such excuse.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
@@ -236,6 +237,20 @@ def _fences(text: str, dialect: Dialect, where: str) -> str:
     return "\n".join(out)
 
 
+def _asset_url(post: Post, name: str) -> str:
+    """The public URL of a file in the post folder, fingerprinted by content.
+
+    The ?v= is not decoration. Both platforms fetch an image once and cache
+    what they get behind their own proxy, keyed on this URL -- dev.to served a
+    cached "image no longer exists" placeholder for a drawing that had since
+    gone live, because the URL had not changed. Naming the file by what is in
+    it means an edited image is a new URL, so a corrected picture actually
+    reaches readers instead of being masked by a cache nobody here controls.
+    """
+    digest = hashlib.sha256((post.folder / name).read_bytes()).hexdigest()[:8]
+    return f"{post.asset_base}{name}?v={digest}"
+
+
 def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
     alt, target = match.group("alt"), match.group("target")
 
@@ -252,7 +267,7 @@ def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
         name = target[len("drawing:") :]
         if not (post.folder / name).is_file():
             raise TransformError(f"{post.source}: no such drawing: {name}")
-        return f"![{alt}]({post.asset_base}{name})"
+        return f"![{alt}]({_asset_url(post, name)})"
 
     if "://" in target or target.startswith(("/", "#", "data:")):
         return f"![{alt}]({target})"
@@ -260,7 +275,7 @@ def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
     name = target[2:] if target.startswith("./") else target
     if not (post.folder / name).is_file():
         raise TransformError(f"{post.source}: no such image: {target}")
-    return f"![{alt}]({post.asset_base}{name})"
+    return f"![{alt}]({_asset_url(post, name)})"
 
 
 def _link(match: re.Match, post: Post, by_path: dict[str, Post]) -> str:

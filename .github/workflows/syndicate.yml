@@ -20,7 +20,7 @@ on:
       platform:
         description: Comma separated platform names
         type: string
-        default: devto,hashnode
+        default: devto
 
 permissions:
   contents: write
@@ -68,7 +68,11 @@ jobs:
           # so nothing typed into the dispatch form reaches the shell as code.
           # On a workflow_run there are no inputs, which is what makes the
           # automatic path publish for real.
-          PLATFORM: ${{ inputs.platform || 'devto,hashnode' }}
+          # Not hashnode: its API needs a paid plan on the publication,
+          # so including it here would fail every automatic run for a
+          # platform that was never going to publish. Ask for it explicitly
+          # through the dispatch form once the publication is on Pro.
+          PLATFORM: ${{ inputs.platform || 'devto' }}
           DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
         run: |
           uv run python -m tools.syndication sync \
@@ -78,8 +82,11 @@ jobs:
       # can re-find its own post by canonical URL -- so a push that loses a
       # race with a human commit costs one extra API read next time, not a
       # duplicate article. That is why this step is allowed to fail.
+      # Runs even when the step above failed. A platform that errored does
+      # not undo the posts that went out before it, and leaving their ids
+      # unwritten is the one thing that makes the next run guess.
       - name: Record what was published
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !cancelled() && !inputs.dry_run }}
         continue-on-error: true
         run: |
           [ -f syndication.json ] || exit 0
