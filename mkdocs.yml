@@ -90,6 +90,11 @@ extra_css:
 # every drawing into the gh-pages branch — around 12 MB per 250 drawings. Only
 # post folders are excluded: an SVG meant to be served normally, as a plain
 # <img>, belongs in docs/assets/, which is untouched by this.
+#
+# One exception, and it does not reopen the bloat: cross-posts need a real URL
+# for a drawing, so hooks/drawings.py writes a standalone copy of each drawing
+# an article actually referenced straight into site_dir. That is a handful of
+# files rather than everything sitting in a post folder.
 exclude_docs: |
   articles/posts/**/*.svg
 

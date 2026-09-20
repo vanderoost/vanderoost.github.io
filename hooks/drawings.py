@@ -14,16 +14,26 @@ what actually changed on the canvas instead of a rewrite of every colour.
 Already-converted files still work, so exports themed by hand earlier are left
 alone.
 
+Inlining leaves the SVG itself with no public URL, which is fine for this
+site and useless for a cross-post: dev.to and Hashnode take an image URL, not
+markup. So on_post_build() writes a standalone copy of every drawing an
+article actually referenced, themed to follow the reader's system preference
+on its own. Only referenced drawings are written, which is what keeps this
+from undoing the exclude_docs rule in mkdocs.yml.
+
 The fence walker below is deliberately a copy of the one in hooks/youtube.py
 rather than a shared import: MkDocs loads each hook by file path without
 putting the directory on sys.path, so siblings cannot import each other.
 """
 
 import importlib.util
+import logging
 import re
 from pathlib import Path
 
 from mkdocs.exceptions import PluginError
+
+log = logging.getLogger("mkdocs.hooks.drawings")
 
 # tools/ is not a package and is not on sys.path — see the note above — so the
 # converter is loaded by the path it actually lives at. Keeping the colour
@@ -36,6 +46,12 @@ _spec.loader.exec_module(tldraw_theme)
 # A drawing is converted once per build, not once per reference, and survives
 # across the rebuilds of "mkdocs serve" unless the file itself changes.
 _CACHE: dict[tuple[str, int], str] = {}
+
+# Destination path inside site_dir -> the drawing that should be written there.
+# Filled while pages are rendered and drained by on_post_build(). Cleared at
+# the start of every build so a drawing removed from an article during
+# "mkdocs serve" stops being published.
+_REFERENCED: dict[str, Path] = {}
 
 
 def _themed(source: Path, src_path: str) -> str:
@@ -66,10 +82,12 @@ def _escape(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _inline(match: re.Match, page_dir: Path, src_path: str) -> str:
+def _inline(match: re.Match, page_dir: Path, src_path: str, dest_dir: str) -> str:
     source = page_dir / match.group("src")
     if not source.is_file():
         raise PluginError(f"{src_path}: no such drawing: {match.group('src')}")
+
+    _REFERENCED[f"{dest_dir}/{source.name}"] = source
 
     svg = _themed(source, src_path).strip()
     open_tag = SVG_OPEN.search(svg)
@@ -110,14 +128,28 @@ def _refuse_plain(match: re.Match, page_dir: Path, src_path: str, config) -> Non
         )
 
 
+def on_files(files, config):
+    """Forget the previous build's references, so "mkdocs serve" stays honest."""
+    _REFERENCED.clear()
+    return files
+
+
 def on_page_markdown(markdown: str, page, config, files) -> str:
     page_dir = Path(page.file.abs_src_path).parent
     src_path = page.file.src_path
 
+    # Material's blog plugin publishes a post's media by dropping the "posts"
+    # segment from its source path and keeping the folder name, so
+    # articles/posts/2026-09-11_x/y.svg is served at articles/2026-09-11_x/y.svg.
+    # Deriving the destination the same way keeps the standalone copy beside
+    # the PNGs the same article already links to.
+    source_dir = Path(page.file.src_uri).parent
+    dest_dir = (source_dir.parent.parent / source_dir.name).as_posix()
+
     def rewrite(part: str) -> str:
         for match in PLAIN_SVG.finditer(part):
             _refuse_plain(match, page_dir, src_path, config)
-        return EMBED.sub(lambda m: _inline(m, page_dir, src_path), part)
+        return EMBED.sub(lambda m: _inline(m, page_dir, src_path, dest_dir), part)
 
     out, fence = [], None
     for line in markdown.split("\n"):
@@ -133,3 +165,21 @@ def on_page_markdown(markdown: str, page, config, files) -> str:
             )
         out.append(line)
     return "\n".join(out)
+
+
+def on_post_build(config):
+    """Publish a standalone copy of every drawing an article referenced.
+
+    Written straight into site_dir rather than added to the file list, because
+    exclude_docs in mkdocs.yml keeps post SVGs out of that list on purpose --
+    the same reason hooks/redirects.py writes its stubs here.
+    """
+    site_dir = Path(config["site_dir"])
+    for dest, source in _REFERENCED.items():
+        svg = tldraw_theme.standalone(_themed(source, dest))
+        page = site_dir / dest
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(svg, encoding="utf-8")
+
+    if _REFERENCED:
+        log.info("Published %d referenced drawing(s)", len(_REFERENCED))
