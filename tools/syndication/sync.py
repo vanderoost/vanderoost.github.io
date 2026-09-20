@@ -18,7 +18,12 @@ from pathlib import Path
 
 from .lint import check
 from .platforms import ADAPTERS
-from .platforms.base import Article, MissingCredentials, TransportError
+from .platforms.base import (
+    USER_AGENT,
+    Article,
+    MissingCredentials,
+    TransportError,
+)
 from .portable import to_portable
 from .posts import Post
 from .state import State, payload_hash
@@ -69,31 +74,50 @@ def configured(names: list[str], env=os.environ) -> list:
     return ready
 
 
+# One HEAD per distinct URL per run. Posts share a cover image and articles
+# get re-checked across platforms, so without this the same file is fetched
+# half a dozen times.
+_checked: dict[str, str | None] = {}
+
+
 def verify_assets(article: Article, root: Path, site_url: str) -> list[str]:
-    """Confirm every image in the body actually exists before a platform caches it.
+    """Confirm every image is live before a platform fetches and caches it.
 
     dev.to and Hashnode fetch images at publish time and cache what they get,
-    including a 404, so an image that is missing for the few seconds around a
-    deploy stays missing in the cross-post afterwards. A local build answers
-    this for free; without one, ask the live site.
+    including a 404 and including the placeholder they substitute for one. An
+    image that is missing for the few seconds around a deploy therefore stays
+    missing in the cross-post long after the real one is up.
+
+    Deliberately checked over the network rather than against a local site/
+    build. The local build answers "did mkdocs write this file", which is not
+    the question -- the platform fetches from vanderoost.com, and a file that
+    exists locally on an unmerged branch is exactly the case that looks fine
+    here and breaks there.
     """
-    site = root / "site"
     missing = []
     for match in ABSOLUTE_IMAGE.finditer(article.body):
         url = match.group("url")
         if not url.startswith(site_url):
             continue
-        relative = url[len(site_url) :].lstrip("/")
-        if site.is_dir():
-            if not (site / relative).is_file():
-                missing.append(f"{url} (not in the local site/ build)")
-            continue
-        try:
-            call = urllib.request.Request(url, method="HEAD")
-            urllib.request.urlopen(call, timeout=15).close()
-        except urllib.error.URLError as error:
-            missing.append(f"{url} ({error})")
+        if url not in _checked:
+            _checked[url] = _head(url)
+        if _checked[url]:
+            missing.append(f"{url} ({_checked[url]})")
     return missing
+
+
+def _head(url: str) -> str | None:
+    """None when the URL is fetchable, otherwise why it is not."""
+    try:
+        call = urllib.request.Request(
+            url, method="HEAD", headers={"User-Agent": USER_AGENT}
+        )
+        urllib.request.urlopen(call, timeout=15).close()
+        return None
+    except urllib.error.HTTPError as error:
+        return f"HTTP {error.code}"
+    except urllib.error.URLError as error:
+        return str(error.reason)
 
 
 def plan_for(
@@ -170,17 +194,21 @@ def run(
                 continue
 
             print(f"{plan.action:<20} {adapter.name:<10} {post.key}")
-            if plan.action == SKIP or dry_run:
+            if plan.action == SKIP:
                 continue
 
-            if verify:
-                missing = verify_assets(plan.article, root, site_url)
-                if missing:
-                    failures.append(
-                        f"{post.key} -> {adapter.name}: missing assets:\n  "
-                        + "\n  ".join(missing)
-                    )
-                    continue
+            # Checked even on a dry run: an image that is not live yet is the
+            # thing most worth knowing before anything is published, and it
+            # costs nothing to find out.
+            missing = verify_assets(plan.article, root, site_url) if verify else []
+            if missing:
+                failures.append(
+                    f"{post.key} -> {adapter.name}: these are not live yet, so "
+                    f"the platform would cache a 404:\n    " + "\n    ".join(missing)
+                )
+                continue
+            if dry_run:
+                continue
             try:
                 if plan.remote_id:
                     remote = adapter.update(plan.remote_id, plan.article)

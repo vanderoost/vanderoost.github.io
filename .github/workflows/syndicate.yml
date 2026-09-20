@@ -72,7 +72,7 @@ jobs:
           DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
         run: |
           uv run python -m tools.syndication sync \
-            --platform "$PLATFORM" --verify-assets $DRY_RUN
+            --platform "$PLATFORM" $DRY_RUN
 
       # syndication.json is a cache, not the source of truth -- every adapter
       # can re-find its own post by canonical URL -- so a push that loses a

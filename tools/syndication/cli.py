@@ -107,7 +107,7 @@ def _sync(args) -> int:
         dry_run=args.dry_run,
         force=args.force,
         published=not args.remote_draft,
-        verify=args.verify_assets,
+        verify=not args.skip_asset_check,
     )
 
     if failures:
@@ -216,9 +216,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="publish as a draft where the platform supports one",
     )
     sync.add_argument(
-        "--verify-assets",
+        "--skip-asset-check",
         action="store_true",
-        help="check every image resolves before a platform caches a 404",
+        help="publish without checking that every image is live first",
     )
     sync.set_defaults(run=_sync)
 

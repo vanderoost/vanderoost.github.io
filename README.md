@@ -235,6 +235,13 @@ uv run python -m tools.syndication status
 uv run python -m tools.syndication sync --platform devto --remote-draft <post>
 ```
 
+Every image is checked against the live site before anything is published,
+including on a dry run. Both platforms fetch images when a post goes out and
+cache whatever they get, a 404 included, so an image that is not deployed yet
+stays broken in the cross-post long after the real one is up. That is also why
+the workflow runs after `ci`, not alongside it. `--skip-asset-check` turns the
+check off.
+
 `syndication.json` at the repo root records which remote post belongs to which
 article. It is a cache, not the source of truth — every adapter can re-find its
 own post by canonical URL — so losing it costs one extra API read rather than a

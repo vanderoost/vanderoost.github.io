@@ -136,46 +136,68 @@ def entries() -> dict[str, tuple[str, str]]:
     }
 
 
+# The standalone copy is flattened to literal colors on an opaque background,
+# and deliberately does not theme itself. The temptation is to carry both
+# palettes in an internal <style> and let prefers-color-scheme pick, since an
+# SVG loaded through <img> does get its own stylesheet. Two things kill that.
+# dev.to rasterizes the file server side, where there is no reader to ask, so
+# the light palette would win anyway. And cairosvg -- the rasterizer this very
+# project already depends on -- cannot parse var() at all and dies on it, which
+# is a fair warning about the renderers on the other end of a cross-post.
+#
+# So: light palette, painted over white. A tldraw export is transparent with
+# near-black strokes, which on dev.to's dark theme is a drawing nobody can see;
+# an opaque background reads correctly on any page, the way a screenshot does.
+BACKGROUND = "#ffffff"
+
+VIEWBOX = re.compile(
+    r'viewBox="\s*(-?[\d.]+)[\s,]+(-?[\d.]+)[\s,]+(-?[\d.]+)[\s,]+(-?[\d.]+)'
+)
+
+# What convert() writes: the variable, then the light value as the fallback.
+VARIABLE = re.compile(r"var\(--rvo-draw-[a-z-]+,\s*(?P<light>[^)]+)\)")
+
+
+def _background(open_tag: re.Match) -> str:
+    """A rect covering the whole canvas, slightly oversized against rounding."""
+    box = VIEWBOX.search(open_tag.group(0))
+    if box:
+        x, y, width, height = (float(value) for value in box.groups())
+    else:
+        x = y = 0.0
+        size = re.search(r'width="([\d.]+)".*?height="([\d.]+)"', open_tag.group(0))
+        if not size:
+            return ""
+        width, height = float(size.group(1)), float(size.group(2))
+    pad = max(width, height) * 0.01
+    return (
+        f'<rect x="{x - pad:.2f}" y="{y - pad:.2f}" '
+        f'width="{width + pad * 2:.2f}" height="{height + pad * 2:.2f}" '
+        f'fill="{BACKGROUND}"/>'
+    )
+
+
 def standalone(svg: str) -> str:
-    """Give a converted drawing its own copy of the palette, both schemes.
+    """Flatten a converted drawing into one a stranger's renderer can draw.
 
-    hooks/drawings.py inlines drawings because an <img src="drawing.svg"> is a
-    separate document that cannot see the page's CSS. Cross-posts have no such
-    option: dev.to and Hashnode take a URL, so the drawing has to arrive as a
-    standalone file and theme itself.
+    hooks/drawings.py inlines drawings into the page because an
+    <img src="drawing.svg"> is a separate document that cannot see the page's
+    CSS, so the variables would never resolve. Cross-posts have no such option:
+    dev.to and Hashnode take a URL, so the drawing has to arrive as a file that
+    stands on its own, with no stylesheet to depend on and nothing clever in it.
 
-    It can. A separate document still gets its own stylesheet and its own
-    prefers-color-scheme, so carrying the variable definitions inside the file
-    -- rather than expecting extra.css to supply them -- makes the drawing
-    follow the reader's system theme on somebody else's site. Only the
-    variables the drawing actually uses are written out, which keeps a typical
-    export at a dozen definitions rather than the palette's 150-odd.
+    See the note above BACKGROUND for why that means literal colors rather than
+    a self-theming file.
     """
-    known = entries()
-    found = re.findall(r"var\((--rvo-draw-[a-z-]+)", svg)
-    used = sorted({name for name in found if name in known})
     open_tag = re.search(r"<svg\b[^>]*>", svg)
     if not open_tag:
-        raise SystemExit("not an SVG: no <svg> element to style")
-    if not used or "<style>" in svg[: open_tag.end() + 200]:
-        return svg
+        raise SystemExit("not an SVG: no <svg> element")
 
-    def block(mode: str, indent: str) -> str:
-        lines = [f"{indent}:root {{"]
-        for name in used:
-            color, variant = known[name]
-            lines.append(f"{indent}  {name}: {PALETTE[mode][color][variant]};")
-        lines.append(f"{indent}}}")
-        return "\n".join(lines)
-
-    style = (
-        "<style>\n"
-        + block("light", "")
-        + "\n@media (prefers-color-scheme: dark) {\n"
-        + block("dark", "  ")
-        + "\n}\n</style>"
-    )
-    return svg[: open_tag.end()] + style + svg[open_tag.end() :]
+    # Each var() already carries its light value as the fallback, so flattening
+    # is just keeping that and dropping the indirection.
+    head = open_tag.group(0)
+    body = VARIABLE.sub(lambda m: m.group("light").strip(), svg[open_tag.end() :])
+    return head + _background(open_tag) + body
 
 
 def emit_css(paths: list[Path]) -> str:
