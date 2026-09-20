@@ -207,10 +207,18 @@ back here, so search engines keep treating vanderoost.com as the original.
 not during, because both platforms fetch the images at publish time and cache
 a 404 as readily as a picture.
 
-Set four repository secrets: `DEVTO_API_KEY` (dev.to → Settings → Extensions),
-`HASHNODE_TOKEN` (Hashnode → Settings → Developer → Personal Access Token),
-`HASHNODE_PUBLICATION_ID`, and optionally `DEVTO_ORGANIZATION_ID`. A platform
-with no token is skipped rather than failing the run, so you can start with one.
+Set `DEVTO_API_KEY` as a repository secret (dev.to → Settings → Extensions),
+and optionally `DEVTO_ORGANIZATION_ID`. A platform with no token is skipped
+with a one-line notice rather than failing the run, so one is enough to start.
+
+Hashnode is implemented but not enabled here, because its API stopped being
+free on 2026-05-13: every call, reads included, now needs a Pro plan on the
+publication. Publications that had a custom domain, webhooks or GitHub backup
+before Pro launched are grandfathered. To turn it on, upgrade under Billing in
+the blog dashboard and set `HASHNODE_TOKEN` (Settings → Developer → Personal
+Access Token) and `HASHNODE_PUBLICATION_ID` — the 24-character id in your
+dashboard URL, `hashnode.com/dashboards/<id>/general`, not the blog's
+subdomain.
 
 Locally, with the same variables in your environment:
 
