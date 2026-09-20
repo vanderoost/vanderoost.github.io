@@ -1,0 +1,95 @@
+name: syndicate
+
+# Deliberately a separate workflow rather than another step in ci.yml.
+# Cross-posting has to happen after the site is live: dev.to and Hashnode
+# fetch the images and Open Graph data at publish time and cache what they
+# get, including a 404. Run this while gh-deploy is still writing the
+# gh-pages branch and the cross-post keeps broken images afterwards, long
+# after the real ones are up. Hence workflow_run, which waits for ci to
+# finish rather than racing it.
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Only read from the platforms, and print what would change
+        type: boolean
+        default: true
+      platform:
+        description: Comma separated platform names
+        type: string
+        default: devto,hashnode
+
+permissions:
+  contents: write
+
+# Two runs at once could each decide to create the same article, so they do
+# not overlap. Never cancel a run in progress: it may be midway through
+# writing down a remote id it will otherwise lose.
+concurrency:
+  group: syndicate
+  cancel-in-progress: false
+
+jobs:
+  syndicate:
+    # A fork's pull request gets no secrets, and a deploy from anywhere but
+    # main is not a publish, so neither should reach the platforms.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+
+    # Pinned exactly, including the runner image, for the same reason ci.yml
+    # pins everything: bumping a version is a deliberate edit, not something
+    # that happens on its own between two deploys.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: main
+
+      - uses: astral-sh/setup-uv@v9.0.0
+        with:
+          enable-cache: true
+
+      # No imaging libraries here, unlike ci.yml: this job never builds the
+      # site. It reads the Markdown sources and talks to two JSON APIs.
+      - run: uv sync --locked
+
+      - name: Cross-post
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          DEVTO_ORGANIZATION_ID: ${{ secrets.DEVTO_ORGANIZATION_ID }}
+          HASHNODE_TOKEN: ${{ secrets.HASHNODE_TOKEN }}
+          HASHNODE_PUBLICATION_ID: ${{ secrets.HASHNODE_PUBLICATION_ID }}
+          # Through the environment rather than interpolated into the command,
+          # so nothing typed into the dispatch form reaches the shell as code.
+          # On a workflow_run there are no inputs, which is what makes the
+          # automatic path publish for real.
+          PLATFORM: ${{ inputs.platform || 'devto,hashnode' }}
+          DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: |
+          uv run python -m tools.syndication sync \
+            --platform "$PLATFORM" --verify-assets $DRY_RUN
+
+      # syndication.json is a cache, not the source of truth -- every adapter
+      # can re-find its own post by canonical URL -- so a push that loses a
+      # race with a human commit costs one extra API read next time, not a
+      # duplicate article. That is why this step is allowed to fail.
+      - name: Record what was published
+        if: ${{ !inputs.dry_run }}
+        continue-on-error: true
+        run: |
+          [ -f syndication.json ] || exit 0
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add syndication.json
+          git diff --cached --quiet && exit 0
+          git commit -m 'chore: record syndication state [skip ci]'
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1

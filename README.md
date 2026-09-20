@@ -166,6 +166,11 @@ Because the drawing is inlined, the SVG file itself is never fetched, so
 would otherwise be duplicated into the `gh-pages` branch for nothing. An SVG
 meant to be served normally belongs in `docs/assets/`.
 
+Cross-posts are the one exception, since dev.to and Hashnode need a URL rather
+than markup. `hooks/drawings.py` writes a standalone copy of each drawing an
+article actually referenced straight into the built site, carrying both
+palettes so it follows the reader's system theme on somebody else's page.
+
 Put `<!-- more -->` above the first drawing. Everything before it is the
 excerpt the blog index, the archive and each category page render, and a
 drawing above the separator is inlined into all of them at once.
@@ -193,6 +198,45 @@ GitHub Pages serves static files only and cannot issue a real 301, so
 `hooks/redirects.py` writes a self-forwarding HTML page per entry at build
 time. It fails the build on a malformed entry, a duplicate slug, or a slug that
 collides with a page the site already publishes.
+
+### 5. Cross-posting
+
+Articles are republished to dev.to and Hashnode with a canonical URL pointing
+back here, so search engines keep treating vanderoost.com as the original.
+`.github/workflows/syndicate.yml` runs after every successful deploy — after,
+not during, because both platforms fetch the images at publish time and cache
+a 404 as readily as a picture.
+
+Set four repository secrets: `DEVTO_API_KEY` (dev.to → Settings → Extensions),
+`HASHNODE_TOKEN` (Hashnode → Settings → Developer → Personal Access Token),
+`HASHNODE_PUBLICATION_ID`, and optionally `DEVTO_ORGANIZATION_ID`. A platform
+with no token is skipped rather than failing the run, so you can start with one.
+
+Locally, with the same variables in your environment:
+
+```bash
+# What a platform would receive, no network at all
+uv run python -m tools.syndication render histogram-plotting-in-the-terminal
+uv run python -m tools.syndication render <post> --json
+
+# What would change, read-only
+uv run python -m tools.syndication sync --dry-run
+uv run python -m tools.syndication status
+
+# Try one article privately first: dev.to gives a draft a real URL
+uv run python -m tools.syndication sync --platform devto --remote-draft <post>
+```
+
+`syndication.json` at the repo root records which remote post belongs to which
+article. It is a cache, not the source of truth — every adapter can re-find its
+own post by canonical URL — so losing it costs one extra API read rather than a
+duplicate article. `reconcile` rebuilds it from the platforms.
+
+Posts are cross-posted as Markdown, so `tools/syndication/portable.py`
+translates what Material adds on top: content tabs, admonitions, attribute
+lists, and the `youtube:` and `drawing:` pseudo images. Anything it does not
+recognise stops the run instead of shipping as literal punctuation. If you add
+a new Markdown extension to `mkdocs.yml`, expect to teach that file about it.
 
 ## Deployment
 

@@ -6,7 +6,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -14,8 +16,9 @@ from . import state as state_module
 from . import sync as sync_module
 from .lint import LintError, check
 from .platforms import ADAPTERS
-from .platforms.base import TransportError
+from .platforms.base import MissingCredentials, TransportError
 from .portable import PLAIN, TransformError, to_portable
+from .sync import article_for
 from .posts import Post, PostError, discover, resolve, site_config
 
 # The package lives at tools/syndication/, so the repository root is two
@@ -47,13 +50,30 @@ def _list(args) -> int:
 
 
 def _render(args) -> int:
+    """Show what a platform would receive. Makes no network calls at all."""
     posts = discover(ROOT, include_drafts=True)
+    adapter = ADAPTERS[args.platform] if args.platform else None
+    if adapter is not None:
+        # --json prints a real request body, which needs the credentials that
+        # carry the publication id. Without them, show the Markdown only.
+        try:
+            adapter.configure(os.environ)
+        except MissingCredentials as error:
+            if args.json:
+                raise PostError(f"--json for {args.platform} needs {error}") from error
+
     for post in resolve(ROOT, args.posts, include_drafts=True):
-        body = to_portable(post, posts, PLAIN, footer=not args.no_footer)
-        check(body, str(post.source))
+        dialect = adapter.dialect if adapter else PLAIN
+        body = to_portable(post, posts, dialect, footer=not args.no_footer)
+        check(body, str(post.source), liquid_tags=bool(adapter and adapter.liquid_tags))
+
         if len(args.posts) != 1:
             print(f"\n{'=' * 72}\n{post.key}\n{'=' * 72}\n")
-        print(body, end="")
+        if args.json:
+            article = article_for(post, posts, adapter, published=True)
+            print(json.dumps(adapter.payload(article), indent=2, sort_keys=True))
+        else:
+            print(body, end="")
     return EXIT_OK
 
 
@@ -159,6 +179,16 @@ def build_parser() -> argparse.ArgumentParser:
     render.add_argument("posts", nargs="*", help="folder name, slug, or path")
     render.add_argument(
         "--no-footer", action="store_true", help="omit the 'originally published' note"
+    )
+    render.add_argument(
+        "--platform",
+        choices=sorted(ADAPTERS),
+        help="render in one platform's dialect rather than plain Markdown",
+    )
+    render.add_argument(
+        "--json",
+        action="store_true",
+        help="print the literal request body instead of the Markdown",
     )
     render.set_defaults(run=_render)
 
