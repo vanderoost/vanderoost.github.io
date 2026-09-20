@@ -167,9 +167,15 @@ would otherwise be duplicated into the `gh-pages` branch for nothing. An SVG
 meant to be served normally belongs in `docs/assets/`.
 
 Cross-posts are the one exception, since dev.to and Hashnode need a URL rather
-than markup. `hooks/drawings.py` writes a standalone copy of each drawing an
-article actually referenced straight into the built site, carrying both
-palettes so it follows the reader's system theme on somebody else's page.
+than markup. `hooks/drawings.py` publishes a PNG of each drawing an article
+actually referenced straight into the built site, rendered in the light
+palette on an opaque background so it reads on any page.
+
+A PNG rather than the SVG, which is the obvious choice and does not work:
+dev.to's image proxy passes SVG bytes through labelled `image/webp`, so the
+browser tries to decode an SVG as WebP and draws a broken image. Self-theming
+the SVG with `prefers-color-scheme` does not survive either, because dev.to
+rasterizes server side where there is no reader to ask.
 
 Put `<!-- more -->` above the first drawing. Everything before it is the
 excerpt the blog index, the archive and each category page render, and a

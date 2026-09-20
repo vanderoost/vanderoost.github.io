@@ -99,3 +99,7 @@ target/
 # syndication.json is written through a temporary file, which os.replace()
 # removes; one only survives an interrupted run.
 syndication.json.tmp
+
+# Local credentials for tools/syndication while debugging. Never committed;
+# CI gets the same values from repository secrets.
+.env.local

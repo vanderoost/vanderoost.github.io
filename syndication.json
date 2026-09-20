@@ -1,13 +1,35 @@
 {
   "posts": {
+    "2026-08-05_7-levels-effective-makefile-automation": {
+      "canonical_url": "https://vanderoost.com/articles/2026/08/05/levels-of-effective-makefile-cheatsheet/",
+      "platforms": {
+        "devto": {
+          "id": "4700032",
+          "payload_hash": "2092e1b14947b0d1aaa5fd239bc288e414bf0b4fa7935b43266a6559f3f62486",
+          "synced_at": "2026-09-20T13:52:27Z",
+          "url": "https://dev.to/vanderoost/the-7-levels-of-highly-effective-makefiles-758"
+        }
+      }
+    },
     "2026-09-11_histogram-plotting-in-the-terminal": {
       "canonical_url": "https://vanderoost.com/articles/2026/09/11/histogram-plotting-in-the-terminal/",
       "platforms": {
         "devto": {
           "id": "4699963",
-          "payload_hash": "d9fd382715965c5582dc592dbd069c5e4bc07426d41c721d68f975517d9e5468",
-          "synced_at": "2026-09-20T13:29:46Z",
+          "payload_hash": "08db19d98079883f682da8915f091bbe2f3280d87ac2137fe6c025d7bc3ca2a1",
+          "synced_at": "2026-09-20T14:04:09Z",
           "url": "https://dev.to/vanderoost/plotting-histograms-in-the-terminal-4hkg"
+        }
+      }
+    },
+    "2026-09-13_why-company-ai-projects-fail": {
+      "canonical_url": "https://vanderoost.com/articles/2026/09/13/why-company-ai-projects-fail/",
+      "platforms": {
+        "devto": {
+          "id": "4700033",
+          "payload_hash": "8d0f90afd4e5e761048ed17542d4ce6ce3a0eee9a8434b59164487680c99b014",
+          "synced_at": "2026-09-20T13:52:29Z",
+          "url": "https://dev.to/vanderoost/why-95-of-company-ai-projects-fail-1614"
         }
       }
     }

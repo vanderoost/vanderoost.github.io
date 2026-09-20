@@ -18,11 +18,11 @@ carry a copy; this package has no such excuse.
 
 from __future__ import annotations
 
-import hashlib
 import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 
+from .. import tldraw_theme
 from .posts import Post
 
 # Every construct below is matched only outside fenced and inline code, so an
@@ -238,17 +238,14 @@ def _fences(text: str, dialect: Dialect, where: str) -> str:
 
 
 def _asset_url(post: Post, name: str) -> str:
-    """The public URL of a file in the post folder, fingerprinted by content.
+    """The public URL of a file sitting next to the post's index.md.
 
-    The ?v= is not decoration. Both platforms fetch an image once and cache
-    what they get behind their own proxy, keyed on this URL -- dev.to served a
-    cached "image no longer exists" placeholder for a drawing that had since
-    gone live, because the URL had not changed. Naming the file by what is in
-    it means an edited image is a new URL, so a corrected picture actually
-    reaches readers instead of being masked by a cache nobody here controls.
+    Deliberately no cache-busting query. dev.to's proxy stops converting an
+    image the moment its URL carries one, and serves the original bytes under
+    the wrong content type instead. Drawings get a fingerprint in the filename
+    instead -- see tldraw_theme.published_name().
     """
-    digest = hashlib.sha256((post.folder / name).read_bytes()).hexdigest()[:8]
-    return f"{post.asset_base}{name}?v={digest}"
+    return f"{post.asset_base}{name}"
 
 
 def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
@@ -267,7 +264,11 @@ def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
         name = target[len("drawing:") :]
         if not (post.folder / name).is_file():
             raise TransformError(f"{post.source}: no such drawing: {name}")
-        return f"![{alt}]({_asset_url(post, name)})"
+        # hooks/drawings.py publishes drawings as a fingerprinted PNG, not
+        # SVG -- see the note in its docstring about dev.to mislabelling the
+        # content type of anything it did not convert.
+        published = tldraw_theme.published_name(post.folder / name)
+        return f"![{alt}]({_asset_url(post, published)})"
 
     if "://" in target or target.startswith(("/", "#", "data:")):
         return f"![{alt}]({target})"

@@ -23,6 +23,7 @@ up as a failed conversion rather than a drawing that quietly stops theming.
 """
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -136,44 +137,132 @@ def entries() -> dict[str, tuple[str, str]]:
     }
 
 
-# The standalone copy is flattened to literal colors on an opaque background,
+# The standalone copy is flattened to literal sRGB on an opaque background,
 # and deliberately does not theme itself. The temptation is to carry both
 # palettes in an internal <style> and let prefers-color-scheme pick, since an
 # SVG loaded through <img> does get its own stylesheet. Two things kill that.
 # dev.to rasterizes the file server side, where there is no reader to ask, so
 # the light palette would win anyway. And cairosvg -- the rasterizer this very
-# project already depends on -- cannot parse var() at all and dies on it, which
-# is a fair warning about the renderers on the other end of a cross-post.
+# project already depends on -- cannot parse var() at all and dies on it,
+# which is a fair warning about the renderers on the other end of a
+# cross-post.
 #
 # So: light palette, painted over white. A tldraw export is transparent with
-# near-black strokes, which on dev.to's dark theme is a drawing nobody can see;
-# an opaque background reads correctly on any page, the way a screenshot does.
+# near-black strokes, which on dev.to's dark theme is a drawing nobody can
+# see; an opaque background reads correctly on any page, the way a screenshot
+# does.
 BACKGROUND = "#ffffff"
 
+# Breathing room around the drawing. Harmless on the site, where the drawing
+# is inlined over the page background and the stylesheet handles spacing, and
+# necessary here: once there is an opaque panel behind it, a stroke that runs
+# to the edge of the canvas looks like it has been cropped.
+PADDING = 0.04
+
 VIEWBOX = re.compile(
-    r'viewBox="\s*(-?[\d.]+)[\s,]+(-?[\d.]+)[\s,]+(-?[\d.]+)[\s,]+(-?[\d.]+)'
+    r'viewBox="\s*(-?[\d.]+)[\s,]+(-?[\d.]+)[\s,]+(-?[\d.]+)[\s,]+(-?[\d.]+)\s*"'
 )
+DIMENSION = re.compile(r'\b(width|height)="([\d.]+)"')
 
-# What convert() writes: the variable, then the light value as the fallback.
-VARIABLE = re.compile(r"var\(--rvo-draw-[a-z-]+,\s*(?P<light>[^)]+)\)")
+VAR = "var(--rvo-draw-"
+
+# Bumped whenever standalone() starts producing a different picture from the
+# same drawing. The published filename is a hash of the source file, which is
+# what makes an edited drawing a new URL -- but a change in here is invisible
+# to that, and platforms cache hard enough that they would go on serving the
+# old rendering forever. dev.to had already re-hosted a copy of one of these
+# on its own S3 by the time the colors were fixed.
+RENDER = 2
 
 
-def _background(open_tag: re.Match) -> str:
-    """A rect covering the whole canvas, slightly oversized against rounding."""
-    box = VIEWBOX.search(open_tag.group(0))
-    if box:
-        x, y, width, height = (float(value) for value in box.groups())
-    else:
-        x = y = 0.0
-        size = re.search(r'width="([\d.]+)".*?height="([\d.]+)"', open_tag.group(0))
-        if not size:
-            return ""
-        width, height = float(size.group(1)), float(size.group(2))
-    pad = max(width, height) * 0.01
-    return (
-        f'<rect x="{x - pad:.2f}" y="{y - pad:.2f}" '
-        f'width="{width + pad * 2:.2f}" height="{height + pad * 2:.2f}" '
-        f'fill="{BACKGROUND}"/>'
+def published_name(source: Path) -> str:
+    """What a drawing is called once published for cross-posting.
+
+    The name covers both the drawing and how it is rendered, so either
+    changing moves the URL.
+
+    The hash is in the name rather than a ?v= query for a reason
+    found the hard way: dev.to's image proxy converts an image it is given a
+    plain URL for, and silently stops converting -- passing the original bytes
+    through under the wrong content type -- as soon as the URL carries a query
+    string. A name that changes with the file gets both, a fresh cache entry
+    for an edited drawing and a proxy that still does its job.
+
+    Defined here so hooks/drawings.py, which writes the file, and the
+    syndication tool, which writes the link, cannot disagree about it.
+    """
+    seed = f"{RENDER}".encode() + source.read_bytes()
+    return f"{source.stem}.{hashlib.sha256(seed).hexdigest()[:8]}.png"
+
+
+def _closing(text: str, opening: int) -> int:
+    """Index just past the ) matching the ( at opening."""
+    depth = 0
+    for index in range(opening, len(text)):
+        if text[index] == "(":
+            depth += 1
+        elif text[index] == ")":
+            depth -= 1
+            if depth == 0:
+                return index + 1
+    raise SystemExit("unbalanced var() in drawing")
+
+
+def flatten(svg: str) -> str:
+    """Replace every var() with the light palette's sRGB value.
+
+    Resolved through the variable name rather than by keeping the fallback
+    already written in the file, because that fallback can be a wide-gamut
+    color(display-p3 ...) -- which is what tldraw writes for highlighter
+    strokes, and what cairosvg silently renders as black. Every palette entry
+    has an sRGB twin, so the name is the thing to trust.
+    """
+    known = entries()
+    out, position = [], 0
+    while True:
+        start = svg.find(VAR, position)
+        if start < 0:
+            out.append(svg[position:])
+            return "".join(out)
+
+        end = _closing(svg, start + len("var"))
+        name = re.match(r"var\((--rvo-draw-[a-z0-9-]+)", svg[start:end])
+        if not name:
+            raise SystemExit(f"cannot read a variable name in {svg[start:end][:60]!r}")
+        entry = known.get(name.group(1))
+        if entry is None:
+            raise SystemExit(f"{name.group(1)} is not a drawing color")
+
+        color, variant = entry
+        # highlightP3 and highlightSrgb share one variable name; the sRGB one
+        # is the value every renderer understands.
+        if variant == "highlightP3":
+            variant = "highlightSrgb"
+        out.append(svg[position:start])
+        out.append(PALETTE["light"][color][variant])
+        position = end
+
+
+def _pad(open_tag: str) -> tuple[str, str]:
+    """Grow the canvas, and return the new tag plus a background covering it."""
+    box = VIEWBOX.search(open_tag)
+    if not box:
+        return open_tag, ""
+
+    x, y, width, height = (float(value) for value in box.groups())
+    pad = max(width, height) * PADDING
+    x, y, width, height = x - pad, y - pad, width + pad * 2, height + pad * 2
+
+    tag = VIEWBOX.sub(f'viewBox="{x:.2f} {y:.2f} {width:.2f} {height:.2f}"', open_tag)
+    # width and height carry the intrinsic size, so they have to grow too or
+    # the padded canvas is squeezed back into the original aspect ratio.
+    tag = DIMENSION.sub(
+        lambda m: f'{m.group(1)}="{width if m.group(1) == "width" else height:.2f}"',
+        tag,
+    )
+    return tag, (
+        f'<rect x="{x:.2f}" y="{y:.2f}" '
+        f'width="{width:.2f}" height="{height:.2f}" fill="{BACKGROUND}"/>'
     )
 
 
@@ -182,22 +271,20 @@ def standalone(svg: str) -> str:
 
     hooks/drawings.py inlines drawings into the page because an
     <img src="drawing.svg"> is a separate document that cannot see the page's
-    CSS, so the variables would never resolve. Cross-posts have no such option:
-    dev.to and Hashnode take a URL, so the drawing has to arrive as a file that
-    stands on its own, with no stylesheet to depend on and nothing clever in it.
+    CSS, so the variables would never resolve. Cross-posts have no such
+    option: dev.to and Hashnode take a URL, so the drawing has to arrive as a
+    file that stands on its own, with no stylesheet to depend on and nothing
+    clever in it.
 
-    See the note above BACKGROUND for why that means literal colors rather than
-    a self-theming file.
+    See the notes above BACKGROUND and PADDING for why that means literal
+    colors on a padded, opaque canvas.
     """
     open_tag = re.search(r"<svg\b[^>]*>", svg)
     if not open_tag:
         raise SystemExit("not an SVG: no <svg> element")
 
-    # Each var() already carries its light value as the fallback, so flattening
-    # is just keeping that and dropping the indirection.
-    head = open_tag.group(0)
-    body = VARIABLE.sub(lambda m: m.group("light").strip(), svg[open_tag.end() :])
-    return head + _background(open_tag) + body
+    tag, background = _pad(open_tag.group(0))
+    return tag + background + flatten(svg[open_tag.end() :])
 
 
 def emit_css(paths: list[Path]) -> str:

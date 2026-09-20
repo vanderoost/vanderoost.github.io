@@ -16,10 +16,15 @@ alone.
 
 Inlining leaves the SVG itself with no public URL, which is fine for this
 site and useless for a cross-post: dev.to and Hashnode take an image URL, not
-markup. So on_post_build() writes a standalone copy of every drawing an
-article actually referenced, themed to follow the reader's system preference
-on its own. Only referenced drawings are written, which is what keeps this
-from undoing the exclude_docs rule in mkdocs.yml.
+markup. So on_post_build() publishes every drawing an article referenced, as a
+PNG. Only referenced drawings are written, which is what keeps this from
+undoing the exclude_docs rule in mkdocs.yml.
+
+A PNG rather than the SVG, which would be the obvious choice and does not
+work. dev.to serves images through a proxy that passed the SVG bytes through
+under "Content-Type: image/webp", so the browser tried to decode an SVG as
+WebP and drew a broken image instead. That is dev.to's bug and not one this
+side can fix, so the cross-post gets a format nothing can mislabel.
 
 The fence walker below is deliberately a copy of the one in hooks/youtube.py
 rather than a shared import: MkDocs loads each hook by file path without
@@ -27,6 +32,7 @@ putting the directory on sys.path, so siblings cannot import each other.
 """
 
 import importlib.util
+import io
 import logging
 import re
 from pathlib import Path
@@ -87,7 +93,7 @@ def _inline(match: re.Match, page_dir: Path, src_path: str, dest_dir: str) -> st
     if not source.is_file():
         raise PluginError(f"{src_path}: no such drawing: {match.group('src')}")
 
-    _REFERENCED[f"{dest_dir}/{source.name}"] = source
+    _REFERENCED[f"{dest_dir}/{tldraw_theme.published_name(source)}"] = source
 
     svg = _themed(source, src_path).strip()
     open_tag = SVG_OPEN.search(svg)
@@ -167,19 +173,53 @@ def on_page_markdown(markdown: str, page, config, files) -> str:
     return "\n".join(out)
 
 
+# Wide enough to stay sharp where dev.to renders an article image at 800
+# CSS pixels, without turning a line drawing into a megabyte.
+WIDTH = 1600
+
+# A drawing is flat colour and antialiasing, so a small palette costs nothing
+# visible and saves about two thirds of the file. Done with Pillow rather than
+# by shelling out to pngquant: the "optimize" plugin cannot reach these files,
+# because they are written after it has already run, and Pillow is a
+# dependency everywhere this builds while pngquant is an apt package CI
+# happens to install.
+COLORS = 64
+
+# Matches the rect standalone() paints, so flattening changes nothing.
+BACKGROUND = (255, 255, 255)
+
+
 def on_post_build(config):
-    """Publish a standalone copy of every drawing an article referenced.
+    """Publish a PNG of every drawing an article referenced.
 
     Written straight into site_dir rather than added to the file list, because
     exclude_docs in mkdocs.yml keeps post SVGs out of that list on purpose --
     the same reason hooks/redirects.py writes its stubs here.
     """
+    # Imported here rather than at module scope: cairosvg pulls in cairo
+    # through cffi, and a build with no drawings in it should not pay for
+    # that. The social plugin already requires it, so it is always present.
+    import cairosvg
+    from PIL import Image
+
     site_dir = Path(config["site_dir"])
     for dest, source in _REFERENCED.items():
         svg = tldraw_theme.standalone(_themed(source, dest))
         page = site_dir / dest
         page.parent.mkdir(parents=True, exist_ok=True)
-        page.write_text(svg, encoding="utf-8")
+        try:
+            raw = cairosvg.svg2png(
+                bytestring=svg.encode("utf-8"), output_width=WIDTH
+            )
+        except Exception as error:
+            raise PluginError(f"{source}: could not rasterize: {error}") from error
+
+        image = Image.open(io.BytesIO(raw))
+        # standalone() paints a background, so the alpha channel carries
+        # nothing but the edges. Flattening it keeps the palette for colours.
+        flat = Image.new("RGB", image.size, BACKGROUND)
+        flat.paste(image, mask=image.split()[3] if image.mode == "RGBA" else None)
+        flat.quantize(colors=COLORS).save(page, format="PNG", optimize=True)
 
     if _REFERENCED:
         log.info("Published %d referenced drawing(s)", len(_REFERENCED))
