@@ -95,3 +95,7 @@ target/
 # MkDocs build output; the live site is published to the gh-pages branch by
 # CI, so the built copy has no reason to be tracked here.
 /site/
+
+# syndication.json is written through a temporary file, which os.replace()
+# removes; one only survives an interrupted run.
+syndication.json.tmp
