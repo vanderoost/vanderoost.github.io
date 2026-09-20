@@ -5,8 +5,8 @@
       "platforms": {
         "devto": {
           "id": "4700032",
-          "payload_hash": "4d7d4f7261d2b5b5a71b922df4924d3d0ba4da614be32c28ec330c021be19f75",
-          "synced_at": "2026-09-20T14:19:11Z",
+          "payload_hash": "19cc99dec2bd4e2a38392a460357c71ead49fa18708e51c4f4328a68099357c3",
+          "synced_at": "2026-09-20T14:25:51Z",
           "url": "https://dev.to/vanderoost/the-7-levels-of-highly-effective-makefiles-758"
         }
       }
@@ -16,8 +16,8 @@
       "platforms": {
         "devto": {
           "id": "4699963",
-          "payload_hash": "d1a6e825c36e7ab48e9ed111d90f2ea29efe03c5a0911e8081daefffab12a10b",
-          "synced_at": "2026-09-20T14:11:01Z",
+          "payload_hash": "d1723f6ea01d4dc9119952937dd9521359adaeed029551ae1b7f844cb252813c",
+          "synced_at": "2026-09-20T14:25:55Z",
           "url": "https://dev.to/vanderoost/plotting-histograms-in-the-terminal-4hkg"
         }
       }
@@ -27,8 +27,8 @@
       "platforms": {
         "devto": {
           "id": "4700033",
-          "payload_hash": "2a5b9fcadad27dcdf5adc79573637ef504f0e56da79975081c315e744f0ba0d5",
-          "synced_at": "2026-09-20T14:11:02Z",
+          "payload_hash": "a707a5fa1806ee5b0011035962fa3becb0b9f4250ae6b5927fb0c3d79e039bd0",
+          "synced_at": "2026-09-20T14:25:55Z",
           "url": "https://dev.to/vanderoost/why-95-of-company-ai-projects-fail-1614"
         }
       }

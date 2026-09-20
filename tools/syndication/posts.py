@@ -79,7 +79,6 @@ class Post:
     links: tuple[tuple[str | None, str], ...]
     body: str
     canonical_url: str
-    cover_url: str
     asset_base: str
 
     @property
@@ -178,19 +177,6 @@ def canonical_url(site_url: str, blog_dir: str, created: dt.date, slug: str) -> 
     return f"{site_url}/{blog_dir}/{created:%Y/%m/%d}/{slug}/"
 
 
-def cover_url(site_url: str, blog_dir: str, created: dt.date, slug: str) -> str:
-    """Where the social plugin leaves this post's generated Open Graph card.
-
-    It is already 1200x630 and already carries the post's title, which is
-    exactly what both platforms want for a cover image, so there is nothing to
-    generate or upload.
-    """
-    return (
-        f"{site_url}/assets/images/social/{blog_dir}"
-        f"/{created:%Y/%m/%d}/{slug}/index.png"
-    )
-
-
 def asset_base(site_url: str, blog_dir: str, folder: str) -> str:
     """Where a file sitting next to index.md ends up on the site.
 
@@ -276,7 +262,6 @@ def load(source: Path, config: dict) -> Post:
             links=_links(meta),
             body=body,
             canonical_url=canonical_url(site_url, blog_dir, created, slug),
-            cover_url=cover_url(site_url, blog_dir, created, slug),
             asset_base=asset_base(site_url, blog_dir, source.parent.name),
         )
     except PostError as error:

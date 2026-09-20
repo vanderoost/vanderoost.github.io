@@ -24,7 +24,7 @@ from .platforms.base import (
     MissingCredentials,
     TransportError,
 )
-from .portable import to_portable
+from .portable import cover_url, to_portable
 from .posts import Post
 from .state import State, payload_hash
 
@@ -53,7 +53,7 @@ def article_for(post: Post, posts: list[Post], adapter, *, published: bool) -> A
         body=body,
         description=post.description,
         canonical_url=post.canonical_url,
-        cover_url=post.cover_url,
+        cover_url=cover_url(post),
         tags=post.tags,
         slug=post.slug,
         published=published,

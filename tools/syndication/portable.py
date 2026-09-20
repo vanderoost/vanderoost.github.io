@@ -346,6 +346,53 @@ def _asset_url(post: Post, name: str) -> str:
     return f"{post.asset_base}{name}"
 
 
+# YouTube always has this one, at a size worth using as a cover.
+THUMBNAIL = "https://i.ytimg.com/vi/{video}/maxresdefault.jpg"
+
+
+def cover_url(post: Post) -> str | None:
+    """The image a platform should show above the article, if any.
+
+    Deliberately not the site's generated Open Graph card. That card exists to
+    carry the title into a link preview, so on a platform that prints the
+    title underneath it, the reader meets the same words twice in the site's
+    own font -- which looks like a mistake, because it is one.
+
+    A video's thumbnail is the best cover a post can have, and the first image
+    in the article is the next best. A post with neither gets no cover at all,
+    which reads better than a picture of its own title.
+    """
+    video, image = None, None
+    for line, in_code in scan(post.body):
+        if in_code:
+            continue
+        for match in IMAGE.finditer(line):
+            target = match.group("target")
+            if target.startswith("youtube:") and video is None:
+                video = target[len("youtube:") :]
+            elif image is None and not target.startswith("youtube:"):
+                image = target
+
+    if video and VIDEO_ID.match(video):
+        return THUMBNAIL.format(video=video)
+    if image:
+        return _local_asset(post, image)
+    return None
+
+
+def _local_asset(post: Post, target: str) -> str | None:
+    """The published URL of an image in the post folder, or None if remote."""
+    if "://" in target or target.startswith(("/", "#", "data:")):
+        return None
+    if target.startswith("drawing:"):
+        name = target[len("drawing:") :]
+        if not (post.folder / name).is_file():
+            return None
+        return _asset_url(post, tldraw_theme.published_name(post.folder / name))
+    name = target[2:] if target.startswith("./") else target
+    return _asset_url(post, name) if (post.folder / name).is_file() else None
+
+
 def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
     alt, target = match.group("alt"), match.group("target")
 

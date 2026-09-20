@@ -17,7 +17,7 @@ from . import sync as sync_module
 from .lint import LintError, check
 from .platforms import ADAPTERS
 from .platforms.base import MissingCredentials, TransportError
-from .portable import PLAIN, TransformError, to_portable
+from .portable import PLAIN, TransformError, cover_url, to_portable
 from .sync import article_for
 from .posts import Post, PostError, discover, resolve, site_config
 
@@ -34,7 +34,7 @@ def _describe(post: Post) -> str:
         "title": post.title,
         "canonical": post.canonical_url,
         "assets": post.asset_base,
-        "cover": post.cover_url,
+        "cover": cover_url(post) or "-",
         "tags": ", ".join(post.tags) or "-",
         "description": post.description or "-",
     }
