@@ -232,17 +232,20 @@ def _take_body(lines: list[str], start: int) -> tuple[list[str], int]:
 
 def _tab_group(
     lines: list[str], states: list[bool], start: int
-) -> tuple[list[tuple[str, list[str]]], int]:
-    """Read a run of content tabs, default-selected one first.
+) -> tuple[list[str], int]:
+    """Read a run of content tabs and keep only the one that matters.
 
-    Material shows the tab marked with "===+" when the page loads, so that is
-    the content a reader of the original meets first. Flattened in source
-    order instead, the Makefile article opened its "this is the final Makefile
-    we'll end up with" on L1, a ten-line stub, with the actual final version
-    seven code blocks further down. Order here is what the reader sees, not
-    what the file happens to list.
+    Neither platform has tabs, and flattening a group into every tab in turn
+    buries the article: the Makefile piece became seven near-identical
+    Makefiles, pages of scrolling for a reader who wanted one. So the group
+    collapses to the tab Material would have opened on -- the one marked
+    "===+", or the first when none is -- and the alternatives are dropped.
+
+    The label goes with them. It named a choice between tabs, and once there
+    is nothing to choose it is a heading over a single block, cluttering the
+    article outline without telling the reader anything.
     """
-    tabs: list[tuple[str, list[str]]] = []
+    bodies: list[list[str]] = []
     selected = None
     index = start
     while index < len(lines):
@@ -251,12 +254,12 @@ def _tab_group(
             break
         body, index = _take_body(lines, index + 1)
         if match.group("marker").endswith("+") and selected is None:
-            selected = len(tabs)
-        tabs.append((match.group("label"), body))
+            selected = len(bodies)
+        bodies.append(body)
 
-    if selected is not None:
-        tabs.insert(0, tabs.pop(selected))
-    return tabs, index
+    if not bodies:
+        return [], index
+    return bodies[selected if selected is not None else 0], index
 
 
 def _blocks(text: str, where: str, depth: int = 0) -> str:
@@ -279,10 +282,10 @@ def _blocks(text: str, where: str, depth: int = 0) -> str:
         note = None if in_code else ADMONITION.match(line)
 
         if tab:
-            group, index = _tab_group(lines, states, index)
-            for label, body in group:
-                out += ["", f"#### {label}", ""]
-                out += _blocks("\n".join(body), where, depth + 1).split("\n")
+            body, index = _tab_group(lines, states, index)
+            out += [""]
+            out += _blocks("\n".join(body), where, depth + 1).split("\n")
+            out += [""]
         elif note:
             body, index = _take_body(lines, index + 1)
             title = note.group("title") or note.group("type").capitalize()
