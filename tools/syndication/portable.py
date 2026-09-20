@@ -79,6 +79,22 @@ KEYS = re.compile(r"\+\+([\w+-]+)\+\+")
 
 SNIPPET = re.compile(r"^[ \t]*--8<--")
 
+# A line that opens its own block rather than continuing the paragraph above
+# it: heading, list item, numbered item, quote, table row, fence, rule, raw
+# HTML, or an image sitting on a line of its own.
+BLOCK_START = re.compile(
+    r"^(?:#{1,6}[ \t]|[-*+][ \t]|\d+[.)][ \t]|>|\||```|~~~|---|\*\*\*|___|<|!\[)"
+)
+
+# Markdown's two ways of asking for a line break on purpose. Both are left
+# alone; it is only the incidental newlines from wrapping that get joined.
+HARD_BREAK = re.compile(r"(?:[ \t]{2,}|\\)$")
+
+# The "> " markers a line carries, so wrapped prose inside a quote can be
+# joined the same way as prose outside one. Admonitions become blockquotes
+# here, so their bodies arrive wrapped exactly like any other paragraph.
+QUOTE = re.compile(r"^(?P<prefix>(?:>[ \t]?)+)(?P<rest>.*)$")
+
 # Tab and admonition bodies are indented by one unit. This site's source uses
 # literal tabs; pymdownx also accepts four spaces, so both are recognised.
 INDENTS = ("\t", "    ")
@@ -138,6 +154,55 @@ def walk_prose(text: str, rewrite: Callable[[str], str]) -> str:
             )
         out.append(line)
     return "\n".join(out)
+
+
+def unwrap(text: str) -> str:
+    """Join lines that the author wrapped, so a paragraph is one line again.
+
+    dev.to renders Markdown with hard breaks on, meaning a single newline
+    inside a paragraph becomes a <br> rather than a space. The source here is
+    wrapped at 88 columns like the rest of the repository, so every paragraph
+    arrived broken at exactly the column the author's editor happened to wrap
+    at. A paragraph that is one long line renders the same everywhere, so this
+    is done for every platform rather than only for the one that needs it.
+
+    Deliberate breaks -- two trailing spaces or a backslash -- survive, as
+    does anything that opens a block of its own.
+    """
+    out: list[str] = []
+    previous_code = True
+    for line, in_code in scan(text):
+        prefix, rest = _quoted(line)
+        if out and not in_code and not previous_code:
+            above_prefix, above_rest = _quoted(out[-1])
+        else:
+            above_prefix, above_rest = None, None
+
+        joinable = (
+            above_rest is not None
+            and prefix == above_prefix
+            and rest.strip()
+            and above_rest.strip()
+            # An indented line is a list continuation or an indented code
+            # block, neither of which may be folded into the line above.
+            and not rest[:1].isspace()
+            and not above_rest[:1].isspace()
+            and not BLOCK_START.match(rest)
+            and not BLOCK_START.match(above_rest)
+            and not HARD_BREAK.search(above_rest)
+        )
+        if joinable:
+            out[-1] = f"{prefix}{above_rest.rstrip()} {rest.strip()}"
+        else:
+            out.append(line)
+        previous_code = in_code
+    return "\n".join(out)
+
+
+def _quoted(line: str) -> tuple[str, str]:
+    """Split a line into its blockquote markers and the text after them."""
+    match = QUOTE.match(line)
+    return (match.group("prefix"), match.group("rest")) if match else ("", line)
 
 
 def _dedent(lines: list[str]) -> list[str]:
@@ -369,6 +434,7 @@ def to_portable(
         return KEYS.sub(lambda m: f"`{m.group(1)}`", part)
 
     body = walk_prose(body, inline)
+    body = unwrap(body)
 
     # Three or more blank lines are a side effect of removing block markers,
     # and Hashnode renders them as visible gaps.
