@@ -9,6 +9,7 @@ categories:
   - Tutorials
 tags:
   - C
+  - From scratch
 draft: true
 ---
 
@@ -58,6 +59,31 @@ The quality of random numbers that `rand()` produces is poor, and we know that. 
 we look at some simple alternatives, we can easily get way higher quality random
 numbers. (longer periods for example, so less repetition in sequences)
 
+## Putting `rand()` to the test
+
+Humans are really good at recognizing visual patterns. So to test a random number
+generator, you can use visualization to expose flaws. Let's do that with `rand()`.
+
+If we create a 960 x 540 pixel buffer, and pick random color values for each pixel using
+`rand()` we get something like this:
+
+![simple random](./simple-rand.png){ .pixelated }
+
+Looks pretty random, no weird patterns or repetition to see there.
+
+If we change the way we color in the pixels though, we can push `rand()` to its limits.
+
+We'll take a certain amount of "samples". In every sample, we pick a random number to
+decide which pixel we're coloring, then we pick a random number that sets the color.
+
+We'll look at the code in a bit, but this is what the image looks like:
+
+[TODO: Image with stripes full]
+
+Looks okay at first glance, but if you zoom in you can clearly start to see some
+repetition:
+
+[TODO: Image with stipes zoomed in]
 
 ## RNG from first principles
 
@@ -135,11 +161,49 @@ As you can see, for the state we use a struct called `pcg32_random_t` that holds
 And calling the function `pcg32_random_r` scrambles the state a lot more than simply
 multiplying it by a constant.
 
+We also need to declare our global state. The minimum C example only has a typedef of a
+struct, but it's never instantiated. We can grab the following from the github repo.
+
+```c
+#define PCG32_INITIALIZER {0x853c49e6748fea9bULL, 0xda3e39cb94b95bdbULL}
+
+pcg32_random_t pcg32_global = PCG32_INITIALIZER;
+```
+Now we actually have some global state, and we're properly initializing it.
 
 ## Adding our own wrappers
 
-When I need a random number, I just want to call a short function, and don't worry about
-passing it anything. The `pcg32_random_r(pcg32_random_t* rng)` is not great for this, so
-let's wrap it with `rng_u` for *unsigned*.
+When I need a random number, I just want to call a simple function, and don't worry
+about passing it anything. The `pcg32_random_r(pcg32_random_t* rng)` wants a pointer to
+the global state, so let's wrap it with `#!c uint32_t rng_u(void)` with a `_u` for
+*unsigned*.
 
+```c
+uint32_t rng_u(void) {
+  return pcg32_random_r(&pcg32_global);
+}
+```
 
+This adds a bit of indirection, which can slow down the code. So later on we'll look at
+inlining `rng_u()` and `pcg32_random_r()`.
+
+In addition to random integers, I'd like to get random floats too. Let's add a
+`#!c float rng_f(void)`:
+
+```c
+float rng_f(void) {
+  return pcg32_random_r(&pcg32_global) / (UINT32_MAX + 1.0f);
+}
+```
+
+We're dividing by `UINT32_MAX + 1.0f` to make sure we get a range from 0.0 to 1.0 but we
+don't include 1.0, so `[0.0, 1.0)`. This is generally a more convenient type of range to
+work with for most applications where you want a random float in this range.
+
+Getting a random float this way is quite naive and can be improved a lot, which we will
+do in another article. So stay tuned if that's something you'd like to see.
+
+## Sampling from a normal distribution
+
+We can add one more random float flavour: a random number sampled from a normal
+distribution. This can be very useful in machine learning and statistics.

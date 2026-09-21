@@ -334,6 +334,19 @@ footer.md-footer {
   display: block;
 }
 
+/* Opt-in via ![alt](img.png){ .pixelated } for images whose point is the
+   individual pixels, such as RNG noise. Browsers smooth an upscaled image by
+   default, which turns noise into mush on a retina screen. Nearest-neighbour
+   keeps every source pixel a hard-edged block, so the file can stay small
+   instead of shipping a pre-upscaled 2x export. crisp-edges first for Firefox
+   before 93; the later pixelated wins everywhere it is understood.
+   Note this only applies when the browser scales the image UP -- a source
+   wider than its rendered size is downscaled, which smooths regardless. */
+.md-typeset img.pixelated {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
 /* YouTube embeds, written as ![Caption](youtube:VIDEO_ID); see hooks/youtube.py.
    aspect-ratio reserves the 16:9 box before the iframe loads, so a lazy-loaded
    video further down the page does not shift the text around it as it arrives. */

@@ -9,6 +9,7 @@ categories:
   - Tutorials
 tags:
   - C
+  - From scratch
 links:
   - C Makefile template on Github: https://github.com/vanderoost/c-makefile-template
 ---

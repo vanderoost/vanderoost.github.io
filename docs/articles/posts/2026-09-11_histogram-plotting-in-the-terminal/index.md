@@ -8,7 +8,7 @@ categories:
   - Tutorials
 tags:
   - C
-  - CLI
+  - From scratch
 links:
   - articles/posts/2026-08-05_7-levels-effective-makefile-automation/index.md
   - plt.c on Github: https://github.com/vanderoost/plt.c
