@@ -27,6 +27,10 @@ SUSPECTS: list[tuple[re.Pattern, str]] = [
     (re.compile(r"\]\((?:drawing|youtube):"), "an untranslated pseudo image"),
     (re.compile(r"\{[ \t]*[.#][\w-]"), "an attr_list"),
     (re.compile(r"\{(?:\+\+|--|~~|==)"), "a pymdownx.critic mark"),
+    # Narrow on purpose: a shell shebang, `#!/bin/bash`, is legitimate inline
+    # code and must not be reported. Only a bare language name followed by the
+    # code it highlights is inlinehilite.
+    (re.compile(r"`#![\w+#.-]+[ \t]"), "a pymdownx.inlinehilite marker"),
     (re.compile(r"(?<!\+)\+\+[\w+-]+\+\+"), "a pymdownx.keys shortcut"),
     # Relative image targets. Anything without a scheme would resolve against
     # the platform's own domain and 404 there.

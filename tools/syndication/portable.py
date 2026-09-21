@@ -30,6 +30,11 @@ from .posts import Post
 FENCE = re.compile(r"^\s*(?P<fence>```+|~~~+)")
 INLINE_CODE = re.compile(r"(`+[^`]*`+)")
 
+# pymdownx.inlinehilite: `#!c code` asks for an inline span highlighted as C.
+# The language name is only a hint to Pygments, so a platform without the
+# extension has nothing to do with it and renders it as literal text.
+INLINE_SHEBANG = re.compile(r"^(?P<ticks>`+)#![\w+#.-]+[ \t]+(?=\S)")
+
 # An opening fence carrying pymdownx attributes: ```c title="main.c" linenums="1"
 FENCE_OPEN = re.compile(
     r"^(?P<indent>\s*)(?P<fence>```+|~~~+)"
@@ -150,6 +155,29 @@ def walk_prose(text: str, rewrite: Callable[[str], str]) -> str:
         if not in_code:
             line = "".join(
                 part if part.startswith("`") else rewrite(part)
+                for part in INLINE_CODE.split(line)
+            )
+        out.append(line)
+    return "\n".join(out)
+
+
+def inline_hilite(text: str) -> str:
+    """Drop pymdownx.inlinehilite's language marker from inline code spans.
+
+    Neither dev.to nor Hashnode highlights inline code, and both ship the
+    marker into the middle of the sentence around it: "an `#!c #include" is
+    what the reader sees. The span itself is kept, since it is still code --
+    only the hint goes, which nothing downstream could have used anyway.
+
+    A shell shebang in inline code, `#!/bin/bash`, is left alone: the language
+    pattern does not match a path, and lint.py knows the same difference.
+    """
+    out = []
+    for line, in_code in scan(text):
+        if not in_code:
+            line = "".join(
+                INLINE_SHEBANG.sub(r"\g<ticks>", part) if part.startswith("`")
+                else part
                 for part in INLINE_CODE.split(line)
             )
         out.append(line)
@@ -515,6 +543,11 @@ def to_portable(
 
     body = walk_prose(body, inline)
     body = unwrap(body)
+
+    # After unwrap, not with the inline passes above: this site wraps at 88
+    # columns and several spans straddle that wrap, so the marker and the code
+    # it belongs to only sit on the same line once the paragraph is rejoined.
+    body = inline_hilite(body)
 
     # Three or more blank lines are a side effect of removing block markers,
     # and Hashnode renders them as visible gaps.
