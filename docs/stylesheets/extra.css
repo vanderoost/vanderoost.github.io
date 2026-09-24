@@ -345,6 +345,7 @@ footer.md-footer {
 .md-typeset img.pixelated {
   image-rendering: crisp-edges;
   image-rendering: pixelated;
+  width: 100%;
 }
 
 /* YouTube embeds, written as ![Caption](youtube:VIDEO_ID); see hooks/youtube.py.
