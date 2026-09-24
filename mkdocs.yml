@@ -117,6 +117,14 @@ plugins:
       blog_dir: articles
       authors_file: articles/.authors.yml
       blog_toc: true
+      # A post dated in the future stays out of the build until that moment,
+      # so an article can go live alongside a scheduled video. Nothing
+      # rebuilds the site at that moment, though: ci.yml rebuilds daily at
+      # 12:05 UTC, just after the video goes live, so schedule posts for
+      # "created: YYYY-MM-DDT12:00:00".
+      # Times without an offset are UTC. Only date.created counts, and an
+      # explicit "draft:" key in the frontmatter overrides this.
+      draft_if_future_date: true
       categories: true
       categories_allowed:
         - Automation

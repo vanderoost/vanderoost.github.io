@@ -4,6 +4,18 @@ on:
   push:
     branches:
       - main
+  # Publishes posts that were pushed with a future date (see
+  # draft_if_future_date in mkdocs.yml). Posts and videos are scheduled for
+  # 12:00 UTC, the same instant all year, so daylight saving never moves a
+  # post past the build. The build runs at 12:05 so the video is always public
+  # first: articles embed its thumbnail, and dev.to caches a 404 for any image
+  # it fetches too early. Off the hour also dodges GitHub's busiest minute,
+  # when scheduled runs are most often delayed. They are never early, so a
+  # post dated 12:00 UTC is always past due by the time this runs.
+  # A successful run also fires syndicate.yml, which cross-posts the new post.
+  schedule:
+    - cron: "5 12 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write

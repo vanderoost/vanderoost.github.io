@@ -152,6 +152,28 @@ def updated_date(meta: dict) -> dt.date | None:
     return updated if isinstance(updated, dt.date) else None
 
 
+def is_draft(meta: dict, now: dt.datetime | None = None) -> bool:
+    """Mirror how the blog plugin decides a post is a draft.
+
+    With draft_if_future_date on in mkdocs.yml, a post without an explicit
+    draft: key stays off the site until its created date has passed. It has
+    to stay off the platforms too, or the cross-post goes out early with a
+    canonical URL that 404s. The plugin reads a bare date as midnight UTC and
+    a naive datetime as UTC, so this does the same.
+    """
+    draft = meta.get("draft")
+    if isinstance(draft, bool):
+        return draft
+    value = meta.get("date")
+    if isinstance(value, dict):
+        value = value.get("created")
+    if not isinstance(value, dt.datetime):
+        value = dt.datetime.combine(value, dt.time())
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=dt.timezone.utc)
+    return value > (now or dt.datetime.now(dt.timezone.utc))
+
+
 def plain_title(heading: str) -> str:
     """Strip the Markdown a heading may carry; a platform title is plain text.
 
@@ -255,7 +277,7 @@ def load(source: Path, config: dict) -> Post:
             slug=slug,
             created=created,
             updated=updated_date(meta),
-            draft=meta.get("draft") is True,
+            draft=is_draft(meta),
             description=description,
             categories=tuple(meta.get("categories") or []),
             tags=tuple(str(tag) for tag in meta.get("tags") or []),

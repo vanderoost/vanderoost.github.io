@@ -1,7 +1,7 @@
 ---
 date:
-  created: 2026-09-14
-  updated: 2026-09-14
+  created: 2026-09-25T12:00:00
+  updated: 2026-09-25
 authors:
   - richard
 slug: stop-using-rand
@@ -10,13 +10,16 @@ categories:
 tags:
   - C
   - From scratch
-draft: true
 ---
 
 # Stop using `rand()`
 
+![Histogram Plotting in C](youtube:-5NqTA-fDNQ)
+
 In this article I will try to convince you to stop using `rand()` in your C projects,
 and write a better alternative from scratch.
+
+<!-- more -->
 
 Before I entered the RNG rabbit hole, I was definitely guilty of grabbing `rand()`, and
 maybe some `srand(time(NULL))` when I needed it to be "unpredictable".
@@ -29,8 +32,6 @@ who cares?
 
 After digging a bit deeper though, I found out stronger reasons for ditching
 `rand()` and using something better.
-
-<!-- more -->
 
 
 ## Why not?
