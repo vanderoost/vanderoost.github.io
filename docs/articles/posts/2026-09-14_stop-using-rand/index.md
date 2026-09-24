@@ -27,15 +27,15 @@ In the back of my mind I always knew that `rand()` was not a "safe" random numbe
 generator, but when you just need some randomness for statistics or machine learning,
 who cares?
 
-After digging a bit deeper though, I found out more strong reasons for ditching
-`rand()` and use something better.
+After digging a bit deeper though, I found out stronger reasons for ditching
+`rand()` and using something better.
 
 <!-- more -->
 
 
 ## Why not?
 
-The main three reasons I don't use `rand()` anymore:
+The three main reasons I don't use `rand()` anymore:
 
 1. It's platform dependent
 2. It's slow
@@ -51,9 +51,9 @@ can be different. So that can be pretty annoying.
 ### Slow
 
 The `rand` function is not doing any complex math, but it relies on a *global state* and
-needs to acquire a lock to be able to mutate it. This happens every time you call
-`rand()`. So when you're calling it in a hot loop, it can get pretty slow compared to
-rolling your own RNG.
+needs to acquire a lock to be able to mutate it (at least my implementation on MacOS).
+This happens every time you call `rand()`. So when you're calling it in a hot loop, it
+can get pretty slow compared to rolling your own RNG.
 
 ### Low quality
 
@@ -75,6 +75,8 @@ If we create a 960 × 540 pixel buffer, and pick random color values for each pi
 #define HEIGHT 540
 #define DEPTH 3 // RGB
 
+#define BUF_LEN (WIDTH * HEIGHT * DEPTH)
+
 int main(void) {
   uint8_t pix_buffer[BUF_LEN] = {};
 
@@ -82,7 +84,7 @@ int main(void) {
     uint8_t *pixel = &pix_buffer[i * DEPTH];
 
     uint32_t roll = rand();
-    uint32_t pixel_col = roll / (UINT32_MAX + 1.0) * (1 << 24);
+    uint32_t pixel_col = roll / (RAND_MAX + 1.0) * (1 << 24);
     memcpy(pixel, &pixel_col, DEPTH);
   }
 
@@ -141,8 +143,10 @@ repetition:
 
 ![Random stripes pattern zoomed](./rand-stripes-zoom.png){ .pixelated }
 
-The reason for this has to do with the low period of `rand()` and the fact that two
-consequtive random numbers have a bit of a predictable distance from each other.
+The reason for this pattern is that we call `rand()` once for the position, and then
+again for the color. And if you call `rand()` twice, the second call really depends on
+the first call. So in this loop, the color depends on the location, that's what causes
+the stripe pattern.
 
 So, `rand()` is clearly suboptimal. How can we improve it?
 
@@ -153,15 +157,15 @@ First, I'd like to get a basic understanding of how a pseudo random number gener
 works.
 
 There are a lot of different approaches for generating random numbers. Most of them
-share the basic priciple of having some kind of **state**, and being able to
+share the basic principle of having some kind of **state**, and being able to
 **scramble** this state to make it appear "random".
 
 The random number you get when you call the generator is based on this state, and every
 time you generate a random number, the state gets mutated. So the next time you generate
 a random number, you will get a different one.
 
-With this in mind. The most basic example of a pseudo random number generator might be
-someting like this:
+With this in mind, the most basic example of a pseudo random number generator might be
+something like this:
 
 ```c
 static uint32_t rng_state = 1;
@@ -175,7 +179,7 @@ It has a state `rng_state`, and it "scrambles" this state by multiplying it by s
 constant `12343`. I just picked an arbitrary 5 digit prime number for this. My intuition
 is that prime numbers avoid any obvious repetition.
 
-The list of "random" numbers this thing generates look like this:
+The list of "random" numbers this thing generates looks like this:
 
 ```console
 12343
@@ -190,10 +194,11 @@ The list of "random" numbers this thing generates look like this:
 
 Even this basic example looks pretty random at first glance. But of course, you can see
 that the first number is exactly our factor `12343` and we multiply by this amount every
-time, until we wrap around the 32 bits limit of `4,294,967,296`.
+time, until we wrap around back to `0` at `4,294,967,296` (2³²).
 
 This also means that we never generate an even number. So there are plenty of flaws to
-this approach. But this is the basic principle: A state that gets scrambled. We just need to "scramble" it a bit better.
+this approach. But this is the basic principle: a state that gets scrambled. We just
+need to "scramble" it a bit better.
 
 
 ## Larger state and better scrambling
@@ -205,7 +210,7 @@ idea.
 
 Getting the optimal scrambling is a wheel I'd rather not re-invent myself. So I've
 searched for robust existing methods that have proved to behave well, and are backed by
-reasearch and testing.
+research and testing.
 
 The best approach I've found in terms of simplicity, performance, and quality, is the
 [PCG family](https://pcg-random.org). On that website, they share a basic C
@@ -230,14 +235,15 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 ```
 
 As you can see, for the state we use a struct called `pcg32_random_t` that holds two
-64-bit integers, so 128 bits in total (although only one of them is called `state`).
+64-bit integers, one is the actual `state`, the other decides which "path" or
+"trajectory" we take through the state.
 
-Calling the function `pcg32_random_r` scrambles the state in a lot more ways than simply
-multiplying it by a constant.
+Calling the function `pcg32_random_r` scrambles the state properly, better than simply
+multiplying it by a constant number.
 
-In order to use this mininmal example, we need to declare our global state. The minimum
+In order to use this minimal example, we need to declare our global state. The minimal
 C example only defines a struct, but it's never instantiated. We can grab the following
-from their [Github](https://github.com/imneme/pcg-c-basic):
+from their [GitHub](https://github.com/imneme/pcg-c-basic):
 
 ```c
 #define PCG32_INITIALIZER {0x853c49e6748fea9bULL, 0xda3e39cb94b95bdbULL}
@@ -256,7 +262,7 @@ uint32_t roll = pcg32_random_r(&pcg32_global);
 
 ## Adding some useful wrappers
 
-When I need a random number, I just want to call a simple function, and don't worry
+When I need a random number, I just want to call a simple function, and not worry
 about passing it anything. So let's add a simple wrapper that allows us to do this:
 
 ```c
@@ -265,7 +271,7 @@ uint32_t rng_u(void) {
 }
 ```
 
-Now we can simply call `rng_u()` to get a random int.
+Now we can simply call `rng_u()` to get a random `uint32_t`.
 
 This adds a bit of indirection, which can slow down the code. So later on we'll look at
 inlining `rng_u()` and `pcg32_random_r()`.
@@ -275,7 +281,7 @@ In addition to random integers, I'd like to get random floats too. Let's add a
 
 ```c
 float rng_f(void) {
-  return pcg32_random_r(&pcg32_global) / (UINT32_MAX + 1.0f);
+  return pcg32_random_r(&pcg32_global) / (UINT32_MAX + 1.0);
 }
 ```
 
@@ -288,7 +294,7 @@ do in a future article. So stay tuned if that's something you'd like to see.
 
 ## Sampling from a normal distribution
 
-We can add another flavour of random floats: a random float sampled from a normal
+We can add another flavor of random floats: a random float sampled from a normal
 distribution. This can be very useful in machine learning and statistics.
 
 If we look at a histogram of 1M random floats, it looks quite uniform:
@@ -296,7 +302,7 @@ If we look at a histogram of 1M random floats, it looks quite uniform:
 ![Uniform RNG histogram](1m-uniform-rng-histogram.png)
 
 We can get some interesting distributions by playing around with this. For example, we
-can add two random numbers togeter, which gives us this pyramid shaped distribution:
+can add two random numbers together, which gives us this pyramid shaped distribution:
 
 ![Sum of 2 RNGs histogram](1m-2-rng-sum-histogram.png)
 
@@ -335,7 +341,7 @@ float rng_norm(void) {
 This function builds upon our `rng_f` function, which isn't as optimal as I'd like yet.
 And moreover, it calls it a whopping 12 times, which isn't quite optimal either if you
 run it in a hot loop. So even though this kind of works, and gets you a pseudo normally
-distributed sample, we will look at optimising `rng_f` and `rng_norm` more in a future
+distributed sample, we will look at optimizing `rng_f` and `rng_norm` more in a future
 article.
 
 In this article let's keep the focus on our `rand()` replacement `rng_u()`.
@@ -361,7 +367,7 @@ static inline uint32_t rng_u(void) { return pcg32_random_r(&pcg32_global); }
 ```
 
 There's a little bit more to this if you want to stash the RNG code away into a lib with
-a `.c` and `.h`. See the [Github repo](https://github.com/vanderoost/rng.c) for more
+a `.c` and `.h`. See the [GitHub repo](https://github.com/vanderoost/rng.c) for more
 details, as I might keep that more up to date than this article.
 
 
@@ -370,7 +376,7 @@ details, as I might keep that more up to date than this article.
 What this gives us, is a proper `rand()` alternative where we have 100% control over the
 code, no dependencies.
 
-So what does the random image look like that we get out of this new implementaion?
+So what does the random image look like that we get out of this new implementation?
 
 Properly random like this:
 
@@ -385,7 +391,7 @@ How about the execution time?
 I've written a more elaborate benchmark script that compares `rand()` with `rng_u()`
 (can be found in the [repo](https://github.com/vanderoost/rng.c) as well).
 
-This is the result:
+This is the result on an M2 Macbook Pro:
 
 ```console
 rng_u   1.018 ns/call
