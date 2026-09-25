@@ -32,6 +32,17 @@
           "url": "https://dev.to/vanderoost/why-95-of-company-ai-projects-fail-1614"
         }
       }
+    },
+    "2026-09-14_stop-using-rand": {
+      "canonical_url": "https://vanderoost.com/articles/2026/09/25/stop-using-rand/",
+      "platforms": {
+        "devto": {
+          "id": "4742516",
+          "payload_hash": "af20b4bcbe8a0b7a5cb5707e409bd8e4c2c6289af88dd3d92360e9a58892af42",
+          "synced_at": "2026-09-25T12:34:11Z",
+          "url": "https://dev.to/vanderoost/stop-using-rand-166a"
+        }
+      }
     }
   },
   "version": 1
