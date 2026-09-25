@@ -1,20 +1,15 @@
-{#-
-  Newsletter signup, posted straight to a Kit Form. The Kit Form is only the
-  backend here (double opt-in email, tags, redirect); its public subscriptions
-  endpoint takes a plain POST without an API key, so the markup and styling
-  stay ours. Without JavaScript the POST goes through and Kit redirects to the
-  "After subscribing" URL set in the Kit dashboard (/articles/subscribed/).
-  javascripts/subscribe.js upgrades it to an inline submit.
-
+{#
   Renders nothing until extra.kit.form_id is set in mkdocs.yml.
 -#}
 {%- set kit = config.extra.kit or {} %}
 {%- if kit.form_id %}
 <aside class="rvo-subscribe">
-  <h2 class="rvo-subscribe__title">Stay in the loop</h2>
-  <p class="rvo-subscribe__pitch">
-    Get new articles in your inbox. No spam, unsubscribe any time.
-  </p>
+  <div class="rvo-subscribe__cta">
+    <h2 class="rvo-subscribe__title">Stay in the loop</h2>
+    <p class="rvo-subscribe__pitch">
+      Get new articles in your inbox. No spam, unsubscribe any time.
+    </p>
+  </div>
   <form
     class="rvo-subscribe__form"
     action="https://app.kit.com/forms/{{ kit.form_id }}/subscriptions"

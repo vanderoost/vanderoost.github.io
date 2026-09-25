@@ -93,8 +93,8 @@ int main(void) {
 }
 ```
 *(if you want to know how to write the pixels to an image, I cover it in the
-[video](https://youtu.be/-5NqTA-fDNQ) and you can see the code in the
-[repository](https://github.com/vanderoost/rng.c))*
+[video](https://youtu.be/-5NqTA-fDNQ?t=472) and you can see the code in the
+[repository](https://github.com/vanderoost/rng.c/blob/main/src/rng_image.c#L36-L46))*
 
 
 We get an image that looks like this:
@@ -329,7 +329,7 @@ This can be wrapped in a function called `rng_norm` and we get something like th
 
 ```c
 float rng_norm(void) {
-  float result = -6.0;
+  float result = -6.0f;
 
   for (size_t i = 0; i < 12; ++i) {
     result += rng_f();
