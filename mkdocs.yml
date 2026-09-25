@@ -72,6 +72,11 @@ theme:
 
 extra:
   generator: false
+  # Kit Form that the signup under each article posts to (see
+  # overrides/partials/subscribe.html). The ID is in the form's embed code.
+  # The form is hidden while this is empty.
+  kit:
+    form_id: 9960727
   social:
     - icon: fontawesome/solid/building
       link: https://blendergrid.com
@@ -85,6 +90,7 @@ extra:
 extra_css:
   - stylesheets/extra.css
   - stylesheets/hero.css
+  - stylesheets/subscribe.css
 # Drawings are inlined into the page by hooks/drawings.py, so the SVG files
 # themselves are never fetched by a browser. Shipping them anyway duplicated
 # every drawing into the gh-pages branch — around 12 MB per 250 drawings. Only
@@ -167,6 +173,7 @@ markdown_extensions:
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js
+  - javascripts/subscribe.js
 
 copyright: |
   &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.

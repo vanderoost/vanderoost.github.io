@@ -1,0 +1,8 @@
+{#-
+  Material ships this partial empty, as the slot for a comment system at the
+  end of every page. It holds the newsletter signup instead, limited to blog
+  posts: only those carry `authors` (the same guard as in main.html).
+-#}
+{%- if page and page.authors is defined and page.authors %}
+  {% include "partials/subscribe.html" %}
+{%- endif %}

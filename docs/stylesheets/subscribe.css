@@ -1,0 +1,70 @@
+/* Newsletter signup below each article (see overrides/partials/subscribe.html).
+   Built from the theme's color tokens so it follows light and dark mode. */
+.md-typeset .rvo-subscribe {
+  border: 0.05rem solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  margin: 3em 0 1em;
+  padding: 1.2em 1.4em;
+}
+
+.md-typeset .rvo-subscribe__title {
+  margin: 0 0 0.4em;
+}
+
+.md-typeset .rvo-subscribe__pitch {
+  margin: 0 0 1em;
+}
+
+.rvo-subscribe__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+}
+
+/* Visually hidden, still read by screen readers */
+.rvo-subscribe__label {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.rvo-subscribe__input {
+  background: var(--md-default-bg-color);
+  border: 0.05rem solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  color: var(--md-default-fg-color);
+  flex: 1 1 14em;
+  font: inherit;
+  padding: 0.5em 0.8em;
+}
+
+.rvo-subscribe__input:focus {
+  border-color: var(--md-accent-fg-color);
+  outline: none;
+}
+
+.md-typeset .rvo-subscribe__button {
+  cursor: pointer;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.md-typeset .rvo-subscribe__button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.md-typeset .rvo-subscribe__status:empty {
+  display: none;
+}
+
+.md-typeset .rvo-subscribe__status {
+  margin: 0.8em 0 0;
+}
+
+.md-typeset .rvo-subscribe__status--error {
+  color: var(--md-primary-fg-color);
+}

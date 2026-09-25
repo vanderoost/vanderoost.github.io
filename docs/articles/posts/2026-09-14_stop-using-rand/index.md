@@ -14,7 +14,7 @@ tags:
 
 # Stop using `rand()`
 
-![Histogram Plotting in C](youtube:-5NqTA-fDNQ)
+![Coding RNG from scratch in C](youtube:-5NqTA-fDNQ)
 
 In this article I will try to convince you to stop using `rand()` in your C projects,
 and write a better alternative from scratch.
