@@ -1,7 +1,5 @@
 ---
-date:
-  created: 2026-09-25T12:00:00
-  updated: 2026-09-25
+date: 2026-09-25T12:00:00
 authors:
   - richard
 slug: stop-using-rand
@@ -152,10 +150,20 @@ the stripe pattern.
 So, `rand()` is clearly suboptimal. How can we improve it?
 
 
+## What about `random()` ?
+
+There is a better alternative than `rand()` available, called `random()`. And yes, it
+gives better quality random numbers, it's also faster (compared on an M2 Mac).
+
+But after diving into the alternatives, writing my own RNG function seemed so much more
+interesting that I went for that. And by writing it from scratch, we will still end up
+with a 2.7 times faster function that has twice the range (32 bits instead of 31). So
+rolling our own RNG is still a good idea.
+
+
 ## RNG from first principles
 
-First, I'd like to get a basic understanding of how a pseudo random number generator
-works.
+I'd like to get a basic understanding of how a pseudo random number generator works.
 
 There are a lot of different approaches for generating random numbers. Most of them
 share the basic principle of having some kind of **state**, and being able to
@@ -395,8 +403,9 @@ I've written a more elaborate benchmark script that compares `rand()` with `rng_
 This is the result on an M2 Macbook Pro:
 
 ```console
-rng_u   1.018 ns/call
-rand    6.595 ns/call
+rand    6.651 ns/call
+random  2.760 ns/call
+rng_u   1.016 ns/call
 ```
 
-Our own implementation is roughly 6.5 times faster. Not bad!
+Our own implementation `rng_u()` is roughly 6.5 times faster than `rand()` (and 2.7 times faster than `random()`). Not bad!
