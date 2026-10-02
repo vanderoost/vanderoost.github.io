@@ -44,6 +44,17 @@
         }
       }
     },
+    "2026-10-02_how-floats-work": {
+      "canonical_url": "https://vanderoost.com/articles/2026/10/02/how-floats-work/",
+      "platforms": {
+        "devto": {
+          "id": "4787257",
+          "payload_hash": "9467ea7f75387a61f5157bbc88e8790a23e7f0c12357b7ac76b8a876999c2ec6",
+          "synced_at": "2026-10-02T14:57:51Z",
+          "url": "https://dev.to/vanderoost/how-floats-work-2853"
+        }
+      }
+    },
     "2026-10-20_how-floats-work": {
       "canonical_url": "https://vanderoost.com/articles/2026/10/02/how-floats-work/",
       "platforms": {
