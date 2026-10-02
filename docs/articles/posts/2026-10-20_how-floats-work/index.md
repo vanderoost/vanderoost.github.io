@@ -239,11 +239,11 @@ union Bits {
 
 The difference between a struct and a union is that a struct places all its members sequentially in memory:
 
-![Struct](drawing:./struct-drawing.svg)
+![Struct](drawing:struct-drawing.svg)
 
 Unions on the other hand place the members on top of each other, using the same memory:
 
-![Union](drawing:./union-drawing.svg)
+![Union](drawing:union-drawing.svg)
 
 So unions allow us to access the same memory bits as different types. This is exactly what we want.
 
