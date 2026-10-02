@@ -232,28 +232,38 @@ The syntax for a union looks just like the syntax for a struct in C:
 
 ```c
 union Bits {
-  float f;
-  uint32_t u;
+  float f;
+  uint32_t u;
 };
-
 ```
 
 The difference between a struct and a union is that a struct places all its members sequentially in memory:
 
-[image of sequential memory]
+![Struct](drawing:./struct-drawing.svg)
 
 Unions on the other hand place the members on top of each other, using the same memory:
 
-[image of memory on top of each other]
+![Union](drawing:./union-drawing.svg)
 
 So unions allow us to access the same memory bits as different types. This is exactly what we want.
 
 So accessing a float's bits can now be simplified using our Bits union:
 
 ```c
+float f = 1.0f;
 
-// TODO
+Bits bits = {.f = f};
 
+for (size_t i = 0; i < 32; ++i) {
+  if (i % 8 == 0) {
+    printf(" ");
+  }
+
+  size_t bit_ix = 31 - i;
+  uint32_t bit = (bits.u >> bit_ix) & 1;
+
+  printf("bit: %u\n", bit);
+}
 ```
 
 And this is the way I like to do it.
@@ -261,9 +271,26 @@ And this is the way I like to do it.
 So let's put this into a reusable function `print_float_bits` where we just pass in a float and get it to print the 32 bits to the console.
 
 ```c
+void print_float_bits(float f) {
+  printf("%f ->", f);
+  Bits bits = {.f = f};
+  for (size_t i = 0; i < 32; ++i) {
+    if (i % 8 == 0) {
+      printf(" ");
+    }
 
-// TODO
+    size_t bit_ix = 31 - i;
+    uint32_t bit = (bits.u >> bit_ix) & 1u;
+    printf("%u", bit);
+  }
+  printf("\n");
+}
+```
 
+This function prints out the float first, then the 32 bits (4 bytes) that make up this float:
+
+```console
+1.000000 -> 00111111 10000000 00000000 00000000
 ```
 
 ## Experiments
@@ -277,21 +304,41 @@ This means that if you increase the exponent by 1, the final number is doubled.
 So let's see what happens if we print 1.0 and keep doubling:
 
 ```c
+float floats[] = {0.5f, 1.0f, 2.0f, 4.0f, 8.0f};
 
-// TODO: Print {0.5, 1.0, 2.0, 4.0, 8.0}
-
+for (size_t i = 0; i < sizeof floats / sizeof *floats; ++i) {
+  print_float_bits(floats[i]);
+}
 ```
 
-If you look closely at the bits, you can see there is a certain sequence of bits that keeps incrementing as we're doubling the float.
-
-This might be the exponent bits we're seeing.
-
-Another interesting thing we can do is looking at 1.0, then doubling to 2.0, then in the integer version of the number subtract one. This means we're trying to find the highest possible float under 2.0.
-
+```console
+0.500000 -> 00111111 00000000 00000000 00000000
+1.000000 -> 00111111 10000000 00000000 00000000
+2.000000 -> 01000000 00000000 00000000 00000000
+4.000000 -> 01000000 10000000 00000000 00000000
+8.000000 -> 01000001 00000000 00000000 00000000
 ```
 
-TODO
+If you look closely at the bits, you can see there is a certain sequence of bits that keeps incrementing as we're doubling the float (the first 9 bits). The 9th bit has this 0-1-0-1 even/odd flipping pattern.
 
+These might be the exponent bits we're seeing.
+
+Another interesting thing we can do is looking at 1.0, then doubling to 2.0, then in the
+integer version of the number subtract one. This means we're trying to find the highest
+possible float under 2.0.
+
+To see this better, I'm increasing the floating point decimal numbers to 8 like so:
+
+```c
+...
+printf("%.8f ->", f);
+...
+```
+
+```console
+1.00000000 -> 00111111 10000000 00000000 00000000
+1.99999988 -> 00111111 11111111 11111111 11111111
+2.00000000 -> 01000000 00000000 00000000 00000000
 ```
 
 When you look at the bits, the 1.0 and the 1.9999... float both seem to have the same exponent bits, but in the 1.9999 version, all the trailing zeros have flipped to ones.
@@ -300,30 +347,32 @@ Looking at this, it would make sense that all these bits that were flipped betwe
 
 How about negative numbers? We can easily test a bunch of negative numbers, and see what happens:
 
-```
-
-TODO
-
+```console
+ 1.00000000 -> 00111111 10000000 00000000 00000000
+-1.00000000 -> 10111111 10000000 00000000 00000000
+ 1.50000000 -> 00111111 11000000 00000000 00000000
+-1.50000000 -> 10111111 11000000 00000000 00000000
+ 2.00000000 -> 01000000 00000000 00000000 00000000
+-2.00000000 -> 11000000 00000000 00000000 00000000
 ```
 
 Seems like it's the first bit. If it's 0, the number is positive, if its a 1, the number is negative.
 
 This rule even holds true for the number 0.0:
 
+```console
+ 0.00000000 -> 00000000 00000000 00000000 00000000
+-0.00000000 -> 10000000 00000000 00000000 00000000
 ```
 
-TODO
-
-```
-
-You might have seen negative zero (-0.0) floating around, this is where it comes from, there is a literal negative zero float distinct from the normal zero.
+You might have seen negative zero (-0.0) floating around in terminal outputs, this is
+where it comes from, there is a literal negative zero float distinct from the normal
+zero.
 
 If we check for equality, the program says they are equal, which makes sense. But I wouldn't have been surprised if it would say false. It's generally not a good idea to compare floats for equality.
 
 So, what we've found is:
 
 - The first bit is the sign
-
 - The next 8 bits are the exponent
-
 - The last 23 bits are the base (a.k.a. mantissa)
