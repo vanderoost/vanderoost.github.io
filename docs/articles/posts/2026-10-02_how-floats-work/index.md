@@ -561,5 +561,5 @@ Yes, we can :) So as you can see, all those strange flavors of numbers like `nan
 ---
 
 That's where I'll leave it for now. I hope that was helpful. I much prefer this method
-of exploring certain topics by hacking away at them, rather than reading the
+of exploring certain topics by hacking away at them, instead of reading the
 documentation.
