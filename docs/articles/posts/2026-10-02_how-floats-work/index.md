@@ -20,6 +20,8 @@ integer, but for floats this is not trivial.
 
 <!-- more -->
 
+## Writing C
+
 I don't always write C, but when I do, I tend to find myself learning _how things
 work_.
 
@@ -30,10 +32,8 @@ own data structures, etc.
 It might not be the fastest way to get things done, but if your goal is to _learn_,
 coding in C is very effective.
 
-
-
-So what I want to do is try to reverse engineer floats. Create some floats, look at what
-their bits in memory look like, and figure out what does what.
+So what I want to do is try to reverse engineer floats in C: Create some floats, look at
+what their bits in memory look like, and figure out what does what.
 
 ## How many bits?
 
