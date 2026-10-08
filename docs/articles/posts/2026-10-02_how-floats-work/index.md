@@ -10,7 +10,15 @@ tags:
   - From scratch
 ---
 
-# How floats work
+# Hacking floats to learn how they work
+
+![Learn how floats work in C without reading the spec](youtube:ksumuyRAk-U)
+
+In this article I want to explore floating-point numbers (floats). Floats are a bit more
+complicated than integers. It's quite easy to convert a bunch of bits to an (unsigned)
+integer, but for floats this is not trivial.
+
+<!-- more -->
 
 I don't always write C, but when I do, I tend to find myself learning _how things
 work_.
@@ -22,11 +30,7 @@ own data structures, etc.
 It might not be the fastest way to get things done, but if your goal is to _learn_,
 coding in C is very effective.
 
-In this article I want to explore floating-point numbers (floats). Floats are a bit more
-complicated than integers. It's quite easy to convert a bunch of bits to an (unsigned)
-integer, but for floats this is not trivial.
 
-<!-- more -->
 
 So what I want to do is try to reverse engineer floats. Create some floats, look at what
 their bits in memory look like, and figure out what does what.
@@ -561,5 +565,4 @@ Yes, we can :) So as you can see, all those strange flavors of numbers like `nan
 ---
 
 That's where I'll leave it for now. I hope that was helpful. I much prefer this method
-of exploring certain topics by hacking away at them, instead of reading the
-documentation.
+of exploration by hacking away at them, instead of reading the documentation.
