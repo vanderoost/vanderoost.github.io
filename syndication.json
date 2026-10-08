@@ -49,8 +49,8 @@
       "platforms": {
         "devto": {
           "id": "4787257",
-          "payload_hash": "9467ea7f75387a61f5157bbc88e8790a23e7f0c12357b7ac76b8a876999c2ec6",
-          "synced_at": "2026-10-02T14:57:51Z",
+          "payload_hash": "d18d74fff8cb622fe34c6d8297fa8823fc2bb46f606291b677c944c60d8ed02c",
+          "synced_at": "2026-10-08T12:39:46Z",
           "url": "https://dev.to/vanderoost/how-floats-work-2853"
         }
       }
