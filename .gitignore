@@ -96,8 +96,10 @@ target/
 # CI, so the built copy has no reason to be tracked here.
 /site/
 
-# syndication.json is written through a temporary file, which os.replace()
-# removes; one only survives an interrupted run.
+# syndication.json lives on the syndication-state branch, not on main (see
+# .github/workflows/syndicate.yml). It is written through a temporary file,
+# which os.replace() removes; one only survives an interrupted run.
+/syndication.json
 syndication.json.tmp
 
 # Local credentials for tools/syndication while debugging. Never committed;

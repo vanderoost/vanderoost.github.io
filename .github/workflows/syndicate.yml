@@ -50,6 +50,15 @@ jobs:
         with:
           ref: main
 
+      # syndication.json lives on its own branch, not on main, so recording
+      # what was published never adds a commit that has to be pulled before
+      # the next push. A missing branch just means starting from an empty
+      # cache: every adapter re-finds its posts by canonical URL.
+      - name: Restore syndication state
+        run: |
+          git fetch --depth=1 origin syndication-state || exit 0
+          git show FETCH_HEAD:syndication.json > syndication.json
+
       - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
@@ -79,9 +88,11 @@ jobs:
             --platform "$PLATFORM" $DRY_RUN
 
       # syndication.json is a cache, not the source of truth -- every adapter
-      # can re-find its own post by canonical URL -- so a push that loses a
-      # race with a human commit costs one extra API read next time, not a
-      # duplicate article. That is why this step is allowed to fail.
+      # can re-find its own post by canonical URL -- so a failed push costs one
+      # extra API read next time, not a duplicate article. That is why this
+      # step is allowed to fail. Nothing else writes the syndication-state
+      # branch and the concurrency group serialises runs, so there is no race
+      # to retry.
       # Runs even when the step above failed. A platform that errored does
       # not undo the posts that went out before it, and leaving their ids
       # unwritten is the one thing that makes the next run guess.
@@ -92,11 +103,15 @@ jobs:
           [ -f syndication.json ] || exit 0
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          state="$RUNNER_TEMP/syndication-state"
+          if git fetch --depth=1 origin syndication-state; then
+            git worktree add --detach "$state" FETCH_HEAD
+          else
+            git worktree add --orphan -b syndication-state "$state"
+          fi
+          cp syndication.json "$state/"
+          cd "$state"
           git add syndication.json
           git diff --cached --quiet && exit 0
-          git commit -m 'chore: record syndication state [skip ci]'
-          for attempt in 1 2 3; do
-            git pull --rebase origin main && git push origin HEAD:main && exit 0
-            sleep $((attempt * 5))
-          done
-          exit 1
+          git commit -m 'Record syndication state'
+          git push origin HEAD:syndication-state

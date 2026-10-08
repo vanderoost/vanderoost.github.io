@@ -248,10 +248,20 @@ stays broken in the cross-post long after the real one is up. That is also why
 the workflow runs after `ci`, not alongside it. `--skip-asset-check` turns the
 check off.
 
-`syndication.json` at the repo root records which remote post belongs to which
-article. It is a cache, not the source of truth — every adapter can re-find its
-own post by canonical URL — so losing it costs one extra API read rather than a
-duplicate article. `reconcile` rebuilds it from the platforms.
+`syndication.json` records which remote post belongs to which article. It is a
+cache, not the source of truth — every adapter can re-find its own post by
+canonical URL — so losing it costs one extra API read rather than a duplicate
+article. `reconcile` rebuilds it from the platforms.
+
+The workflow keeps it on the `syndication-state` branch rather than on `main`,
+so recording a cross-post never adds a commit you have to pull before your next
+push. It is ignored on `main`; to use the same cache for a local run, fetch it
+into the repo root first:
+
+```sh
+git fetch origin syndication-state
+git show FETCH_HEAD:syndication.json > syndication.json
+```
 
 Posts are cross-posted as Markdown, so `tools/syndication/portable.py`
 translates what Material adds on top: content tabs, admonitions, attribute
