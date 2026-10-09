@@ -54,6 +54,17 @@
           "url": "https://dev.to/vanderoost/how-floats-work-2853"
         }
       }
+    },
+    "2026-10-09_random-float-generation": {
+      "canonical_url": "https://vanderoost.com/articles/2026/10/09/better-random-floats/",
+      "platforms": {
+        "devto": {
+          "id": "4823372",
+          "payload_hash": "951b41966a80809d76a80a32b74b530d453d923678b584ae3ddd9ba6d4b54bf6",
+          "synced_at": "2026-10-09T12:41:29Z",
+          "url": "https://dev.to/vanderoost/generating-random-floats-1p1l"
+        }
+      }
     }
   },
   "version": 1
