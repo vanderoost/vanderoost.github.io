@@ -18,6 +18,7 @@ carry a copy; this package has no such excuse.
 
 from __future__ import annotations
 
+import posixpath
 import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
@@ -471,7 +472,10 @@ def _resolve(target: str, post: Post, by_path: dict[str, Post]) -> str:
         return post.canonical_url.split("/articles/")[0] + target
 
     key = target.split("#")[0].strip("/")
-    for candidate in (key, f"{post.folder.name}/{key}"):
+    # MkDocs resolves body links against the post's own folder, so a link to
+    # a sibling post is spelled ../<key>/index.md.
+    relative = posixpath.normpath(f"{post.folder.name}/{key}")
+    for candidate in (key, relative):
         found = by_path.get(candidate)
         if found:
             return found.canonical_url
@@ -535,7 +539,6 @@ def to_portable(
 
     def inline(part: str) -> str:
         part = IMAGE.sub(lambda m: _image(m, post, dialect), part)
-        part = LINK.sub(lambda m: _link(m, post, by_path), part)
         part = ICON.sub("", part)
         for pattern, replacement in CRITIC:
             part = pattern.sub(replacement, part)
@@ -548,6 +551,13 @@ def to_portable(
     # columns and several spans straddle that wrap, so the marker and the code
     # it belongs to only sit on the same line once the paragraph is rejoined.
     body = inline_hilite(body)
+
+    # Also after unwrap, for the same reason: link text wraps as readily as
+    # code does, and a link split across lines would ship its .md target.
+    def link(part: str) -> str:
+        return LINK.sub(lambda m: _link(m, post, by_path), part)
+
+    body = walk_prose(body, link)
 
     # Three or more blank lines are a side effect of removing block markers,
     # and Hashnode renders them as visible gaps.
