@@ -16,6 +16,8 @@ links:
 
 # The Ziggurat method
 
+![Fast Gaussian RNG in C with the Ziggurat method](youtube:sNmcf5tlLh0)
+
 In this article I document my journey down the Gaussian random numbers rabbit hole.
 
 <!-- more -->
@@ -35,14 +37,10 @@ outliers.
 For example: When you throw 2 dice, the mean is 7, which has a probability of 1/6. The
 outliers 2 and 12 have a probability of 1/36.
 
-[probability distribution of throwing 2 dice]
-
 ## The central limit theorem
 
 The probability distribution of two dice looks pyramid shaped. If you sum two random
 floats between 0-1, you'll get a similar distribution.
-
-[pyramid histogram]
 
 But as the sample size increases, the distribution starts to approach a bell curve.
 This is the idea of **the central limit theorem**.
@@ -61,8 +59,6 @@ static inline float rng_norm(void) {
   return result;
 }
 ```
-
-[bell curve histogram]
 
 The more random numbers you sample, the closer you get to a true normal distribution.
 So 12 is not giving us a "true" normal distribution. Even though the mean is 0.0 and
@@ -201,11 +197,6 @@ perfect, as far as I can measure.
 But the efficiency goes down. We reject a higher % of samples and have to try again a
 lot more. The sample time goes up to 43 ns.
 
-Here's how rejection sampling stacks up against the `rng_f()` sum approach:
-
-[graph]
-
-Rejection sampling looks pretty bad
 
 ## Divide and conquer
 
@@ -222,13 +213,6 @@ space that only held rejected samples anyways.
 I'm going to take a very simple probability function, the "pyramid shape". And I'm only
 going to focus on the positive side of the x axis. So we're looking at the 2D domain of
 x: [0, 1] y: [0, 1].
-
-Now let's divide it into two layers, and make the layers as small as possible while
-still holding the curve:
-
-[drawing of two layers]
-
-This looks more efficient, because we're ignoring an entire quarter of our domain.
 
 Let's try to run the code this way. We have to introduce this concept of layers. The
 new approach will add a new step. Besides only picking a random x and y, we need to
