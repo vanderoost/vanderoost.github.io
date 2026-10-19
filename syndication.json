@@ -65,6 +65,17 @@
           "url": "https://dev.to/vanderoost/generating-random-floats-1p1l"
         }
       }
+    },
+    "2026-10-16_ziggurat-method": {
+      "canonical_url": "https://vanderoost.com/articles/2026/10/19/ziggurat-method-for-gaussian-rng/",
+      "platforms": {
+        "devto": {
+          "id": "4878342",
+          "payload_hash": "c062edcb2ea54dd1c45714642d8cede708f0f659d216eeb24a0b6a5d59d22505",
+          "synced_at": "2026-10-19T14:57:22Z",
+          "url": "https://dev.to/vanderoost/the-ziggurat-method-26jd"
+        }
+      }
     }
   },
   "version": 1
