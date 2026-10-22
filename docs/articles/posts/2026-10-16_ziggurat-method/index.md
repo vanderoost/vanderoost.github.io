@@ -24,7 +24,8 @@ In this article I document my journey down the Gaussian random numbers rabbit ho
 
 ## Gaussian random numbers
 
-While creating the RNG library, I knew it had to have an `rng_norm()` function.
+While creating the RNG library, I knew it had to have an `rng_norm()` function to sample
+random numbers from a normal distribution.
 
 Gaussian (or normal) random numbers are a very common type of random number. You need
 them to initialise neural network weights for example.
@@ -37,16 +38,18 @@ outliers.
 For example: When you throw 2 dice, the mean is 7, which has a probability of 1/6. The
 outliers 2 and 12 have a probability of 1/36.
 
+
 ## The central limit theorem
 
 The probability distribution of two dice looks pyramid shaped. If you sum two random
-floats between 0-1, you'll get a similar distribution.
+floats between 0-1, you'll get a similar distribution:
+
+![Histogram of the sum of two random floats](histogram-sum-two-random-floats.png)
 
 But as the sample size increases, the distribution starts to approach a bell curve.
 This is the idea of **the central limit theorem**.
 
-It turns out if you take 12 random floats in range [0-1) you end up with standard
-deviation of 1. And the histogram looks a lot like the classic bell curve:
+It turns out if you take 12 random floats in range [0-1), like this:
 
 ```c
 static inline float rng_norm(void) {
@@ -60,20 +63,28 @@ static inline float rng_norm(void) {
 }
 ```
 
+...you end up with a standard deviation of 1. And the histogram looks a lot like the
+classic bell curve:
+
+![Histogram of the sum of twelve random floats](histogram-sum-12-random-floats.png)
+
 The more random numbers you sample, the closer you get to a true normal distribution.
 So 12 is not giving us a "true" normal distribution. Even though the mean is 0.0 and
-the standard deviation is 1.0.
+the standard deviation is exactly 1.0.
 
-So how can we measure the "quality" of our distribution?
+So if summing 12 random floats doesn't result in true accurate normal distribution, how
+can we "measure" the quality of the curve?
 
 ## Kurtosis
 
-There is another way to measure a distribution besides mean and standard deviation. The
-metric "kurtosis" measures the "tails" of a distribution. The way it's calculated is
-very similar to variance.
+There is another way to measure a distribution besides mean and standard deviation:
+**kurtosis**. The "kurtosis" measures the "tails" of a distribution. The way it's
+calculated is very similar to **variance**.
 
 The variance is the average of all squared deviations (taking them to the 2nd power).
 The kurtosis is the average of all deviations to the _4th_ power.
+
+This is what the calculation for both looks like in C:
 
 ```c
 double var = 0.0;
@@ -88,18 +99,19 @@ var /= SAMPLE_COUNT;
 kur /= SAMPLE_COUNT;
 ```
 
-This means that kurtosis focuses a lot on the tails of the distribution. The samples
-close to the mean contribute very little to the final outcome.
+This means that kurtosis is very sensitive to the tails of the distribution. The samples
+close to the mean contribute relatively little to the final number.
 
 So what is the kurtosis of our `rng_norm()` function when it sums up 12 random floats?
-It's around 2.9... ish
+It turns out to be exactly 2.9 in the limit. When we take 10 million random samples
+that's usually where it lands.
 
 The kurtosis of a "true" normal distribution is exactly 3.0. So although it's not far
 off, we can tell it's not perfect.
 
-A common way to represent the kurtosis is by subtracting 3.0. This way, a 0.0 means a
-perfect Gaussian distribution. Our function is giving a -0.1 which means the tails are
-too "thin" because it's below zero.
+Because of a kurtosis of 3 being exactly Gaussian, a common way to represent the "excess
+kurtosis" is by subtracting 3 This way, a 0 excelss kurtosis means a perfect Gaussian
+distribution. Our function is giving a -0.1 which means the tails are too "thin".
 
 We can improve the kurtosis by taking a lot more than 12 samples. Here are a few
 results:
@@ -113,13 +125,13 @@ results:
 |     128 |    -0.01 |
 
 As you can see, it gets better, but we are trading accuracy for performance. So let's
-benchmark the run time as well.
+benchmark the run time as well to see how much time we're spending.
 
 ## Benchmarking performance
 
-I'm using `clock_gettime_nsec_np()` to measure the elapsed nanoseconds. It's macOS
-only, but it simply returns the nanoseconds as a single `uint64_t`. So let's do that
-before and after the loop, and take 10 million samples in between.
+I'm using `clock_gettime_nsec_np()` to measure the elapsed nanoseconds. It simply
+returns the nanoseconds as a single `uint64_t`. So let's do that before and after the
+loop, and take 10 million samples in between.
 
 ```c
 #define SAMPLE_COUNT (10 * 1000 * 1000)
@@ -135,24 +147,24 @@ printf("sample time: %.2f ns\n", ns_per_sample);
 ```
 
 Turns out it takes around 12 nanoseconds per `rng_norm()` call (which uses 12 `rng_f()`
-samples). So about 1 ns per `rng_f()` call.
+samples). So that's about 1 ns per `rng_f()` call.
 
 Increasing the samples increases run time more or less linearly.
 
 So this is our baseline:
 
 - Accuracy: -0.1
-- Speed: 12 ns
+- Time: 12 ns
 
-Let's look at alternatives and see if we can improve this.
+Let's look at alternatives and see if we can improve on this.
 
 ## Rejection sampling
 
 There are many alternative ways to achieve Gaussian RNG. One very simple approach is
 **rejection sampling**.
 
-This is a very simple and flexible method. As long as you can specify your probability
-distribution as a function, you can sample from it.
+This is a very simple and flexible approach. As long as you can specify your probability
+distribution as a function that maps x to y, you can sample from it.
 
 The way it works is:
 
@@ -160,9 +172,6 @@ The way it works is:
 2. Get a random y sample from 0 to the max of the probability density function
 3. If the y sample is under the curve at x, you accept the sample, and return x. If
    not, you go back to step 1 and repeat.
-
-The problem with this method is the "repeat" step. If it rejects a sample (which takes
-two random numbers), you have to start over.
 
 We can implement this to see how well it performs. The probability density of a
 standard normal distribution is e^(-x²/2). It peaks at exactly 1, which is convenient,
@@ -194,21 +203,35 @@ kurtosis, we have to include more of the tails, so increase the x range.
 If we try a range from -6.0 to 6.0 for example, the kurtosis becomes 0.00. That's
 perfect, as far as I can measure.
 
-But the efficiency goes down. We reject a higher % of samples and have to try again a
-lot more. The sample time goes up to 43 ns.
+The problem with this method is the "repeat" step. If a sample gets rejected, you have
+to start over. Every round costs two calls to `rng_f()` because we need x and y.
+
+As we increase the x range, efficiency goes down. We reject a higher % of samples and
+have to try again a lot more. The sample time goes up to 43 ns for the range [-6, 6].
+
+Here's how sample time scales with range, where a range of [-3.0, 3.0] is measured as
+6.0:
+
+| Range  | Sample time [ns] | Excess kurtosis |
+| -----: | ---------------: | --------------: |
+|    2.0 |              7.9 |         -2.8354 |
+|    4.0 |             26.0 |         -1.5831 |
+|    8.0 |             39.1 |         -0.0205 |
+|   16.0 |             46.0 |          0.0040 |
+|   32.0 |             61.0 |          0.0007 |
 
 
 ## Divide and conquer
 
-The reason I brought up rejection sampling is that we can do some things to make it
-more efficient. This is where the Ziggurat method comes in.
+Rejection sampling seems like a bad idea, but there are some things we can do to make it
+more efficient. This is where the **Ziggurat method** comes in.
 
-The first principle reminded me a lot of divide and conquer, which is a cool concept
-used in many algorithms.
+The first principle of the Ziggurat method reminds me a lot of divide and conquer, which
+is an approach many algorithms use for optimisation.
 
-We can divide our 2D sample area into layers. Then we can resize these layers such that
-they "hug" the probability distribution. This allows us to throw away a lot of "dead"
-space that only held rejected samples anyways.
+We can divide our 2D sample area into horizontal layers. Then we can resize these layers
+such that they "hug" the probability distribution. This allows us to throw away a lot of
+"dead" space that only held rejected samples anyways.
 
 I'm going to take a very simple probability function, the "pyramid shape". And I'm only
 going to focus on the positive side of the x axis. So we're looking at the 2D domain of
@@ -251,14 +274,22 @@ float rng_norm_new(void) {
 
 Let's look at the histogram after picking 10 million of these samples:
 
-[bad looking histogram]
+![Ziggurat method with different layer areas](histogram-wrong-ziggurat-method.png)
 
 Something seems off..
+
 
 ## Why the area matters
 
 We have two layers of different areas, but we're picking them 50/50. This results in an
-uneven distribution of samples.
+uneven distribution of samples:
+
+![Inequal layer areas lead to bad results](drawing:./inequal-layer-areas.svg)
+
+Here the top layer area is half the bottom layer area. But because we pick layers with
+50/50 chance, we end up cramming the same amount of samples in the layer with half the
+area. (Doubling the density of samples in the top layer). This leads to an uneven
+distribution, breaking the pyramid shape.
 
 The probability of picking a layer should be proportional to its area. So either we
 change our probabilities, or the areas.
@@ -268,6 +299,7 @@ the layers equal area.
 
 The way I want to do this, is not by figuring out the equations for the areas of each
 layer, and solving for equality. I'd much rather use a numerical method.
+
 
 ## Bisection method to find the area
 
@@ -288,6 +320,7 @@ can never be bigger than that box.
 
 So say we have a certain area we want to test. How do we check if the area is too large
 or too small?
+
 
 ## Inverse of the probability density function
 
@@ -394,6 +427,7 @@ too small cuts off the top of the curve.
 And that's also why I clamp the final y to `Y_LIM`. Plugging a y above 1 into
 `prob_dens_inv()` gives you a NaN.
 
+
 ## More layers = more efficient
 
 As you can imagine, adding more and more layers reduces the total area we're sampling
@@ -411,6 +445,7 @@ uint32_t lay_ix = rng_u() >> (32 - LAYER_BITS);
 
 This takes the top 2 bits of a random integer, giving us a layer index from 0 to 3. No
 modulo needed.
+
 
 ## Getting the most out of a 32 bit integer
 
@@ -430,8 +465,8 @@ So with 8 layer bits, this is how I split up the 32 bits:
 | 23 bits: x float | 8 bits: layer | 1 bit: sign |
 ```
 
-It's important to never use the same bits for two different things. That's a great way
-to introduce some weird bias.
+It's important to never use the same bits for two different things. Otherwise we can get
+some weird bias in the final samples.
 
 ```c
 typedef union {
@@ -461,6 +496,7 @@ For the sign, we shift the lowest bit all the way to the left. That's exactly wh
 sign bit of a float lives. So we can just OR it into the float bits directly, using the
 same union trick from the [floats article](../2026-10-02_how-floats-work/index.md).
 
+
 ## Refactoring into the RNG library
 
 Now is a good time to move our experimental code into the RNG library.
@@ -482,6 +518,7 @@ extern const float lay_ys[];
 ```
 
 This C file can then be automatically "generated" by another C file.
+
 
 ## Procedurally generating the coordinate tables
 
@@ -656,4 +693,4 @@ const float lay_ys[] = {
 
 ---
 
-And with that, we've finished our gaussian random number generator.
+And with that, we've finished our gaussian random number generator :)
