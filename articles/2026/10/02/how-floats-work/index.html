@@ -1,0 +1,1734 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="I automate tech companies">
+      
+      
+        <meta name="author" content="Richard van der Oost">
+      
+      
+        <link rel="canonical" href="https://vanderoost.com/articles/2026/10/02/how-floats-work/">
+      
+      
+        <link rel="prev" href="../../../09/25/stop-using-rand/">
+      
+      
+        <link rel="next" href="../../09/better-random-floats/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Hacking floats to learn how they work - vanderoost</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/hero.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/subscribe.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <meta property="article:author" content="https://www.linkedin.com/in/richardvdoost/" />
+  <meta property="article:published_time" content="2026-10-02 12:00:00" />
+
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Hacking floats to learn how they work - vanderoost" />
+<meta property="og:description" content="I automate tech companies" />
+<meta property="og:image" content="https://vanderoost.com/assets/images/social/articles/2026/10/02/how-floats-work/index.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://vanderoost.com/articles/2026/10/02/how-floats-work/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="Hacking floats to learn how they work - vanderoost" />
+<meta property="twitter:description" content="I automate tech companies" />
+<meta property="twitter:image" content="https://vanderoost.com/assets/images/social/articles/2026/10/02/how-floats-work/index.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#hacking-floats-to-learn-how-they-work" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header"><nav class="md-header__inner md-grid" aria-label="Header">
+    <div class="md-header__zone md-header__zone--start">
+      <a href="../../../../.." title="vanderoost" class="md-header__button md-logo" aria-label="vanderoost" data-md-component="logo">
+        
+  
+  <svg width="196" height="196" viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+<path d="M118 98.0001C118 109.046 109.046 118 98 118C86.9543 118 78.0001 109.046 78.0001 98.0001C78.0001 86.9544 86.9543 78.0001 98 78.0001C109.046 78.0001 118 86.9544 118 98.0001Z" style="fill:var(--md-primary-fg-color);fill-opacity:1;"/>
+<path d="M86.6864 154.569C92.9348 160.817 103.066 160.817 109.314 154.569L117.799 146.083C119.361 144.521 121.894 144.521 123.456 146.083L140.427 163.054C141.989 164.616 141.989 167.149 140.427 168.711L131.941 177.196C113.196 195.941 82.8042 195.941 64.059 177.196L55.5737 168.711C54.0116 167.149 54.0116 164.616 55.5737 163.054L72.5443 146.083C74.1064 144.521 76.6391 144.521 78.2012 146.083L86.6864 154.569Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M177.196 64.0589C195.941 82.8041 195.941 113.196 177.196 131.941L168.711 140.426C167.149 141.989 164.616 141.989 163.054 140.426L146.083 123.456C144.521 121.894 144.521 119.361 146.083 117.799L154.569 109.314C160.817 103.065 160.817 92.9347 154.569 86.6863L146.083 78.2011C144.521 76.639 144.521 74.1063 146.083 72.5442L163.054 55.5736C164.616 54.0115 167.149 54.0116 168.711 55.5736L177.196 64.0589Z" style="fill:var(--md-primary-fg-color);"/>
+<path d="M49.9169 72.5442C51.479 74.1063 51.479 76.639 49.9169 78.2011L41.4316 86.6863C35.1832 92.9347 35.1832 103.065 41.4316 109.314L49.9169 117.799C51.479 119.361 51.479 121.894 49.9169 123.456L32.9463 140.426C31.3842 141.989 28.8516 141.989 27.2895 140.426L18.8042 131.941C0.0590258 113.196 0.0590258 82.8041 18.8042 64.0589L27.2895 55.5736C28.8516 54.0115 31.3842 54.0115 32.9463 55.5736L49.9169 72.5442Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M64.059 18.8041C82.8042 0.0589638 113.196 0.0589428 131.941 18.8041L140.427 27.2894C141.989 28.8515 141.989 31.3841 140.427 32.9462L123.456 49.9168C121.894 51.4789 119.361 51.4789 117.799 49.9168L109.314 41.4315C103.065 35.1831 92.9348 35.1832 86.6864 41.4315L78.2012 49.9168C76.6391 51.4789 74.1064 51.4789 72.5443 49.9168L55.5737 32.9462C54.0116 31.3841 54.0116 28.8515 55.5737 27.2894L64.059 18.8041Z" style="fill:var(--md-default-fg-color);"/>
+</svg>
+
+      </a>
+      <label class="md-header__button md-icon" for="__drawer">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </label>
+
+      <div class="md-header__title" data-md-component="header-title">
+        <div class="md-header__ellipsis">
+
+          <a href="../../../../.." title="vanderoost" aria-label="vanderoost">
+            <div class="md-header__topic">
+              <span class="md-ellipsis">
+                vanderoost
+              </span>
+            </div>
+            <div class="md-header__topic" data-md-component="header-topic">
+              <span class="md-ellipsis">
+                
+                Hacking floats to learn how they work
+                
+              </span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../portfolio/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Case Studies
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+
+    <div class="md-header__zone md-header__zone--end">
+      
+        
+          <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+        
+      
+
+      
+        <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      
+
+      
+
+      
+
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    vanderoost
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../portfolio/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/dentist-appointment-routing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dentist appointment routing workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/3d-printing-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automating a 3D printing pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/blendergrid-swarm-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud computing infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#writing-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-many-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How many bits?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accessing-bits-of-integers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing bits of integers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accessing-float-memory-like-its-an-int" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing float memory like it's an int
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing float memory like it&#39;s an int">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-pointer-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The pointer method
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-union-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The union method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fancy-terminal-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fancy terminal colors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decoding-the-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decoding the bits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-floats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Special floats
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to Articles
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://avatars.githubusercontent.com/u/11665420?v=4" alt="Richard van der Oost">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>
+                        
+                      </strong>
+                      <br>
+                      Tech founder
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-10-02 12:00:00+00:00" class="md-ellipsis">October 2, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/tutorials/">Tutorials</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              10 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:c" class="md-tag">C</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:from-scratch" class="md-tag">From scratch</a>
+      
+    
+  </nav>
+
+
+
+<h1 id="hacking-floats-to-learn-how-they-work">Hacking floats to learn how they work</h1>
+<div class="rvo-video"><iframe src="https://www.youtube-nocookie.com/embed/ksumuyRAk-U" title="Learn how floats work in C without reading the spec" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+
+<p>In this article I want to explore floating-point numbers (floats). Floats are a bit more
+complicated than integers. It's quite easy to convert a bunch of bits to an (unsigned)
+integer, but for floats this is not trivial.</p>
+<!-- more -->
+
+<h2 id="writing-c">Writing C</h2>
+<p>I don't always write C, but when I do, I tend to find myself learning <em>how things
+work</em>.</p>
+<p>In other languages, it's a lot more common to just import modules for everything. In C,
+it's more conventional to "write it yourself". Write your own string library, write your
+own data structures, etc.</p>
+<p>It might not be the fastest way to get things done, but if your goal is to <em>learn</em>,
+coding in C is very effective.</p>
+<p>So what I want to do is try to reverse engineer floats in C: Create some floats, look at
+what their bits in memory look like, and figure out what does what.</p>
+<h2 id="how-many-bits">How many bits?</h2>
+<p>If we want to know what the bits of a float look like in memory, we first need to know
+some very basic information: how many bits make a float?</p>
+<p>The way to get the number of <em>bytes</em> is by using <code>sizeof</code>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">size_t</span><span class="w"> </span><span class="n">float_bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;a float has %zu bytes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">float_bytes</span><span class="p">);</span>
+</span></code></pre></div>
+<p>This prints <code>a float has 4 bytes</code> on my system (and it will on most systems). There are
+8 bits per byte, so a float has 4 * 8 = 32 bits.</p>
+<h2 id="accessing-bits-of-integers">Accessing bits of integers</h2>
+<p>In C you can do bitwise operations to access individual bits. But this only works with
+integers.</p>
+<p>This is how you can access the first (lowest) bit of an unsigned integer called <code>u</code>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1u</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;bit: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span></code></pre></div>
+<p>I'm using the type <code>uint32_t</code> here. This is an unsigned 32-bit integer. Unsigned
+integers are the easiest to convert from binary to decimal as we don't have to worry
+about the sign. And it's 32 bits, the same size as a float. This will become relevant
+later.</p>
+<p>We're using the bitwise operator <code>&amp;</code> (AND), which compares two integers bit by bit, and
+returns a third integer bit by bit (or bitwise).</p>
+<p>So if you do <code>a &amp; b</code> and <code>b</code> is the number 1, which corresponds to
+<code>00000000 00000000 00000000 00000001</code> in binary, you're basically only focusing in on
+the first (smallest, rightmost) bit, masking out the rest. If the smallest bit of <code>a</code> is
+a 0, the result is 0; if it's a 1, the result is 1.</p>
+<p>Ok, so how do you access the other bits?</p>
+<p>If you do a bitwise AND with the second bit:</p>
+<p><code>00000000 00000000 00000000 00000010</code></p>
+<p>You will focus on the second bit, but you will get back either a 0, or the value of that
+bit (2).</p>
+<p>This second bit corresponds to 2 in decimal, so you can do an <code>&amp; 2</code> on it:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;bit: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span></code></pre></div>
+<p>But this returns a 2.</p>
+<p>If we just want to get back a 0 or a 1, we can instead <em>shift</em> the number to move the
+bit we want to see to the lowest place, and then AND it with a 1.</p>
+<p>So if we want to get the second bit, we do this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;bit: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span></code></pre></div>
+<p>This now returns a 1 instead of a 2.</p>
+<p>We can generalize this and provide a bit index <code>bit_ix</code> that can range from 0 to 31 for
+32-bit numbers.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kt">size_t</span><span class="w"> </span><span class="n">bit_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bit_ix</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;bit: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span></code></pre></div>
+<p>I'm using a <code>size_t</code> type here for the bit index. This is just something I usually do
+for sizes, indices, etc.</p>
+<p>Now we have a good way to access every individual bit of an int.</p>
+<p>Let's print all of them to the screen:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bit_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bit_ix</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">}</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="go">00000000000000000000000000000011</span>
+</span></code></pre></div>
+<p>This prints out a bunch of bits: that's what the memory looks like for <code>3</code>.</p>
+<p>We have to sort of invert the <code>bit_ix</code>. We start at 31 and walk back to 0, so that we
+print the highest bits first and go down to the lowest bits. Just like how we treat
+decimal numbers as well.</p>
+<h2 id="accessing-float-memory-like-its-an-int">Accessing float memory like it's an int</h2>
+<p>These bitwise operations won't work on floats:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0f</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1u</span><span class="p">;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;bit: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="go">error: invalid operands to binary expression (&#39;float&#39; and &#39;unsigned int&#39;)</span>
+</span></code></pre></div>
+<p>So we have to figure out a way to convert the float into an int.</p>
+<p>If we do this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The code compiles, but the float is converted to a <code>uint32_t</code>, which means the bits in
+memory are all changed. A <code>1.0f</code> float becomes a <code>1</code> int because that makes the most
+sense.</p>
+<p>But what we want is to look at the bits of a float as if the memory belongs to an int,
+such that we can access the bits.</p>
+<p>There are two approaches to do this:</p>
+<ol>
+<li>Pointers</li>
+<li>Unions</li>
+</ol>
+<p>Let's try both.</p>
+<h3 id="the-pointer-method">The pointer method</h3>
+<p>If we convert a float to an int, we're interpreting the float as an int, and we set the
+memory that belongs to the int to whatever the float represents "numerically".</p>
+<p>Instead, what we want is to create a float, and access its memory as if those 32 bits
+belong to a <code>uint32_t</code>.</p>
+<p>In order to do that, we first create a float:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Then we create a pointer to that float's address:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">fp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">f</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Then we can create a <code>uint32_t</code> pointer, which also just points to a place in memory. We
+can cast the float pointer to be a <code>uint32_t</code> pointer and point to the same thing:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">fp</span><span class="p">;</span>
+</span></code></pre></div>
+<p>And then we can create a <code>uint32_t</code> and set it equal to whatever the <code>uint32_t</code> pointer
+is pointing to (the float memory).</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">up</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Now we have created a <code>uint32_t</code> from a float, but without converting the value. We only
+cast the pointer types, which doesn't mess with the memory.</p>
+<p>So all together, we can now print out the individual bits of a float:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">fp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">f</span><span class="p">;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">fp</span><span class="p">;</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">up</span><span class="p">;</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">);</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bit_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bit_ix</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="p">}</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>As you can see, I'm printing out a space every 8th bit, to group the bits as bytes:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="go">00111111 10000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>And that's what the float <code>1.0f</code> looks like in memory!</p>
+<p>There is a catch though. Technically, this breaks C's <em>strict aliasing</em> rule: you're not
+supposed to read an object through a pointer of a different type. We're being sneaky
+hackers here. Officially, it's undefined behavior, and with optimizations turned on, the
+compiler might change the behaviour. In practice it usually works, but that's one more
+reason to prefer the next method.</p>
+<h3 id="the-union-method">The union method</h3>
+<p>This is, in my opinion, the easier method to understand, provided you know what a union
+is.</p>
+<p>The syntax for a union looks just like the syntax for a struct in C:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">}</span><span class="w"> </span><span class="n">Bits</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The difference between a struct and a union is that a struct places all its members
+sequentially in memory:</p>
+<div class="rvo-drawing"><svg xmlns="http://www.w3.org/2000/svg" direction="ltr" width="1364.4017697104928" height="256.18915122239747" viewBox="1365.6649273380485 841.5962029664822 1364.4017697104928 256.18915122239747" stroke-linecap="round" stroke-linejoin="round" class="tl-container tl-theme__force-sRGB" style="background-color: transparent;" role="img" aria-label="Struct"><title>Struct</title><defs/><g transform="matrix(1, 0, 0, 1, 1728.155, 966.8026)" opacity="1"><g transform="scale(1)"><path d="M0,0 q7.69,.47 9.61,.66 t3.06,.32 1.98,.18 1.59,.07 1.36,-.06 1.16,-.16 1.09,-.18 1.12,-.2 1.27,-.21 1.43,-.24 1.52,-.27 1.37,-.24 1.19,-.2 1.3,-.2 1.62,-.26 1.97,-.29 2.17,-.27 2.2,-.27 2.06,-.23 1.83,-.15 1.79,-.13 1.87,-.09 1.57,-.03 1.27,-.02 1.19,0 1.14,-.01 1.19,0 1.23,0 1.25,0 1.35,0 1.49,0 1.7,0 1.97,0 2.13,0 2.24,0 2.29,0 2.3,-.03 2.32,-.08 2.24,-.09 2.11,-.09 1.97,-.05 1.8,-.02 1.64,-.01 1.49,-.01 1.55,.02 1.46,.05 1.23,.08 1.36,.12 1.65,.11 1.92,.09 2.04,.08 2.02,.03 1.94,.01 1.92,.01 1.92,0 1.94,0 1.95,0 1.95,-.02 1.91,-.05 1.88,-.06 1.85,-.04 1.79,-.04 1.72,-.05 1.67,-.07 1.64,-.09 1.54,-.09 1.36,-.08 1.3,-.1 1.37,-.1 1.54,-.11 1.82,-.1 2.08,-.13 2.31,-.16 2.64,-.19 3.01,-.23 3.32,-.29 3.57,-.3 3.75,-.28 3.87,-.27 3.99,-.26 4.08,-.21 4.09,-.2 4.02,-.18 3.9,-.14 3.76,-.09 3.66,-.04 3.6,-.02 3.59,0 3.62,-.01 3.67,0 3.69,0 3.73,0 3.77,0 3.82,0 3.87,0 3.89,.02 3.9,.05 3.88,.11 3.78,.16 3.68,.21 3.49,.23 3.27,.25 3.04,.25 2.79,.26 2.55,.3 2.31,.31 2.08,.3 1.94,.27 1.85,.24 1.79,.21 1.79,.16 1.78,.12 1.79,.06 2.35,.03 2.56,.01 2.11,.01 1.91,-.03 1.8,-.07 1.76,-.11 1.72,-.12 1.68,-.1 1.63,-.09 1.57,-.09 1.46,-.06 1.51,-.08 1.63,-.11 1.44,-.12 1.23,-.1 1.2,-.08 1.21,-.07 1.59,-.11 1.76,-.13 1.54,-.11 1.44,-.1 1.37,-.09 1.37,-.09 1.33,-.09 1.36,-.1 1.43,-.14 1.4,-.13 1.38,-.14 1.32,-.13 1.26,-.12 1.26,-.11 1.23,-.11 1.19,-.1 1.13,-.07 1.08,-.06 1.07,-.04 1.06,-.03 1.14,-.04 1.38,-.02 1.68,-.06 1.97,-.1 2.09,-.12 2.05,-.11 1.91,-.12 1.78,-.09 1.68,-.08 1.62,-.09 1.57,-.08 1.52,-.11 1.5,-.16 1.5,-.17 1.54,-.18 1.61,-.19 1.73,-.18 1.83,-.18 1.92,-.18 1.96,-.19 1.96,-.19 1.93,-.16 1.88,-.13 1.81,-.08 1.71,-.03 1.61,-.04 1.48,-.03 1.53,-.04 1.44,-.07 1.15,-.05 1.21,-.06 1.53,-.09 1.91,-.14 2.2,-.18 2.32,-.22 2.25,-.22 2.08,-.17 1.79,-.12 1.73,-.06 1.77,-.03 1.51,-.01 1.25,-.01 1.17,0 1.55,.03 1.92,.06 2.02,.04 2.27,.02 2.43,.01 2.46,0 2.37,0 2.21,0 2.1,0 1.92,0 1.87,.03 1.85,.09 1.5,.1 1.19,.08 1.12,.06 1.09,.04 1.11,.02 1.22,.01 1.31,0 1.33,0 1.4,-.01 1.4,-.07 1.36,-.13 1.37,-.14 1.29,-.14 1.23,-.14 1.44,-.19 1.57,-.24 1.45,-.23 1.42,-.24 1.54,-.25 1.75,-.28 1.61,-.27 1.53,-.29 1.68,-.32 1.61,-.31 1.46,-.26 1.32,-.18 1.45,-.16 1.65,-.17 1.63,-.19 1.51,-.15 1.41,-.13 1.31,-.11 1.4,-.15 1.5,-.18 1.48,-.17 1.37,-.04 1.3,.12 .72,.2 -.3,.19 -1.03,.12 -1.38,.11 -1.47,.11 -1.37,.11 -1.31,.12 -1.26,.12 -1.1,.1 -1.17,.1 -1.41,.13 -1.74,.2 -2.1,.22 -2.31,.24 -2.41,.22 -2.42,.19 -2.45,.17 -2.61,.15 -2.83,.13 -3.04,.09 -3.18,.03 -3.26,.02 -3.26,-.03 -3.24,-.13 -4.25,-.37 -4.77,-.46 -4.1,-.37 -3.88,-.3 -3.85,-.22 -3.9,-.14 -3.95,-.07 -3.93,-.04 -3.86,-.01 -3.77,-.01 -3.7,0 -3.6,0 -3.49,0 -3.37,-.01 -3.28,-.07 -3.22,-.16 -3.23,-.2 -3.27,-.23 -3.26,-.23 -3.23,-.21 -3.19,-.17 -3.12,-.1 -3.04,-.04 -2.97,-.02 -2.88,0 -2.8,.04 -2.77,.11 -2.76,.14 -2.71,.15 -2.61,.14 -2.47,.12 -2.31,.12 -2.14,.09 -2.02,.06 -1.91,.02 -1.85,.03 -1.85,.04 -1.87,.07 -1.88,.1 -1.86,.15 -1.81,.17 -1.78,.15 -1.76,.15 -1.79,.13 -1.83,.13 -1.89,.11 -1.97,.1 -1.95,.05 -1.79,.02 -1.74,.01 -1.64,.01 -1.41,-.12 -1.26,-.29 -1.18,-.26 -1.21,-.14 -1.35,-.06 -1.5,.02 -1.54,.12 -1.49,.14 -1.35,.09 -1.24,.04 -1.19,.02 -1.13,.05 -1.22,.16 -1.44,.27 -1.6,.32 -1.42,.26 -1.63,.26 -1.77,.3 -1.42,.27 -1.36,.27 -1.32,.27 -1.35,.28 -1.36,.29 -1.47,.33 -1.56,.36 -1.52,.33 -1.67,.38 -1.64,.36 -1.37,.29 -1.28,.26 -1.28,.24 -1.35,.23 -1.56,.2 -1.8,.2 -1.95,.17 -1.84,.13 -1.74,.08 -1.69,.04 -1.73,.03 -1.82,0 -1.69,.01 -1.54,0 -1.64,.03 -1.77,.09 -1.98,.15 -1.94,.13 -1.73,.08 -1.55,.1 -1.45,.13 -1.74,.23 -2.13,.31 -2.39,.37 -2.46,.37 -2.27,.33 -2,.27 -1.83,.2 -1.72,.18 -2.36,.26 -2.85,.36 -2.67,.36 -2.65,.33 -2.62,.29 -2.55,.18 -2.51,.11 -2.54,.06 -2.61,.04 -2.68,.05 -2.72,.05 -2.71,.06 -2.62,.05 -2.53,.05 -2.48,.06 -2.53,.05 -2.64,.09 -2.81,.16 -3,.24 -3.13,.31 -3.25,.37 -3.34,.37 -4.35,.47 -4.76,.48 -3.93,.34 -3.51,.25 -3.28,.17 -3.13,.09 -3,.04 -2.86,.02 -2.71,-.04 -2.54,-.12 -2.4,-.12 -2.3,-.1 -2.27,-.06 -2.93,-.02 -3.22,.05 -2.65,.18 -2.37,.24 -2.18,.26 -2.05,.26 -1.89,.21 -1.7,.17 -1.73,.15 -1.84,.16 -1.57,.14 -1.52,.14 -1.66,.16 -1.57,.23 -1.49,.31 -1.28,.35 -1.11,.29 -1.1,.19 -1.21,.09 -1.4,.04 -1.59,.05 -1.67,.11 -1.6,.21 -1.43,.25 -1.29,.28 -1.15,.25 -1.07,.15 -1.14,.09 -1.25,.1 -1.35,.13 -1.48,.09 -1.58,.11 -1.64,.13 -1.56,.17 -1.4,.18 -1.23,.15 -1.17,.16 -1.24,.18 -1.34,.18 -1.35,.18 -1.32,.19 -1.25,.22 -1.15,.28 -1.06,.33 -1.13,.43 -1.16,.47 -1.12,.47 -1.23,.47 -1.44,.47 -1.62,.43 -1.68,.35 -1.58,.25 -1.47,.15 -1.38,.07 -1.35,.04 -1.38,.03 -1.19,-.14 -.78,-.54 -.48,-.9 -.4,-.99 -.52,-.9 -.77,-.87 -.98,-.87 -1.01,-.79 -1.03,-.76 -.84,-.83 -.42,-.96 -.18,-1.04 -.07,-1.17 -.03,-1.18 .05,-1.06 .14,-1.05 .22,-1.1 .26,-1.15 .28,-1.16 .28,-1.13 .29,-1.34 .26,-1.61 .32,-1.4 .6,-.97 .85,-.67 1.01,-.54 1.02,-.33 1.04,.04 1.02,.28 1.02,.32 1.22,.36 1.53,.33 1.8,.29 1.92,.18 1.83,.07 1.74,.04 1.6,.01 1.4,.07 1.28,.14 1.25,.17 1.24,.13 1.29,.06 1.27,.02 1.11,.01 1.18,.01 1.41,0 3.74,.68 5.17,1.19 l2.2,.5 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 1785.362, 960.6578)" opacity="1"><g transform="scale(1)"><path d="M 0.7599999904632568 0 m -0.1, 0 a 0.1,0.1 0 1,0 0.2,0 a 0.1,0.1 0 1,0 -0.2,0" stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 2221.9696, 948.0902)" opacity="1"><g transform="scale(1)"><path d="M-.06,-.92 q8.43,-.46 10.52,-.54 t3.55,-.06 2.59,.12 2.1,.2 1.85,.24 1.74,.27 1.71,.32 1.67,.36 1.64,.33 1.61,.28 1.6,.23 1.64,.16 1.48,.08 1.29,.03 1.46,.02 1.83,.01 2.19,-.03 2.36,-.07 2.28,-.1 2,-.08 1.84,-.05 1.76,-.02 1.63,-.01 1.62,.01 1.65,.03 1.45,.03 1.16,.01 1.16,.01 1.37,0 1.74,0 2.05,0 2.23,.05 2.2,.13 2.05,.16 1.89,.18 1.78,.17 1.72,.14 1.66,.11 1.62,.11 1.59,.1 1.56,.07 1.59,.05 1.64,.03 2.15,.05 2.37,.03 1.96,.02 1.76,.01 1.69,0 1.7,0 1.74,0 1.78,-.02 1.8,-.02 1.75,-.01 1.6,-.01 1.63,0 1.48,.05 1.15,.13 1.1,.18 1.15,.2 1.21,.22 1.23,.22 1.24,.2 1.25,.2 1.27,.17 1.23,.17 1.21,.18 1.18,.21 1.13,.24 1.11,.24 1.09,.24 1.08,.24 1.08,.24 1.17,.24 1.4,.29 1.72,.31 2.05,.3 2.22,.27 2.22,.21 2.07,.18 1.89,.18 1.69,.19 1.68,.22 1.72,.29 1.44,.31 1.2,.31 1.23,.3 1.39,.29 1.69,.29 2.02,.21 2.24,.12 2.31,.05 2.21,.02 2.01,.01 1.77,.01 1.71,0 1.74,0 1.47,.03 1.22,.09 1.19,.15 1.27,.2 1.48,.24 1.82,.23 2.16,.2 2.36,.17 2.39,.11 2.29,.1 2.17,.07 2.07,.06 1.98,.06 1.8,.06 1.81,.08 1.88,.15 1.61,.17 1.39,.18 1.48,.18 1.68,.17 1.92,.15 2.06,.1 2.04,.04 1.92,.02 1.81,.01 1.76,0 1.71,0 1.64,0 1.53,0 1.59,.03 1.71,.12 1.52,.19 1.26,.19 1.19,.19 1.13,.19 1.08,.16 1.08,.14 1.17,.17 1.41,.2 1.77,.21 2.13,.19 2.34,.17 2.38,.11 2.28,.08 2.16,.08 2.07,.08 1.98,.1 1.9,.12 1.79,.09 1.71,.09 1.65,.08 1.58,.05 1.52,.04 1.49,.04 1.5,.01 1.53,.01 1.63,0 1.76,0 1.87,0 1.97,0 1.98,0 1.93,0 1.88,.05 1.8,.11 1.76,.15 1.69,.18 1.56,.15 1.59,.14 1.69,.16 1.5,.14 1.26,.11 1.2,.09 1.18,.08 1.17,.05 1.19,.02 1.24,.03 1.25,.03 1.25,.01 1.24,.01 1.19,0 1.38,0 1.55,0 1.4,.03 1.32,.07 1.47,.08 1.44,.05 1.27,.02 1.34,.01 1.5,.01 1.71,0 1.88,.01 1.97,.02 1.93,.05 1.85,.08 1.82,.09 1.91,.13 2,.17 2.1,.18 2.16,.2 2.19,.21 2.22,.19 2.26,.2 2.32,.19 2.37,.17 2.38,.18 2.44,.19 2.5,.2 2.53,.22 2.58,.24 2.62,.26 2.63,.24 2.69,.25 2.78,.23 2.8,.19 2.81,.2 2.76,.25 2.69,.27 2.62,.28 2.55,.27 2.47,.25 2.39,.28 2.38,.31 2.41,.36 2.45,.35 2.49,.33 2.49,.3 2.47,.27 2.45,.25 2.41,.23 2.33,.22 2.24,.21 2.11,.19 2,.21 1.81,.21 1.82,.26 1.85,.3 1.51,.23 1.21,.18 1.13,.14 1.08,.1 1.08,.08 1.11,.03 1.14,.01 1.18,.01 1.23,0 1.27,0 1.28,0 1.26,0 1.43,-.05 1.53,-.09 1.28,-.12 1.15,-.19 1.17,-.27 1.29,-.31 1.48,-.4 1.63,-.49 1.59,-.51 1.46,-.39 1.31,-.21 1.23,-.08 1.23,-.04 1.18,-.21 .99,-.5 .72,-.68 .43,-.83 .22,-1.02 .09,-1.16 0,-1.27 -.06,-1.29 -.05,-1.21 .02,-1.15 .19,-1.06 .38,-.99 .18,-.92 -.55,-.61 -1,-.23 -1.05,0 -1.1,.14 -1.13,.23 -1.18,.28 -1.22,.3 -1.24,.32 -1.33,.31 -1.52,.28 -1.73,.26 -1.88,.24 -1.91,.2 -1.84,.19 -1.71,.15 -1.66,.14 -1.69,.14 -1.75,.12 -1.76,.12 -1.76,.09 -1.72,.07 -1.7,.05 -1.69,.02 -1.64,0 -1.75,.01 -1.88,0 -1.58,0 -1.33,0 -1.57,0 -1.91,0 -1.94,0 -1.93,-.03 -1.67,-.07 -1.33,-.1 -1.23,-.1 -1.24,-.12 -1.3,-.14 -1.42,-.17 -1.61,-.17 -1.71,-.13 -1.62,-.1 -1.69,-.07 -1.82,-.02 -1.82,-.01 -1.85,.06 -1.84,.1 -1.74,.06 -1.68,.02 -1.51,.01 -1.32,-.05 -1.46,-.17 -1.77,-.24 -2.09,-.29 -2.28,-.3 -2.33,-.3 -2.23,-.27 -2.1,-.24 -2.02,-.19 -1.96,-.13 -1.9,-.07 -1.85,-.03 -1.76,-.01 -1.61,-.01 -1.61,0 -1.7,0 -1.51,0 -1.24,0 -1.39,0 -1.57,0 -1.51,0 -1.43,-.05 -1.27,-.08 -1.24,-.07 -1.26,-.04 -1.32,-.02 -1.66,-.01 -2.01,0 -2.16,.01 -2.11,.07 -1.84,.11 -1.73,.14 -1.79,.16 -1.57,.15 -1.3,.14 -1.2,.14 -1.16,.12 -1.13,.11 -1.14,.13 -1.22,.14 -1.41,.18 -1.65,.19 -1.91,.21 -2.07,.23 -2.12,.25 -2.08,.24 -2.02,.23 -1.97,.22 -1.89,.24 -1.84,.24 -1.84,.21 -1.86,.18 -1.93,.15 -1.98,.12 -2.02,.08 -2.06,.06 -2.11,.04 -2.18,.02 -2.28,0 -2.36,.01 -2.42,0 -2.46,0 -2.51,0 -2.54,0 -2.57,0 -2.58,0 -2.59,0 -2.61,0 -2.58,-.02 -2.51,-.03 -2.42,-.05 -2.32,-.05 -2.27,-.05 -2.21,-.03 -2.2,-.02 -2.19,-.01 -2.19,0 -2.21,0 -2.26,0 -2.33,0 -2.35,0 -2.33,0 -2.28,0 -2.16,0 -2.02,0 -1.88,0 -1.78,0 -1.7,-.02 -1.64,-.07 -1.58,-.12 -1.46,-.14 -1.51,-.13 -1.58,-.08 -1.35,-.05 -1.42,-.03 -1.72,0 -1.75,-.01 -1.67,-.05 -1.21,-.23 -.08,-.28 .76,-.12 .97,-.04 1.12,-.03 1.24,-.02 1.37,-.05 1.54,-.11 1.75,-.16 1.97,-.23 2.1,-.25 2.13,-.25 2.18,-.23 2.27,-.23 2.42,-.23 2.57,-.2 2.63,-.2 2.66,-.16 2.6,-.13 2.5,-.11 2.4,-.11 2.34,-.1 2.35,-.08 2.42,-.09 2.48,-.08 2.54,-.11 2.54,-.12 2.49,-.15 2.41,-.16 2.23,-.16 1.95,-.17 1.83,-.15 1.67,-.1 1.55,-.06 1.67,-.04 1.77,-.02 1.86,-.01 1.63,-.01 1.28,-.02 1.16,-.03 1.15,-.04 1.18,-.04 1.22,-.01 1.24,-.01 1.28,0 1.28,0 1.26,0 1.2,0 1.41,0 1.66,0 1.66,.03 1.43,.06 1.16,.07 1.08,.09 1.06,.09 1.32,.1 1.62,.11 .95,.07 -.16,.05 -.87,.01 -1.45,.01 -1.92,.01 -2.23,0 -2.39,-.02 -2.47,-.05 -2.55,-.1 -2.67,-.13 -2.76,-.18 -2.87,-.22 -2.92,-.23 -2.94,-.24 -2.96,-.23 -2.93,-.2 -2.93,-.15 -2.88,-.11 -2.84,-.09 -2.77,-.07 -2.71,-.06 -2.64,-.07 -2.52,-.1 -2.39,-.11 -2.22,-.16 -2.05,-.19 -1.91,-.22 -1.8,-.25 -1.73,-.28 -1.69,-.31 -1.72,-.29 -1.78,-.29 -1.87,-.26 -1.99,-.21 -2.14,-.18 -2.23,-.13 -2.3,-.1 -2.36,-.08 -2.4,-.05 -3.1,-.02 -3.37,.01 -2.8,.08 -2.56,.14 -2.42,.16 -2.32,.12 -2.81,.1 -2.9,.09 -2.32,.06 -2.07,.02 -1.96,.01 -2.56,.01 -2.88,-.03 -2.46,-.11 -2.33,-.14 -2.32,-.12 -2.34,-.08 -2.4,-.03 -2.46,-.02 -2.48,-.01 -2.5,0 -2.52,.06 -2.5,.14 -2.42,.16 -2.33,.2 -2.25,.19 -2.15,.16 -2.04,.13 -1.97,.13 -1.91,.13 -1.85,.14 -1.81,.15 -1.76,.14 -1.73,.14 -1.63,.13 -1.7,.15 -1.57,.14 -1.22,.08 -1.16,.03 -1.24,.02 -1.29,0 -1.29,.01 -1.26,0 -1.48,0 -1.7,0 -1.61,-.02 -1.43,-.02 -1.3,-.01 -1.25,-.01 -1.18,0 -1.17,-.06 -1.32,-.13 -1.57,-.14 -1.74,-.09 -1.56,-.03 -1.32,-.02 -1.45,.01 -1.69,.08 -1.88,.16 -1.94,.17 -1.89,.12 -1.67,.05 -1.65,.02 -1.5,-.05 -1.16,-.16 -1.09,-.24 -1.15,-.3 -1.22,-.34 -1.26,-.37 -1.28,-.36 -1.37,-.33 -3.91,-.44 -5.55,-.48 l-2.35,-.2 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-light-green-highlight, color(display-p3 0.563 0.9495 0.3857))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 2287.81, 953.91)" opacity="1"><g transform="scale(1)"><path d="M0,0 q-8.22,.1 -10.4,.07 t-3.6,-.1 -2.57,-.18 -2.18,-.23 -1.76,-.21 -1.35,-.15 -1.21,-.11 -1.17,-.09 -1.13,-.09 -1.37,-.07 -1.42,-.04 -1.15,-.02 -1.16,0 -1.33,-.01 -1.61,.02 -1.86,.11 -1.97,.23 -1.95,.27 -1.77,.25 -1.77,.25 -1.85,.25 -1.82,.23 -1.8,.19 -1.69,.12 -4.01,.13 -5.54,.15 l-2.36,.06 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-light-green-highlight, color(display-p3 0.563 0.9495 0.3857))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 1368.6564, 920.3232)" opacity="1"><g transform="scale(1)"><path d="M2.02,-1.8 t1.31,1.45 3.15,2.64 1.37,-1.04 -4.29,-5.56 -4.83,-5.75 -.81,-5.04 1.65,-4.94 3.48,-3.8 4.2,-2.08 5.73,.06 3.58,.65 a2.45,2.45 0 0 1 -1.42,4.7 t-.98,-.26 -3.3,-.17 -4,1.13 -2.74,3.15 -.29,4.16 5.55,6.39 5.98,6.99 .51,4.53 -2.94,2.92 -4.73,.51 -5.02,-2.31 -3.89,-3.25 -1.31,-1.48 a2.71,2.71 0 0 1 4.04,-3.6 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1401.4941, 899.4541)" opacity="1"><g transform="scale(1)"><path d="M2.49,-.06 t.49,6.96 1.48,13.26 1.08,9.13 .09,2.83 a2.49,2.49 0 0 1 -4.98,-.03 t-.15,-2.43 -1.16,-8.83 -1.42,-13.59 -.41,-7.18 a2.49,2.49 0 0 1 4.98,-.12 ZM1,33.37 t-1.15,-3.4 -1.68,-6.26 .32,-4.77 3.35,-3.22 5.33,-1.98 6.35,-.76 3.53,-.08 a2.2,2.2 0 0 1 -.11,4.4 t-3.06,.14 -5.61,.7 -4.44,1.51 -1.35,3.28 1.67,5.11 1.13,2.79 a2.49,2.49 0 0 1 -4.28,2.54 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1426.8947, 932.4544)" opacity="1"><g transform="scale(1)"><path d="M-2.26,1.23 t-1.77,-3.71 -3.03,-5.68 -1.89,-4.79 .55,-4.93 3.37,-3.56 4.62,-2.27 4.41,-1.02 4.32,.35 2.34,.55 a2.7,2.7 0 0 1 -1.16,5.28 t-2.25,-.27 -4.75,.42 -4.15,2.93 -.35,4.3 3.21,6.11 1.91,4.05 a2.91,2.91 0 0 1 -5.38,2.24 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1442.0983, 919.5145)" opacity="1"><g transform="scale(1)"><path d="M2.25,1.43 t-1.07,1.74 -1.84,3.59 1.79,1.46 4.46,-2.06 4.16,-4.88 2.24,-3.21 a2.68,2.68 0 0 1 4.49,2.93 t-2.48,3.61 -4.18,5.25 -4.02,2.89 -4.97,1.36 -4.82,-1.23 -2.43,-3.7 .84,-4.77 2.21,-4.14 1.12,-1.7 a2.67,2.67 0 0 1 4.5,2.86 ZM16.59,-1.75 t.5,.95 1.85,5.21 2.82,6.13 2.61,2.8 1.13,.92 a2.52,2.52 0 0 1 -3.01,4.04 t-2.6,-1.88 -3.68,-3.76 -2.69,-6.85 -1.63,-4.98 a2.68,2.68 0 0 1 4.7,-2.58 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1492.3005, 918.0039)" opacity="1"><g transform="scale(1)"><path d="M1.03,2.98 t-1.89,.64 -4.23,2.02 -3.63,3.42 .27,3.75 4.4,1.93 4.89,-.44 4.12,-1.68 2.07,-1.05 a2.69,2.69 0 0 1 2.65,4.68 t-3.6,1.99 -6.77,2.55 -6.02,.03 -5.25,-2.15 -3.41,-4.35 -.29,-5.34 2.7,-4.85 5.06,-4.02 4.99,-2.43 1.88,-.66 a3.16,3.16 0 0 1 2.06,5.96 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1508.531, 892.0128)" opacity="1"><g transform="scale(1)"><path d="M2.71,-.08 t.22,6.78 1.28,13.77 3.17,14.6 3.32,11.09 1.23,3.49 a2.73,2.73 0 0 1 -5.1,1.95 t-2.04,-5.1 -3.76,-11.52 -2.76,-13.74 -1.29,-14.36 -.23,-7.02 a2.99,2.99 0 0 1 5.96,.06 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1508.5824, 927.1184)" opacity="1"><g transform="scale(1)"><path d="M-2.16,-2.62 t1.96,-1.64 4.15,-2.92 6.48,-2.78 8.38,-2.16 7.81,-.91 7.75,-.06 4.04,.16 a3.01,3.01 0 0 1 .09,6.02 t-9.14,.8 -12.73,1.6 -7.05,2.37 -5.45,3.16 -1.97,1.6 a3.4,3.4 0 0 1 -4.32,-5.24 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1411.7425, 978.9338)" opacity="1"><g transform="scale(1)"><path d="M.08,-2.16 t8.61,.16 12.03,.13 3.41,-.03 a2.49,2.49 0 0 1 .16,4.98 t-3.41,.18 -12.29,-.19 -8.89,-.37 a2.44,2.44 0 0 1 .38,-4.86 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1465.7702, 1005.1389)" opacity="1"><g transform="scale(1)"><path d="M-2.23,1.05 t-4.07,-12.08 -4.9,-15.76 -1.27,-10 -.02,-8.73 1.38,-4.28 2.83,-3.42 4.4,-2.77 5.13,-2.05 5.72,-1.28 3.11,-.45 a2.38,2.38 0 0 1 .86,4.68 t-1.54,.35 -6.14,1.94 -6.98,3.34 -2.99,4.09 -.22,8.1 1.1,9.2 4.78,15.55 4.04,12.13 a2.71,2.71 0 0 1 -5.22,1.44 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1460.002, 977.8041)" opacity="1"><g transform="scale(1)"><path d="M.6,-2.16 t4.84,1.04 9.2,1.35 4.36,.31 a2.32,2.32 0 0 1 -.14,4.64 t-4.7,-.25 -9.73,-1.51 -5.03,-1.26 a2.25,2.25 0 0 1 1.2,-4.32 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1490.2508, 961.9501)" opacity="1"><g transform="scale(1)"><path d="M2.5,.09 t-.64,8.06 .18,14.56 1.63,9.88 2.43,6.68 1.61,3.3 a2.75,2.75 0 0 1 -4.64,2.95 t-1.77,-2.67 -3.04,-7.64 -2.01,-12.08 -.08,-15.43 .67,-8.33 a2.85,2.85 0 0 1 5.66,.72 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1503.8369, 990.0423)" opacity="1"><g transform="scale(1)"><path d="M2.75,.84 t-1.15,4.48 1.72,4.37 5.04,-1.61 2.67,-3.44 -2.22,-2.94 -2.72,-1.02 a2.93,2.93 0 0 1 1.84,-5.57 t3.29,1.38 4.68,3.41 1.18,4.53 -1.51,4.53 -3.1,3.37 -4.47,2.52 -5.57,1.21 -5.07,-1.46 -2.38,-3.63 1.03,-6.97 1.24,-4.84 a2.87,2.87 0 0 1 5.5,1.68 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1537.9155, 991.6084)" opacity="1"><g transform="scale(1)"><path d="M.71,2.91 t-4.06,1.21 -1.34,1.44 5.01,-1.07 4.6,-3.77 2.29,-2.49 a2.97,2.97 0 0 1 4.63,3.71 t-2.82,3.06 -5.07,4.47 -5.07,2.11 -5.64,.32 -5.03,-2.12 -2.01,-4.31 2.22,-4.2 6.44,-2.91 4.43,-1.27 a2.99,2.99 0 0 1 1.42,5.82 ZM11.03,-2.48 t.12,.07 .12,.07 a2.97,2.97 0 0 1 -3.01,5.12 t-.12,-.07 -.12,-.07 a2.97,2.97 0 0 1 3.01,-5.12 ZM12.73,.43 t-.09,3.98 .71,5.93 3.56,1.34 7.91,-5.48 6.51,-6.36 1.36,-1.49 a2.31,2.31 0 0 1 3.54,2.98 t-3.68,4.56 -6.75,7.39 -6.33,4.17 -5.88,.64 -4.18,-2.6 -2.23,-4.41 -.52,-6.79 .14,-4.27 a2.97,2.97 0 0 1 5.93,.41 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1579.0589, 962.4337)" opacity="1"><g transform="scale(1)"><path d="M2.63,.42 t-.83,7.34 -.75,11.98 1.08,8.84 2.52,7.5 3.73,6.77 2.23,3.45 a2.51,2.51 0 0 1 -4.06,2.97 t-1.84,-2.34 -3.55,-5.41 -2.53,-5.13 -1.9,-6.86 -1.12,-9.8 .86,-12.57 .9,-7.58 a2.66,2.66 0 0 1 5.26,.84 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1570.2696, 987.9926)" opacity="1"><g transform="scale(1)"><path d="M-2.68,-1.93 t1.22,-1.75 3.16,-3.39 6.32,-3.69 8.77,-2.95 10.84,-.42 6.46,.49 a2.81,2.81 0 0 1 -.46,5.6 t-3.97,-.07 -7.52,.42 -7.27,1.6 -6.7,2.88 -4.24,3.45 -1.25,1.69 a3.3,3.3 0 0 1 -5.36,-3.86 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1416.8089, 1072.0552)" opacity="1"><g transform="scale(1)"><path d="M-.21,-2.26 t5.98,-.25 13.42,-1.38 7.43,-1.13 a2.57,2.57 0 0 1 .89,5.08 t-3,.63 -9.54,1.44 -10.98,.63 -4.44,-.18 a2.43,2.43 0 0 1 .24,-4.84 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1468.4104, 1061.0023)" opacity="1"><g transform="scale(1)"><path d="M2.25,.8 t-1.48,5.09 -1.55,7.27 1.42,4.03 3.61,1.99 4.26,-1.47 3.55,-3.45 2.49,-3.74 1.94,-4.58 .86,-2.65 a2.58,2.58 0 0 1 4.96,1.42 t-1.14,3.08 -2.46,5.32 -3.03,4.35 -3.89,3.83 -4.73,2.37 -4.95,.01 -4.21,-2.16 -2.59,-3.7 -.68,-4.93 1.61,-8.21 1.51,-5.47 a2.39,2.39 0 0 1 4.5,1.6 ZM20.02,1.43 t.12,0 .12,.01 a2.59,2.59 0 0 1 -.38,5.16 t-.12,-.01 -.12,-.02 a2.58,2.58 0 0 1 .38,-5.14 ZM22.65,3.88 t.47,5.53 1.75,7.26 3.21,2.31 3.68,.38 1.77,-.23 a2.62,2.62 0 0 1 .78,5.19 t-2.55,.43 -4.91,-.12 -4.41,-2.16 -3.24,-4.02 -1.49,-5.24 -.26,-5.94 .03,-3.11 a2.59,2.59 0 0 1 5.17,-.28 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1509.9859, 1060.1422)" opacity="1"><g transform="scale(1)"><path d="M2.41,.3 t-.29,6.02 .6,11.07 1.37,6.77 .46,1.73 a2.56,2.56 0 0 1 -4.9,1.49 t-1.14,-3.35 -1.53,-5.91 -.47,-5.93 .49,-7.93 .59,-4.56 a2.43,2.43 0 0 1 4.82,.6 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1521.1458, 1065.6409)" opacity="1"><g transform="scale(1)"><path d="M3.28,.11 t-.11,1.8 .39,4.29 3.19,-2.11 4.39,-5.85 3.7,-1.26 3.53,1.91 2.92,6.66 2.43,6.81 2.36,1.16 1.31,-.88 a2.69,2.69 0 0 1 3.57,4.03 t-2.17,1.76 -4.44,1.42 -3.98,-2.13 -3.08,-6.16 -2.43,-6.62 -3.61,1.61 -4.19,5.45 -3.99,1.21 -3.62,-2.43 -1.58,-4.74 -.19,-4.47 .12,-1.8 a2.75,2.75 0 0 1 5.48,.34 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1558.622, 1039.3288)" opacity="1"><g transform="scale(1)"><path d="M2.8,-.09 t.25,16.06 .89,20.59 2.72,11.21 2.08,6.67 a2.74,2.74 0 0 1 -5.08,2.08 t-.78,-1.73 -2.64,-7.16 -2.52,-10.45 -.59,-21.04 .07,-16.05 a2.8,2.8 0 0 1 5.6,-.18 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1557.1115, 1068.2297)" opacity="1"><g transform="scale(1)"><path d="M-1.22,-2.7 t3.95,-1.56 7.16,-2.04 6,-.32 6.07,1.15 3.29,1 a3.13,3.13 0 0 1 -1.75,6.02 t-3.8,-.92 -6.17,-.85 -5.31,.63 -4.98,1.43 -2.02,.86 a2.96,2.96 0 0 1 -2.44,-5.4 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1504.0551, 1034.7416)" opacity="1"><g transform="scale(1)"><path d="M-.46,-2.35 t5.11,-.9 5.12,-.91 a2.21,2.21 0 0 1 .84,4.34 t-5.07,1.08 -5.08,1.09 a2.4,2.4 0 0 1 -.92,-4.7 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 2722.5752, 846.0726)" opacity="1"><g transform="scale(1)"><path d="M-.67,-2.98 t2.75,.11 2.75,.11 a2.55,2.55 0 0 1 -.16,5.1 t-2.75,-.06 -2.75,-.06 a2.6,2.6 0 0 1 .16,-5.2 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1710.8974, 943.5629)" opacity="1"><g transform="scale(1)"><path d="M2.95,-.19 t.26,8.46 -.16,20.52 -.03,15.23 1.31,6.44 .93,3.28 a2.22,2.22 0 0 1 -4.25,1.32 t-1.18,-3.52 -1.62,-7.1 .25,-18.36 .28,-20.34 -.39,-5.55 a2.31,2.31 0 0 1 4.6,-.38 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1710.6835, 948.0902)" opacity="1"><g transform="scale(1)"><path d="M-.66,-2.24 t6.44,-1.21 25.17,-1.28 28.66,.89 28.7,1.27 27.74,.47 28.75,-1.27 42.93,-2.21 48.58,-2.42 43.66,-2.52 40.85,-1.19 44.35,-.33 44.17,-.22 44.16,-.8 45.12,-1.04 45.79,-.17 46.36,.46 43.68,1.54 36.24,2.75 40.89,1.61 39.36,.57 34.77,1.26 42.15,1.22 41.53,.6 37.67,.49 35.87,.79 22.3,.84 12.16,-.09 8.52,-.66 1.36,-.3 a2.6,2.6 0 0 1 1.07,5.09 t-2.88,.35 -9.1,.51 -11.34,-.12 -22.43,-.88 -33.34,-.76 -35.11,-.35 -40.98,-.54 -39.04,-.95 -34.59,-1.31 -42.06,-.73 -36.05,-.7 -33.29,-2.51 -45.84,-2.1 -46.4,-.59 -45.83,.07 -45.29,1.02 -44.37,1 -44.18,.41 -44.07,.35 -43.02,1.06 -46.26,2.5 -49.04,2.47 -43.77,2.1 -30.29,1.35 -31.81,-.66 -30.31,-1.74 -26.64,-1.28 -24.29,1.11 -6.06,1.26 a2.34,2.34 0 0 1 -1.32,-4.48 ZM990.39,-.92 t.57,10.92 1.02,15.49 1.63,7.16 1.18,2.6 a2.92,2.92 0 0 1 -5.51,1.91 t-1.26,-3.18 -1.9,-10.38 -.76,-15.58 -.14,-8.39 a2.6,2.6 0 0 1 5.17,-.55 ZM993.45,38.76 t-1.04,.54 -6.23,.88 -23.46,.44 -47.49,-1.24 -70.26,-3.22 -87.06,-4.33 -92.63,-4.53 -92.62,-3.61 -88.6,-1.93 -80.18,-.63 -65.9,.24 -55.77,1.74 -49.14,2.45 -43.22,2.72 -38.63,3.62 -27.68,2.86 -20.56,2.27 -21.99,2.91 -27.29,2.18 -20.2,1.51 -12.62,2.07 -12.03,1.57 -4.34,.23 a3.02,3.02 0 0 1 -.57,-6.01 t4.68,-.39 14.34,-2.17 27.17,-2.87 29.88,-2.48 22.2,-2.86 20.61,-2.18 21.23,-2.1 24.08,-2.59 33.18,-2.63 42.6,-2.54 52.06,-2.34 54.07,-1.48 63.25,-.01 75.86,.61 83.72,1.93 92.7,3.59 92.64,4.55 87.05,4.43 70.18,3.3 51.66,1.21 23.02,-.51 .51,-.31 a2.92,2.92 0 0 1 2.82,5.11 ZM3.92,41.49 t2.62,-.15 2.62,-.15 a2.77,2.77 0 0 1 .58,5.52 t-2.6,.39 -2.61,.39 a3.02,3.02 0 0 1 -.61,-6 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 2208.8114, 935.959)" opacity="1"><g transform="scale(1)"><path d="M2.39,.79 t-.01,4.84 .3,8.21 .91,5.91 1.91,4.92 2.23,3.37 .91,.99 a2.51,2.51 0 0 1 -3.58,3.52 t-2.09,-2.13 -3.02,-4.44 -1.58,-5.21 -1,-6.59 -.31,-8.56 .01,-4.89 a2.66,2.66 0 0 1 5.32,.06 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 2489.4722, 946.6909)" opacity="1"><g transform="scale(1)"><path d="M1.69,1.97 t-1.17,1 -2.36,3.85 -1.44,5.96 -.02,6.37 .92,6.09 2.16,5.93 1.47,3.08 a2.54,2.54 0 0 1 -4.44,2.46 t-1.32,-2.31 -2.25,-5.12 -1.48,-6.39 -.45,-7.27 .75,-7.07 2.28,-5.94 2.79,-3.57 1.18,-1.01 a2.59,2.59 0 0 1 3.38,3.94 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1947.505, 942.5915)" opacity="1"><g transform="scale(1)"><path d="M2.06,-1.89 t.59,.67 1.19,3.33 .24,13.03 .07,15.15 .45,4.81 a2.63,2.63 0 0 1 -5.2,.77 t-.64,-3.66 -.7,-6.9 .45,-12.76 -.04,-10.1 -.53,-.56 a2.79,2.79 0 0 1 4.12,-3.78 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1827.8533, 950.5207)" opacity="1"><g transform="scale(1)"><path d="M2.52,.74 t-1.04,8.46 -1.33,15.15 -.29,6.69 a2.45,2.45 0 0 1 -4.9,.04 t.08,-6.92 1.37,-15.64 1.29,-8.72 a2.45,2.45 0 0 1 4.82,.94 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 2075.5694, 941.4619)" opacity="1"><g transform="scale(1)"><path d="M2.67,.32 t-.6,5.48 -.6,8.2 .84,6.39 .86,3.68 a2.22,2.22 0 0 1 -4.27,1.25 t-1.13,-4.24 -1.04,-7.23 .94,-8.58 .84,-5.59 a2.1,2.1 0 0 1 4.16,.64 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 2348.147, 941.7828)" opacity="1"><g transform="scale(1)"><path d="M1.73,.2 t-.97,6.28 -1.18,9.88 .44,7.81 .66,4.21 a2.6,2.6 0 0 1 -5.04,1.26 t-.92,-3.32 -.87,-6.79 1.37,-11.92 1.33,-8.45 a2.64,2.64 0 0 1 5.18,1.04 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 2583.4067, 951.3808)" opacity="1"><g transform="scale(1)"><path d="M2.93,-.01 t-.13,6.2 .39,9.95 1.47,6.85 2.86,6.52 1.92,3.4 a2.47,2.47 0 0 1 -4.1,2.77 t-2.48,-3.83 -3.57,-7.41 -1.66,-7.76 -.4,-10.59 .16,-6.4 a2.77,2.77 0 0 1 5.54,.3 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1627.4253, 973.2212)" opacity="1"><g transform="scale(1)"><path d="M.81,2.57 t-1.24,.4 -2.99,1.81 .45,2.25 5.35,.27 3.17,-.59 a2.74,2.74 0 0 1 .89,5.41 t-4.77,.65 -7.17,.23 -3.95,-2.23 -1.3,-3.95 1.97,-4.36 3.59,-3.22 3.12,-1.42 1.26,-.39 a2.7,2.7 0 0 1 1.62,5.14 ZM8.69,8.92 t.24,3.27 .95,5.31 3.25,4.44 2.53,2.4 a2.67,2.67 0 0 1 -3.07,4.38 t-1.85,-1.27 -3.49,-3.35 -2.41,-4.05 -1.16,-6.05 -.38,-4.09 a2.74,2.74 0 0 1 5.39,-.99 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1627.267, 1051.9435)" opacity="1"><g transform="scale(1)"><path d="M1.39,2.3 t-1.48,.83 -3.19,2.3 -2.6,3.35 1.78,1.41 4.93,-1.41 4.32,-2.31 2.07,-1.36 a2.67,2.67 0 0 1 3.14,4.34 t-3.14,2.25 -5.25,3.08 -4.62,1.14 -4.85,-.21 -3.83,-2.53 -1.05,-4.44 1.84,-4.33 3.79,-3.79 3.86,-2.68 1.5,-.78 a2.92,2.92 0 0 1 2.78,5.14 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1639.3982, 1052.3201)" opacity="1"><g transform="scale(1)"><path d="M2.84,1.33 t-1.98,4.65 -3.42,10.44 -1.64,10.2 -.03,5.67 .18,1.26 a2.91,2.91 0 0 1 -5.7,1.16 t-.33,-1.24 -.59,-4.57 .03,-5.58 1.92,-8.63 3.76,-11.2 2.12,-4.82 a3.13,3.13 0 0 1 5.68,2.66 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1728.155, 966.8026)" opacity="1"><g transform="scale(1)"><path d="M0,0 q7.69,.47 9.61,.66 t3.06,.32 1.98,.18 1.59,.07 1.36,-.06 1.16,-.16 1.09,-.18 1.12,-.2 1.27,-.21 1.43,-.24 1.52,-.27 1.37,-.24 1.19,-.2 1.3,-.2 1.62,-.26 1.97,-.29 2.17,-.27 2.2,-.27 2.06,-.23 1.83,-.15 1.79,-.13 1.87,-.09 1.57,-.03 1.27,-.02 1.19,0 1.14,-.01 1.19,0 1.23,0 1.25,0 1.35,0 1.49,0 1.7,0 1.97,0 2.13,0 2.24,0 2.29,0 2.3,-.03 2.32,-.08 2.24,-.09 2.11,-.09 1.97,-.05 1.8,-.02 1.64,-.01 1.49,-.01 1.55,.02 1.46,.05 1.23,.08 1.36,.12 1.65,.11 1.92,.09 2.04,.08 2.02,.03 1.94,.01 1.92,.01 1.92,0 1.94,0 1.95,0 1.95,-.02 1.91,-.05 1.88,-.06 1.85,-.04 1.79,-.04 1.72,-.05 1.67,-.07 1.64,-.09 1.54,-.09 1.36,-.08 1.3,-.1 1.37,-.1 1.54,-.11 1.82,-.1 2.08,-.13 2.31,-.16 2.64,-.19 3.01,-.23 3.32,-.29 3.57,-.3 3.75,-.28 3.87,-.27 3.99,-.26 4.08,-.21 4.09,-.2 4.02,-.18 3.9,-.14 3.76,-.09 3.66,-.04 3.6,-.02 3.59,0 3.62,-.01 3.67,0 3.69,0 3.73,0 3.77,0 3.82,0 3.87,0 3.89,.02 3.9,.05 3.88,.11 3.78,.16 3.68,.21 3.49,.23 3.27,.25 3.04,.25 2.79,.26 2.55,.3 2.31,.31 2.08,.3 1.94,.27 1.85,.24 1.79,.21 1.79,.16 1.78,.12 1.79,.06 2.35,.03 2.56,.01 2.11,.01 1.91,-.03 1.8,-.07 1.76,-.11 1.72,-.12 1.68,-.1 1.63,-.09 1.57,-.09 1.46,-.06 1.51,-.08 1.63,-.11 1.44,-.12 1.23,-.1 1.2,-.08 1.21,-.07 1.59,-.11 1.76,-.13 1.54,-.11 1.44,-.1 1.37,-.09 1.37,-.09 1.33,-.09 1.36,-.1 1.43,-.14 1.4,-.13 1.38,-.14 1.32,-.13 1.26,-.12 1.26,-.11 1.23,-.11 1.19,-.1 1.13,-.07 1.08,-.06 1.07,-.04 1.06,-.03 1.14,-.04 1.38,-.02 1.68,-.06 1.97,-.1 2.09,-.12 2.05,-.11 1.91,-.12 1.78,-.09 1.68,-.08 1.62,-.09 1.57,-.08 1.52,-.11 1.5,-.16 1.5,-.17 1.54,-.18 1.61,-.19 1.73,-.18 1.83,-.18 1.92,-.18 1.96,-.19 1.96,-.19 1.93,-.16 1.88,-.13 1.81,-.08 1.71,-.03 1.61,-.04 1.48,-.03 1.53,-.04 1.44,-.07 1.15,-.05 1.21,-.06 1.53,-.09 1.91,-.14 2.2,-.18 2.32,-.22 2.25,-.22 2.08,-.17 1.79,-.12 1.73,-.06 1.77,-.03 1.51,-.01 1.25,-.01 1.17,0 1.55,.03 1.92,.06 2.02,.04 2.27,.02 2.43,.01 2.46,0 2.37,0 2.21,0 2.1,0 1.92,0 1.87,.03 1.85,.09 1.5,.1 1.19,.08 1.12,.06 1.09,.04 1.11,.02 1.22,.01 1.31,0 1.33,0 1.4,-.01 1.4,-.07 1.36,-.13 1.37,-.14 1.29,-.14 1.23,-.14 1.44,-.19 1.57,-.24 1.45,-.23 1.42,-.24 1.54,-.25 1.75,-.28 1.61,-.27 1.53,-.29 1.68,-.32 1.61,-.31 1.46,-.26 1.32,-.18 1.45,-.16 1.65,-.17 1.63,-.19 1.51,-.15 1.41,-.13 1.31,-.11 1.4,-.15 1.5,-.18 1.48,-.17 1.37,-.04 1.3,.12 .72,.2 -.3,.19 -1.03,.12 -1.38,.11 -1.47,.11 -1.37,.11 -1.31,.12 -1.26,.12 -1.1,.1 -1.17,.1 -1.41,.13 -1.74,.2 -2.1,.22 -2.31,.24 -2.41,.22 -2.42,.19 -2.45,.17 -2.61,.15 -2.83,.13 -3.04,.09 -3.18,.03 -3.26,.02 -3.26,-.03 -3.24,-.13 -4.25,-.37 -4.77,-.46 -4.1,-.37 -3.88,-.3 -3.85,-.22 -3.9,-.14 -3.95,-.07 -3.93,-.04 -3.86,-.01 -3.77,-.01 -3.7,0 -3.6,0 -3.49,0 -3.37,-.01 -3.28,-.07 -3.22,-.16 -3.23,-.2 -3.27,-.23 -3.26,-.23 -3.23,-.21 -3.19,-.17 -3.12,-.1 -3.04,-.04 -2.97,-.02 -2.88,0 -2.8,.04 -2.77,.11 -2.76,.14 -2.71,.15 -2.61,.14 -2.47,.12 -2.31,.12 -2.14,.09 -2.02,.06 -1.91,.02 -1.85,.03 -1.85,.04 -1.87,.07 -1.88,.1 -1.86,.15 -1.81,.17 -1.78,.15 -1.76,.15 -1.79,.13 -1.83,.13 -1.89,.11 -1.97,.1 -1.95,.05 -1.79,.02 -1.74,.01 -1.64,.01 -1.41,-.12 -1.26,-.29 -1.18,-.26 -1.21,-.14 -1.35,-.06 -1.5,.02 -1.54,.12 -1.49,.14 -1.35,.09 -1.24,.04 -1.19,.02 -1.13,.05 -1.22,.16 -1.44,.27 -1.6,.32 -1.42,.26 -1.63,.26 -1.77,.3 -1.42,.27 -1.36,.27 -1.32,.27 -1.35,.28 -1.36,.29 -1.47,.33 -1.56,.36 -1.52,.33 -1.67,.38 -1.64,.36 -1.37,.29 -1.28,.26 -1.28,.24 -1.35,.23 -1.56,.2 -1.8,.2 -1.95,.17 -1.84,.13 -1.74,.08 -1.69,.04 -1.73,.03 -1.82,0 -1.69,.01 -1.54,0 -1.64,.03 -1.77,.09 -1.98,.15 -1.94,.13 -1.73,.08 -1.55,.1 -1.45,.13 -1.74,.23 -2.13,.31 -2.39,.37 -2.46,.37 -2.27,.33 -2,.27 -1.83,.2 -1.72,.18 -2.36,.26 -2.85,.36 -2.67,.36 -2.65,.33 -2.62,.29 -2.55,.18 -2.51,.11 -2.54,.06 -2.61,.04 -2.68,.05 -2.72,.05 -2.71,.06 -2.62,.05 -2.53,.05 -2.48,.06 -2.53,.05 -2.64,.09 -2.81,.16 -3,.24 -3.13,.31 -3.25,.37 -3.34,.37 -4.35,.47 -4.76,.48 -3.93,.34 -3.51,.25 -3.28,.17 -3.13,.09 -3,.04 -2.86,.02 -2.71,-.04 -2.54,-.12 -2.4,-.12 -2.3,-.1 -2.27,-.06 -2.93,-.02 -3.22,.05 -2.65,.18 -2.37,.24 -2.18,.26 -2.05,.26 -1.89,.21 -1.7,.17 -1.73,.15 -1.84,.16 -1.57,.14 -1.52,.14 -1.66,.16 -1.57,.23 -1.49,.31 -1.28,.35 -1.11,.29 -1.1,.19 -1.21,.09 -1.4,.04 -1.59,.05 -1.67,.11 -1.6,.21 -1.43,.25 -1.29,.28 -1.15,.25 -1.07,.15 -1.14,.09 -1.25,.1 -1.35,.13 -1.48,.09 -1.58,.11 -1.64,.13 -1.56,.17 -1.4,.18 -1.23,.15 -1.17,.16 -1.24,.18 -1.34,.18 -1.35,.18 -1.32,.19 -1.25,.22 -1.15,.28 -1.06,.33 -1.13,.43 -1.16,.47 -1.12,.47 -1.23,.47 -1.44,.47 -1.62,.43 -1.68,.35 -1.58,.25 -1.47,.15 -1.38,.07 -1.35,.04 -1.38,.03 -1.19,-.14 -.78,-.54 -.48,-.9 -.4,-.99 -.52,-.9 -.77,-.87 -.98,-.87 -1.01,-.79 -1.03,-.76 -.84,-.83 -.42,-.96 -.18,-1.04 -.07,-1.17 -.03,-1.18 .05,-1.06 .14,-1.05 .22,-1.1 .26,-1.15 .28,-1.16 .28,-1.13 .29,-1.34 .26,-1.61 .32,-1.4 .6,-.97 .85,-.67 1.01,-.54 1.02,-.33 1.04,.04 1.02,.28 1.02,.32 1.22,.36 1.53,.33 1.8,.29 1.92,.18 1.83,.07 1.74,.04 1.6,.01 1.4,.07 1.28,.14 1.25,.17 1.24,.13 1.29,.06 1.27,.02 1.11,.01 1.18,.01 1.41,0 3.74,.68 5.17,1.19 l2.2,.5 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 1785.362, 960.6578)" opacity="1"><g transform="scale(1)"><path d="M 0.7599999904632568 0 m -0.1, 0 a 0.1,0.1 0 1,0 0.2,0 a 0.1,0.1 0 1,0 -0.2,0" stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 2221.9696, 948.0902)" opacity="1"><g transform="scale(1)"><path d="M-.06,-.92 q8.43,-.46 10.52,-.54 t3.55,-.06 2.59,.12 2.1,.2 1.85,.24 1.74,.27 1.71,.32 1.67,.36 1.64,.33 1.61,.28 1.6,.23 1.64,.16 1.48,.08 1.29,.03 1.46,.02 1.83,.01 2.19,-.03 2.36,-.07 2.28,-.1 2,-.08 1.84,-.05 1.76,-.02 1.63,-.01 1.62,.01 1.65,.03 1.45,.03 1.16,.01 1.16,.01 1.37,0 1.74,0 2.05,0 2.23,.05 2.2,.13 2.05,.16 1.89,.18 1.78,.17 1.72,.14 1.66,.11 1.62,.11 1.59,.1 1.56,.07 1.59,.05 1.64,.03 2.15,.05 2.37,.03 1.96,.02 1.76,.01 1.69,0 1.7,0 1.74,0 1.78,-.02 1.8,-.02 1.75,-.01 1.6,-.01 1.63,0 1.48,.05 1.15,.13 1.1,.18 1.15,.2 1.21,.22 1.23,.22 1.24,.2 1.25,.2 1.27,.17 1.23,.17 1.21,.18 1.18,.21 1.13,.24 1.11,.24 1.09,.24 1.08,.24 1.08,.24 1.17,.24 1.4,.29 1.72,.31 2.05,.3 2.22,.27 2.22,.21 2.07,.18 1.89,.18 1.69,.19 1.68,.22 1.72,.29 1.44,.31 1.2,.31 1.23,.3 1.39,.29 1.69,.29 2.02,.21 2.24,.12 2.31,.05 2.21,.02 2.01,.01 1.77,.01 1.71,0 1.74,0 1.47,.03 1.22,.09 1.19,.15 1.27,.2 1.48,.24 1.82,.23 2.16,.2 2.36,.17 2.39,.11 2.29,.1 2.17,.07 2.07,.06 1.98,.06 1.8,.06 1.81,.08 1.88,.15 1.61,.17 1.39,.18 1.48,.18 1.68,.17 1.92,.15 2.06,.1 2.04,.04 1.92,.02 1.81,.01 1.76,0 1.71,0 1.64,0 1.53,0 1.59,.03 1.71,.12 1.52,.19 1.26,.19 1.19,.19 1.13,.19 1.08,.16 1.08,.14 1.17,.17 1.41,.2 1.77,.21 2.13,.19 2.34,.17 2.38,.11 2.28,.08 2.16,.08 2.07,.08 1.98,.1 1.9,.12 1.79,.09 1.71,.09 1.65,.08 1.58,.05 1.52,.04 1.49,.04 1.5,.01 1.53,.01 1.63,0 1.76,0 1.87,0 1.97,0 1.98,0 1.93,0 1.88,.05 1.8,.11 1.76,.15 1.69,.18 1.56,.15 1.59,.14 1.69,.16 1.5,.14 1.26,.11 1.2,.09 1.18,.08 1.17,.05 1.19,.02 1.24,.03 1.25,.03 1.25,.01 1.24,.01 1.19,0 1.38,0 1.55,0 1.4,.03 1.32,.07 1.47,.08 1.44,.05 1.27,.02 1.34,.01 1.5,.01 1.71,0 1.88,.01 1.97,.02 1.93,.05 1.85,.08 1.82,.09 1.91,.13 2,.17 2.1,.18 2.16,.2 2.19,.21 2.22,.19 2.26,.2 2.32,.19 2.37,.17 2.38,.18 2.44,.19 2.5,.2 2.53,.22 2.58,.24 2.62,.26 2.63,.24 2.69,.25 2.78,.23 2.8,.19 2.81,.2 2.76,.25 2.69,.27 2.62,.28 2.55,.27 2.47,.25 2.39,.28 2.38,.31 2.41,.36 2.45,.35 2.49,.33 2.49,.3 2.47,.27 2.45,.25 2.41,.23 2.33,.22 2.24,.21 2.11,.19 2,.21 1.81,.21 1.82,.26 1.85,.3 1.51,.23 1.21,.18 1.13,.14 1.08,.1 1.08,.08 1.11,.03 1.14,.01 1.18,.01 1.23,0 1.27,0 1.28,0 1.26,0 1.43,-.05 1.53,-.09 1.28,-.12 1.15,-.19 1.17,-.27 1.29,-.31 1.48,-.4 1.63,-.49 1.59,-.51 1.46,-.39 1.31,-.21 1.23,-.08 1.23,-.04 1.18,-.21 .99,-.5 .72,-.68 .43,-.83 .22,-1.02 .09,-1.16 0,-1.27 -.06,-1.29 -.05,-1.21 .02,-1.15 .19,-1.06 .38,-.99 .18,-.92 -.55,-.61 -1,-.23 -1.05,0 -1.1,.14 -1.13,.23 -1.18,.28 -1.22,.3 -1.24,.32 -1.33,.31 -1.52,.28 -1.73,.26 -1.88,.24 -1.91,.2 -1.84,.19 -1.71,.15 -1.66,.14 -1.69,.14 -1.75,.12 -1.76,.12 -1.76,.09 -1.72,.07 -1.7,.05 -1.69,.02 -1.64,0 -1.75,.01 -1.88,0 -1.58,0 -1.33,0 -1.57,0 -1.91,0 -1.94,0 -1.93,-.03 -1.67,-.07 -1.33,-.1 -1.23,-.1 -1.24,-.12 -1.3,-.14 -1.42,-.17 -1.61,-.17 -1.71,-.13 -1.62,-.1 -1.69,-.07 -1.82,-.02 -1.82,-.01 -1.85,.06 -1.84,.1 -1.74,.06 -1.68,.02 -1.51,.01 -1.32,-.05 -1.46,-.17 -1.77,-.24 -2.09,-.29 -2.28,-.3 -2.33,-.3 -2.23,-.27 -2.1,-.24 -2.02,-.19 -1.96,-.13 -1.9,-.07 -1.85,-.03 -1.76,-.01 -1.61,-.01 -1.61,0 -1.7,0 -1.51,0 -1.24,0 -1.39,0 -1.57,0 -1.51,0 -1.43,-.05 -1.27,-.08 -1.24,-.07 -1.26,-.04 -1.32,-.02 -1.66,-.01 -2.01,0 -2.16,.01 -2.11,.07 -1.84,.11 -1.73,.14 -1.79,.16 -1.57,.15 -1.3,.14 -1.2,.14 -1.16,.12 -1.13,.11 -1.14,.13 -1.22,.14 -1.41,.18 -1.65,.19 -1.91,.21 -2.07,.23 -2.12,.25 -2.08,.24 -2.02,.23 -1.97,.22 -1.89,.24 -1.84,.24 -1.84,.21 -1.86,.18 -1.93,.15 -1.98,.12 -2.02,.08 -2.06,.06 -2.11,.04 -2.18,.02 -2.28,0 -2.36,.01 -2.42,0 -2.46,0 -2.51,0 -2.54,0 -2.57,0 -2.58,0 -2.59,0 -2.61,0 -2.58,-.02 -2.51,-.03 -2.42,-.05 -2.32,-.05 -2.27,-.05 -2.21,-.03 -2.2,-.02 -2.19,-.01 -2.19,0 -2.21,0 -2.26,0 -2.33,0 -2.35,0 -2.33,0 -2.28,0 -2.16,0 -2.02,0 -1.88,0 -1.78,0 -1.7,-.02 -1.64,-.07 -1.58,-.12 -1.46,-.14 -1.51,-.13 -1.58,-.08 -1.35,-.05 -1.42,-.03 -1.72,0 -1.75,-.01 -1.67,-.05 -1.21,-.23 -.08,-.28 .76,-.12 .97,-.04 1.12,-.03 1.24,-.02 1.37,-.05 1.54,-.11 1.75,-.16 1.97,-.23 2.1,-.25 2.13,-.25 2.18,-.23 2.27,-.23 2.42,-.23 2.57,-.2 2.63,-.2 2.66,-.16 2.6,-.13 2.5,-.11 2.4,-.11 2.34,-.1 2.35,-.08 2.42,-.09 2.48,-.08 2.54,-.11 2.54,-.12 2.49,-.15 2.41,-.16 2.23,-.16 1.95,-.17 1.83,-.15 1.67,-.1 1.55,-.06 1.67,-.04 1.77,-.02 1.86,-.01 1.63,-.01 1.28,-.02 1.16,-.03 1.15,-.04 1.18,-.04 1.22,-.01 1.24,-.01 1.28,0 1.28,0 1.26,0 1.2,0 1.41,0 1.66,0 1.66,.03 1.43,.06 1.16,.07 1.08,.09 1.06,.09 1.32,.1 1.62,.11 .95,.07 -.16,.05 -.87,.01 -1.45,.01 -1.92,.01 -2.23,0 -2.39,-.02 -2.47,-.05 -2.55,-.1 -2.67,-.13 -2.76,-.18 -2.87,-.22 -2.92,-.23 -2.94,-.24 -2.96,-.23 -2.93,-.2 -2.93,-.15 -2.88,-.11 -2.84,-.09 -2.77,-.07 -2.71,-.06 -2.64,-.07 -2.52,-.1 -2.39,-.11 -2.22,-.16 -2.05,-.19 -1.91,-.22 -1.8,-.25 -1.73,-.28 -1.69,-.31 -1.72,-.29 -1.78,-.29 -1.87,-.26 -1.99,-.21 -2.14,-.18 -2.23,-.13 -2.3,-.1 -2.36,-.08 -2.4,-.05 -3.1,-.02 -3.37,.01 -2.8,.08 -2.56,.14 -2.42,.16 -2.32,.12 -2.81,.1 -2.9,.09 -2.32,.06 -2.07,.02 -1.96,.01 -2.56,.01 -2.88,-.03 -2.46,-.11 -2.33,-.14 -2.32,-.12 -2.34,-.08 -2.4,-.03 -2.46,-.02 -2.48,-.01 -2.5,0 -2.52,.06 -2.5,.14 -2.42,.16 -2.33,.2 -2.25,.19 -2.15,.16 -2.04,.13 -1.97,.13 -1.91,.13 -1.85,.14 -1.81,.15 -1.76,.14 -1.73,.14 -1.63,.13 -1.7,.15 -1.57,.14 -1.22,.08 -1.16,.03 -1.24,.02 -1.29,0 -1.29,.01 -1.26,0 -1.48,0 -1.7,0 -1.61,-.02 -1.43,-.02 -1.3,-.01 -1.25,-.01 -1.18,0 -1.17,-.06 -1.32,-.13 -1.57,-.14 -1.74,-.09 -1.56,-.03 -1.32,-.02 -1.45,.01 -1.69,.08 -1.88,.16 -1.94,.17 -1.89,.12 -1.67,.05 -1.65,.02 -1.5,-.05 -1.16,-.16 -1.09,-.24 -1.15,-.3 -1.22,-.34 -1.26,-.37 -1.28,-.36 -1.37,-.33 -3.91,-.44 -5.55,-.48 l-2.35,-.2 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-light-green-highlight, color(display-p3 0.563 0.9495 0.3857))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 2287.81, 953.91)" opacity="1"><g transform="scale(1)"><path d="M0,0 q-8.22,.1 -10.4,.07 t-3.6,-.1 -2.57,-.18 -2.18,-.23 -1.76,-.21 -1.35,-.15 -1.21,-.11 -1.17,-.09 -1.13,-.09 -1.37,-.07 -1.42,-.04 -1.15,-.02 -1.16,0 -1.33,-.01 -1.61,.02 -1.86,.11 -1.97,.23 -1.95,.27 -1.77,.25 -1.77,.25 -1.85,.25 -1.82,.23 -1.8,.19 -1.69,.12 -4.01,.13 -5.54,.15 l-2.36,.06 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-light-green-highlight, color(display-p3 0.563 0.9495 0.3857))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 1618.7987, 907.5416)" opacity="1"><g transform="scale(1)"><path d="M1.17,2.08 t-1.6,.37 -3.55,1.87 -2.87,3.65 .4,3.92 3.33,2.15 4.16,.1 4.06,-1.21 3.88,-2.86 2.48,-3.85 -.25,-3.89 -2.13,-3.41 -5.45,-3.8 -5.99,-3.27 -3.46,-2.2 -2.05,-4.17 .42,-4.69 2.53,-3.25 3.71,-2.56 4.23,-1.64 5.06,-.57 5.44,.96 3.74,2.63 1.85,3.73 .54,4.39 -.97,4.59 -2.34,4.27 -3.08,3.32 -4.26,2.27 -2.64,.89 a2.65,2.65 0 0 1 -1.62,-5.05 t3.11,-1.47 4.7,-3.63 2.06,-4.42 -.34,-4.52 -2.97,-3.04 -4.57,-.57 -4.89,1.34 -3.92,2.58 -.79,3.6 4.94,4.15 6.67,3.49 4.25,3.47 3,4.33 1.11,4.66 -.81,4.51 -2.51,4.14 -4.08,3.5 -5.4,2.42 -6.16,.66 -5.79,-1.37 -4.08,-2.87 -1.56,-4.4 .73,-4.95 2.52,-4.33 4.16,-3.46 4.1,-1.78 1.59,-.39 a2.91,2.91 0 0 1 1.36,5.66 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g></svg></div>
+
+<p>Unions on the other hand place the members "on top of" each other, using the same
+memory:</p>
+<div class="rvo-drawing"><svg xmlns="http://www.w3.org/2000/svg" direction="ltr" width="1347.9522226107802" height="215.1849515155772" viewBox="1344.1130427135035 1170.6698326724515 1347.9522226107802 215.1849515155772" stroke-linecap="round" stroke-linejoin="round" class="tl-container tl-theme__force-sRGB" style="background-color: transparent;" role="img" aria-label="Union"><title>Union</title><defs/><g transform="matrix(1, 0, 0, 1, 1739.6914, 1257.977)" opacity="1"><g transform="scale(1)"><path d="M.22,-.16 q10.04,.47 12.66,.55 t4.11,.1 2.68,.01 2.1,-.01 1.79,-.01 1.71,.03 1.13,.27 .08,.5 -.27,.62 .25,.54 .72,.29 .96,.27 1.02,.29 1,.25 1.11,.23 1.12,.18 1.09,.15 1.32,.1 1.68,.08 2.04,.07 2.27,.06 2.34,.07 2.33,.09 2.29,.08 2.31,.09 2.36,.06 2.38,.05 2.39,.05 2.41,.03 2.41,.02 2.4,0 2.45,.01 2.48,-.02 2.48,-.03 2.5,-.04 2.53,-.01 2.6,.06 2.68,.19 2.8,.32 2.91,.37 2.99,.35 3.07,.33 3.16,.26 3.28,.17 3.41,.08 3.51,.04 3.53,-.01 3.45,-.11 3.36,-.21 3.19,-.24 3.02,-.22 2.88,-.18 2.71,-.1 2.56,-.05 2.42,-.02 2.27,-.01 2.18,0 2.14,.09 2.19,.24 2.26,.34 2.39,.37 2.5,.36 2.58,.37 2.64,.41 2.62,.44 2.54,.46 2.41,.47 2.3,.47 2.17,.41 2.05,.37 1.99,.3 1.95,.26 1.93,.23 1.98,.21 2.06,.2 2.14,.2 2.21,.22 2.27,.21 2.32,.2 2.36,.19 2.39,.21 2.37,.21 2.37,.23 2.36,.26 2.32,.27 2.27,.32 2.18,.32 2.05,.3 1.96,.25 1.91,.15 1.92,.06 2,.03 2.08,.01 2.18,-.03 2.24,-.05 2.26,-.06 2.23,-.04 2.19,-.02 2.1,.01 2.07,.1 1.99,.18 1.9,.19 1.85,.17 1.8,.11 1.75,.05 1.76,.02 1.8,.01 1.84,-.05 1.9,-.15 1.95,-.18 2,-.21 2.1,-.18 2.21,-.15 2.31,-.16 2.43,-.16 2.54,-.15 2.61,-.11 2.66,-.06 2.69,-.04 2.75,-.05 2.79,-.07 2.86,-.1 2.92,-.14 2.98,-.15 3.04,-.14 3.07,-.16 3.1,-.15 3.11,-.13 3.08,-.1 3.08,-.06 3.03,-.02 2.95,-.01 2.86,-.01 2.78,.01 2.74,.07 2.71,.12 2.72,.14 2.73,.14 2.78,.12 2.85,.12 2.93,.09 3.05,.06 3.17,.02 3.28,.01 3.38,.01 3.44,0 3.46,0 3.42,.04 3.38,.13 3.33,.2 3.25,.24 3.23,.25 3.24,.25 3.22,.24 3.22,.23 3.26,.19 3.3,.16 3.4,.1 3.55,.05 3.71,.01 3.88,.01 4,.01 4.1,-.02 4.18,-.02 4.21,-.01 4.16,-.01 4.05,-.02 3.92,-.07 3.76,-.1 3.55,-.09 3.32,-.11 3.09,-.12 2.83,-.11 2.52,-.12 2.2,-.12 1.87,-.06 1.75,-.05 1.81,-.07 1.55,-.13 1.5,-.21 1.58,-.43 1.09,-.67 .82,-.62 1.14,-.45 1.38,-.38 1.4,-.36 1.26,-.42 1.17,-.56 1.07,-.72 .78,-.95 .11,-.91 -.64,-.63 -1.12,-.49 -1.48,-.41 -1.62,-.3 -1.36,.06 -.87,.53 -.46,.78 -.27,.88 -.2,1.02 -.16,1.19 -.14,1.42 -.14,1.7 -.14,1.98 -.14,2.1 -.13,1.94 -.17,1.85 -.2,1.84 -.22,1.54 -.21,1.25 -.23,1.13 -.24,1.06 -.24,1.02 -.25,1.04 -.24,1.06 -.24,1.12 -.24,1.19 -.25,1.23 -.22,1.25 -.26,1.5 -.38,1.7 -.55,1.22 -.84,.66 -1.24,.51 -1.58,.46 -1.51,.31 -1.29,.17 -1.39,.08 -1.69,.04 -2.07,.02 -2.35,0 -2.49,.01 -2.46,0 -2.43,0 -2.43,0 -2.44,0 -2.48,.04 -2.53,.16 -2.56,.27 -2.59,.33 -2.62,.36 -2.65,.37 -2.66,.36 -2.67,.32 -2.71,.28 -2.81,.24 -2.98,.24 -3.18,.26 -3.35,.27 -3.51,.25 -3.62,.21 -3.63,.15 -3.62,.08 -3.58,.03 -3.53,.02 -3.46,0 -3.43,-.04 -3.38,-.12 -3.33,-.21 -3.28,-.26 -3.2,-.26 -3.09,-.29 -3.01,-.3 -2.91,-.34 -2.83,-.36 -2.78,-.36 -2.75,-.36 -2.72,-.34 -2.69,-.33 -2.66,-.29 -2.62,-.26 -2.54,-.23 -2.43,-.22 -2.28,-.22 -2.17,-.23 -2.05,-.24 -1.98,-.21 -1.95,-.18 -1.95,-.15 -1.97,-.13 -2.02,-.1 -2.02,-.06 -2.01,-.04 -1.98,-.04 -1.96,-.01 -1.98,-.01 -2.02,0 -2.05,0 -2.1,0 -2.1,0 -2.09,-.02 -2.1,-.06 -2.08,-.14 -2.08,-.2 -2.09,-.24 -2.08,-.24 -2.08,-.22 -2.11,-.21 -2.12,-.16 -2.13,-.15 -2.12,-.14 -2.12,-.14 -2.09,-.15 -2.04,-.16 -1.95,-.17 -1.85,-.2 -1.76,-.21 -1.62,-.18 -1.42,-.14 -1.31,-.1 -1.34,-.07 -1.37,-.02 -1.67,-.01 -1.9,-.01 -1.63,.03 -1.34,.08 -1.24,.09 -1.18,.1 -1.12,.09 -1.08,.06 -1.07,.04 -1.05,.03 -1.07,.01 -1.09,0 -1.11,.01 -1.13,0 -1.13,0 -1.14,0 -1.2,0 -1.32,0 -1.52,0 -1.76,0 -1.98,-.05 -2.05,-.11 -1.99,-.16 -1.88,-.14 -1.82,-.11 -1.84,-.07 -1.91,-.04 -1.97,-.01 -2.04,-.02 -2.11,-.04 -2.15,-.08 -2.22,-.16 -2.28,-.27 -2.33,-.38 -2.4,-.45 -2.45,-.52 -2.49,-.58 -2.57,-.6 -2.62,-.61 -2.65,-.61 -2.63,-.56 -2.61,-.52 -2.57,-.44 -2.53,-.37 -2.51,-.31 -2.5,-.24 -2.49,-.2 -2.5,-.16 -2.54,-.13 -2.58,-.12 -2.61,-.11 -2.59,-.12 -2.49,-.15 -2.38,-.2 -2.23,-.3 -2.13,-.41 -2.07,-.53 -2.05,-.63 -2.12,-.68 -2.18,-.73 -2.25,-.74 -2.28,-.73 -2.28,-.68 -2.32,-.56 -2.34,-.44 -2.37,-.31 -2.35,-.23 -2.35,-.14 -2.33,-.07 -2.31,-.05 -2.31,-.02 -2.31,-.01 -2.28,.04 -2.24,.11 -2.16,.11 -2.06,.06 -1.95,.03 -1.83,.01 -1.75,0 -1.64,-.02 -1.58,-.11 -1.55,-.17 -1.54,-.19 -1.55,-.16 -1.46,-.1 -1.3,-.07 -1.21,-.05 -1.15,-.02 -1.09,-.01 -1.16,0 -1.19,0 -1.17,0 -1.3,0 -1.37,0 -1.34,0 -1.42,0 -1.39,0 -1.34,0 -1.43,-.06 -1.56,-.17 -1.75,-.26 -1.96,-.33 -2.06,-.32 -2.02,-.28 -1.89,-.21 -1.78,-.14 -1.73,-.09 -1.73,-.05 -1.77,-.02 -1.81,-.01 -1.82,-.01 -1.81,-.03 -1.77,-.09 -1.69,-.13 -1.65,-.15 -1.62,-.17 -1.57,-.23 -1.55,-.27 -1.53,-.28 -1.5,-.28 -1.51,-.19 -1.5,-.1 -1.51,-.04 -1.45,.01 -1.58,.18 -1.49,.27 -1.14,.26 -1.08,.3 -1.09,.34 -1.34,.45 -1.46,.54 -1.17,.68 -.43,.8 .42,.72 .99,.62 1.31,.44 1.43,.23 1.48,.1 1.36,-.09 1.14,-.34 1.14,-.64 1.06,-.79 .93,-.77 .94,-.82 .98,-.87 1.08,-.92 1.12,-.92 1.13,-.87 1.13,-.8 1.1,-.72 1.05,-.63 1.02,-.53 1,-.44 1.01,-.38 1.13,-.37 1.39,-.38 1.82,-.4 2.21,-.44 2.45,-.44 2.49,-.43 2.4,-.4 2.3,-.35 2.33,-.34 2.41,-.35 2.49,-.38 2.51,-.4 2.51,-.44 2.46,-.42 2.37,-.35 2.27,-.26 2.23,-.14 2.16,-.06 2.17,-.02 2.19,-.01 2.23,.02 2.3,.14 2.37,.22 2.48,.24 2.59,.26 2.68,.23 2.8,.22 2.93,.18 3.06,.1 3.19,.06 3.31,.03 3.4,.01 3.43,-.03 3.43,-.07 3.41,-.08 3.37,-.06 3.34,-.05 3.29,-.03 3.28,-.06 3.25,-.09 3.26,-.11 3.31,-.16 3.34,-.22 3.36,-.25 3.3,-.24 3.21,-.25 3.08,-.18 2.95,-.09 2.85,-.04 2.79,-.02 2.77,-.01 2.76,.06 2.75,.14 2.76,.16 2.73,.2 2.75,.2 2.82,.2 3.95,.13 4.59,.02 4.02,-.13 3.82,-.27 3.72,-.32 3.62,-.32 3.5,-.29 3.3,-.2 3.05,-.1 2.75,-.04 2.48,-.02 2.32,.04 2.23,.15 2.27,.26 2.36,.29 2.47,.31 2.56,.3 2.64,.28 2.67,.27 2.72,.22 2.78,.18 2.86,.16 2.93,.1 3,.04 3.07,.02 3.12,0 3.11,.01 3.06,-.02 2.96,-.05 2.83,-.07 2.68,-.05 2.57,-.02 2.44,0 2.32,.07 2.26,.2 2.26,.28 2.34,.3 2.46,.31 2.56,.34 2.69,.34 2.82,.32 2.97,.3 3.1,.29 3.16,.2 3.14,.13 3.08,.1 3.04,.07 2.98,.11 2.92,.14 2.86,.17 2.74,.23 2.64,.26 2.57,.3 2.5,.33 2.46,.36 2.44,.34 2.46,.31 2.52,.29 2.62,.23 2.74,.19 2.86,.16 2.94,.11 2.99,.07 3,.03 5.32,.07 6.65,.11 l2.83,.05 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 2124.48, 1273.94)" opacity="1"><g transform="scale(1)"><path d="M0,0 q9.05,.52 11.36,.68 t3.71,.39 2.03,.58 .77,.71 -.01,.76 -.57,.92 -1.05,1.05 -1.51,1.17 -1.93,1.19 -2.18,1.09 -2.29,.95 -2.33,.78 -2.34,.61 -2.4,.5 -2.49,.43 -2.58,.37 -2.71,.33 -2.87,.28 -3.04,.26 -3.16,.24 -3.22,.23 -3.2,.22 -3.1,.21 -2.91,.18 -2.68,.15 -2.41,.13 -2.16,.09 -1.89,.03 -1.81,.02 -1.73,.01 -1.53,-.07 -1.33,-.24 -1.08,-.41 -.93,-.49 -.96,-.5 -1.05,-.46 -1.15,-.38 -1.28,-.32 -1.34,-.27 -1.3,-.23 -1.31,-.17 -1.37,-.1 -1.37,.01 -1.21,.33 -.64,.53 .16,.49 .88,.52 1.68,.56 2.44,.56 3.01,.51 3.33,.37 3.38,.2 3.34,.09 3.36,.03 3.4,.02 4.51,-.01 5.07,-.02 4.3,-.01 3.97,-.01 3.81,-.03 3.78,-.1 3.76,-.17 3.74,-.23 3.71,-.27 3.68,-.26 3.68,-.25 3.61,-.21 3.47,-.13 3.3,-.08 3.11,-.03 2.92,-.01 2.76,-.01 2.66,.05 2.62,.08 2.58,.05 2.57,.02 2.57,0 2.5,-.16 2.4,-.34 2.26,-.46 2.1,-.5 1.95,-.5 1.71,-.46 1.66,-.48 1.75,-.57 1.62,-.52 1.57,-.51 1.74,-.67 1.92,-.86 1.97,-1.05 1.83,-1.15 1.51,-1.11 1.16,-1 .9,-.9 .79,-.85 .76,-.91 .74,-1.01 .67,-1.12 .56,-1.24 .41,-1.43 .22,-1.53 .09,-1.46 -.03,-1.51 -.32,-1.61 -.53,-1.53 -.38,-1.34 -.08,-1.24 .23,-1.18 .4,-1.15 .35,-1.17 .18,-1.2 -.3,-1 -.72,-.32 -.6,.3 -.72,.61 -.92,.74 -2.15,3.3 -2.94,5.14 l-1.26,2.19 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 1741.0949, 1310.2246)" opacity="1"><g transform="scale(1)"><path d="M-.54,.76 q-.03,11.1 .06,14.06 t.21,4.69 .36,2.97 .48,2.05 .68,1.35 .74,.51 .48,-.29 .3,-.69 .19,-.98 .11,-1.3 .06,-1.63 .03,-1.88 .01,-1.98 .01,-1.83 0,-1.7 .03,-1.58 .2,-1.31 .41,-1.04 .58,-1.02 .62,-.99 .57,-.87 .58,-.86 .75,-1.12 .9,-1.34 .91,-1.31 .87,-.84 .81,-.01 .91,.54 1.01,.63 1.06,.48 1.32,.33 1.68,.17 2,.07 2.12,-.07 2.03,-.25 1.84,-.29 1.59,-.25 1.56,-.17 1.69,-.09 1.54,-.03 1.41,-.02 1.56,-.01 1.81,0 2.03,.01 2.13,.02 2.16,.01 2.13,-.07 2.15,-.23 2.27,-.37 2.41,-.43 2.5,-.46 2.53,-.49 2.49,-.47 2.37,-.4 2.24,-.33 2.06,-.22 1.83,-.12 1.75,-.07 1.81,-.03 1.6,.05 1.35,.16 1.34,.21 1.42,.2 1.62,.14 1.87,.08 2.12,.03 2.17,.02 2.05,0 1.78,.01 1.66,0 1.67,0 1.63,0 1.57,.06 1.37,.17 1.22,.24 1.26,.32 1.49,.37 1.49,.32 1.26,.25 1.15,.2 1.11,.16 1.35,.15 1.68,.15 1.75,.19 1.77,.25 1.77,.3 1.78,.32 1.8,.34 1.78,.35 1.5,.3 1.19,.21 1.1,.13 1.19,.07 1.4,.04 1.54,.01 1.51,0 1.66,.01 1.64,0 1.36,0 1.28,.07 1.22,.19 1.27,.28 1.43,.4 1.72,.47 2,.49 2.18,.47 2.24,.39 2.24,.29 2.21,.18 2.2,.11 2.19,.06 2.18,.06 2.17,.1 2.12,.15 2.06,.2 1.99,.28 1.93,.35 1.91,.38 1.91,.39 1.96,.39 2.06,.35 2.18,.3 2.32,.22 2.47,.14 2.59,.08 2.66,.03 2.71,.02 2.74,0 2.7,.02 2.63,.04 2.56,.09 2.49,.15 2.4,.15 2.31,.18 2.24,.18 2.19,.19 2.19,.19 2.21,.16 2.26,.1 2.34,.05 2.44,.04 2.51,.02 2.61,0 2.73,.01 2.81,0 2.91,0 2.92,0 2.9,0 2.85,0 2.76,0 2.67,0 2.58,0 2.46,.03 2.38,.1 2.34,.17 2.38,.17 2.45,.14 2.53,.12 2.61,.06 2.65,.04 2.69,.02 2.74,0 2.76,.01 2.77,0 2.76,0 2.75,.01 2.72,.06 2.68,.09 2.62,.16 2.56,.19 2.53,.2 2.52,.21 2.51,.2 3.22,.22 3.51,.24 2.92,.19 2.67,.16 2.57,.13 2.56,.1 2.55,.06 2.53,.03 2.51,.01 2.5,.01 2.5,0 2.52,0 2.54,0 2.57,0 2.6,-.02 2.64,-.08 2.67,-.15 2.72,-.16 2.75,-.17 2.75,-.2 2.76,-.22 2.77,-.27 2.79,-.3 2.83,-.32 2.86,-.34 2.89,-.33 2.91,-.33 2.89,-.31 2.87,-.25 2.82,-.19 2.75,-.11 2.7,-.05 2.64,-.02 2.56,-.01 2.5,0 2.42,.01 2.37,.06 2.3,.06 2.26,.05 2.23,.01 2.21,.01 2.25,.01 2.28,-.03 2.28,-.11 2.32,-.15 2.33,-.17 2.34,-.19 2.34,-.15 2.32,-.11 2.27,-.07 2.23,-.02 2.19,-.01 2.13,-.01 2.09,.01 2.07,.04 2.03,.07 2.01,.07 1.97,.04 1.91,.02 1.86,.01 1.8,.01 1.66,0 1.71,0 1.76,0 1.75,0 1.74,0 1.59,0 .88,0 -.16,.09 -.77,.23 -.71,.48 0,.55 .68,.27 1.03,.12 1.09,-.01 1.19,-.19 1.41,-.33 1.54,-.36 1.5,-.26 1.44,-.09 1.2,.25 .66,.76 .29,1.1 .01,1.27 -.31,1.35 -.52,1.28 -.65,1.18 -.74,.97 -.81,.8 -.86,.84 -.86,.86 -.97,.87 -1.12,.75 -1.18,.51 -1.24,.26 -1.22,.11 -1.07,.05 -1.07,.04 -1.14,.06 -1.29,.1 -1.53,.14 -1.78,.16 -2.01,.18 -2.13,.16 -2.09,.11 -2.04,.06 -2.05,.03 -2.11,.01 -2.19,0 -2.31,.01 -2.46,0 -2.62,-.03 -2.81,-.09 -2.96,-.1 -3.1,-.09 -3.23,-.07 -3.31,-.03 -3.39,-.01 -3.44,-.01 -3.5,0 -3.54,.03 -3.6,.09 -3.69,.13 -3.73,.15 -3.78,.11 -3.79,.05 -3.81,.02 -3.88,.01 -3.96,0 -4.04,-.03 -4.09,-.09 -4.12,-.14 -4.14,-.21 -4.11,-.24 -4.04,-.26 -3.96,-.28 -3.88,-.28 -3.83,-.27 -3.78,-.22 -3.71,-.17 -3.66,-.11 -3.6,-.05 -3.51,-.04 -3.43,-.02 -3.35,-.04 -3.32,-.06 -3.31,-.07 -3.28,-.11 -3.25,-.14 -4.12,-.19 -4.49,-.17 -3.76,-.12 -3.42,-.11 -3.24,-.13 -3.15,-.16 -3.1,-.21 -3.12,-.22 -3.15,-.22 -3.19,-.21 -3.18,-.19 -3.1,-.22 -2.97,-.25 -2.82,-.3 -2.72,-.34 -2.61,-.36 -2.57,-.39 -2.55,-.43 -2.53,-.45 -2.51,-.48 -2.5,-.46 -2.49,-.42 -2.49,-.34 -2.52,-.3 -2.53,-.27 -2.54,-.24 -2.59,-.19 -2.68,-.16 -2.77,-.17 -2.83,-.16 -2.9,-.18 -2.9,-.2 -2.91,-.22 -2.89,-.27 -2.86,-.31 -2.78,-.38 -2.69,-.41 -2.63,-.41 -2.59,-.41 -2.58,-.37 -2.59,-.33 -2.64,-.28 -2.67,-.21 -2.7,-.15 -2.7,-.09 -2.65,-.06 -2.58,-.04 -2.51,-.02 -2.45,-.02 -2.39,-.06 -2.35,-.1 -2.26,-.15 -2.19,-.17 -2.16,-.2 -2.11,-.2 -2.11,-.15 -2.13,-.16 -2.15,-.12 -2.17,-.06 -2.21,-.04 -2.22,-.02 -2.25,-.01 -2.97,.09 -3.29,.18 -2.75,.16 -2.46,.15 -2.25,.13 -2.09,.1 -1.92,.06 -1.81,.02 -1.75,.01 -1.69,0 -1.67,.01 -1.68,0 -1.64,0 -1.63,0 -1.62,0 -1.64,0 -1.64,0 -1.62,0 -1.61,0 -1.59,.03 -1.57,.09 -1.55,.15 -1.52,.18 -1.52,.21 -1.5,.21 -1.47,.2 -1.42,.17 -1.28,.16 -1.23,.12 -1.32,.12 -1.38,.1 -1.39,.05 -1.53,.03 -1.48,.01 -1.23,0 -1.22,-.04 -1.25,-.13 -1.26,-.16 -1.26,-.18 -1.27,-.19 -1.34,-.2 -1.52,-.27 -1.77,-.35 -2.01,-.44 -2.1,-.51 -2.05,-.53 -1.92,-.52 -1.77,-.5 -1.65,-.48 -1.73,-.51 -1.58,-.48 -1.24,-.36 -1.17,-.3 -1.25,-.24 -1.31,-.22 -1.32,-.15 -1.31,-.1 -1.3,-.05 -1.26,-.03 -1.22,-.01 -1.17,0 -1.35,.09 -1.52,.22 -1.38,.25 -1.28,.26 -1.26,.33 -1.2,.47 -1.02,.68 -.63,.86 -.32,.92 -.21,1.1 -.15,1.28 -.09,1.31 -.03,1.26 .2,1.18 .62,1.06 1.02,1 1.22,.89 1.35,.72 1.7,.67 2.1,.63 2.38,.57 2.53,.44 2.52,.33 2.46,.22 2.48,.12 2.51,.08 2.58,.06 2.68,.02 2.77,-.01 2.87,-.11 2.96,-.25 3.03,-.34 3.07,-.39 3.11,-.41 3.08,-.43 3.84,-.49 4.79,-.49 4.24,-.3 3.81,-.13 3.51,-.05 2.66,.01 2.27,.1 2.04,.18 1.94,.24 1.88,.26 1.87,.24 1.89,.19 1.93,.15 1.92,.12 1.86,.1 1.82,.09 1.77,.08 1.68,.07 1.61,.07 1.49,.08 1.52,.07 1.64,.04 1.7,.04 1.72,.03 1.52,.01 1.28,0 1.19,0 1.27,.01 1.35,0 1.39,0 1.46,0 1.32,0 1.1,0 1.15,0 1.39,0 1.72,0 2.04,0 2.19,-.05 2.18,-.13 2.04,-.15 1.92,-.11 1.89,-.06 1.88,-.02 1.89,-.02 1.92,0 1.96,0 1.99,.04 2.08,.1 2.17,.09 2.27,.05 2.36,.02 2.38,.01 2.38,0 2.34,.01 2.25,0 2.16,0 2.06,0 1.92,0 1.82,0 1.73,0 1.67,0 1.65,0 1.66,0 1.69,0 1.72,0 1.77,0 1.84,0 1.93,0 2.01,0 2.07,0 2.07,0 2.04,0 1.97,0 1.9,0 1.87,.03 1.8,.09 1.78,.13 1.79,.17 1.81,.14 1.84,.1 1.9,.07 1.97,.04 2.03,.02 2.09,.01 2.15,0 2.18,.01 2.23,0 2.26,-.04 2.27,-.09 2.25,-.11 2.19,-.09 2.13,-.06 2.08,-.03 2.06,-.01 2.06,0 2.06,.04 2.11,.13 2.17,.18 2.25,.18 2.35,.14 2.44,.09 2.51,.06 2.55,.02 2.56,-.02 2.57,-.15 4.84,-1.05 6.18,-1.63 l2.63,-.69 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-light-green-highlight, color(display-p3 0.563 0.9495 0.3857))" stroke-width="26.880000000000003" opacity="0.82"/></g></g><g transform="matrix(1, 0, 0, 1, 1347.0342, 1197.1542)" opacity="1"><g transform="scale(1)"><path d="M2.23,.77 t-.41,5.52 -.31,8.08 .59,4.69 1.64,4.29 3.33,2.53 4.42,-1.45 3.73,-3.85 2.66,-4.21 1.83,-4.21 .85,-5.07 .21,-3.04 a1.84,1.84 0 0 1 3.67,-.1 t-.2,3.57 -.9,5.94 -1.93,4.87 -2.88,4.88 -3.7,4.29 -4.52,2.8 -4.47,.49 -3.88,-2.24 -2.85,-3.98 -1.53,-4.7 -.64,-5.4 .31,-8.51 .4,-5.65 a2.3,2.3 0 0 1 4.58,.46 ZM23.13,5.76 t-.03,.01 -.03,.01 a1.84,1.84 0 0 1 -1.04,-3.52 t.02,-.01 .03,-.01 a1.84,1.84 0 0 1 1.05,3.52 ZM24.29,3.44 t3.12,7.04 5.8,11.25 2.68,4.21 a1.91,1.91 0 0 1 -3.08,2.25 t-1.99,-2.67 -2.91,-4.47 -4.01,-9.13 -3.09,-7.32 a1.84,1.84 0 0 1 3.48,-1.16 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1390.4412, 1206.7522)" opacity="1"><g transform="scale(1)"><path d="M1.67,.54 t-.44,5.04 -.18,7.16 1.16,4.16 1.13,2.12 .23,.08 a2.01,2.01 0 0 1 -2.35,3.25 t-1.21,-1.42 -1.9,-3.44 -.93,-4.53 .4,-7.74 .63,-5.22 a1.75,1.75 0 0 1 3.46,.54 ZM1.27,19.07 t.46,-.26 .82,-5.33 .86,-7.76 2.52,-4.57 4.47,-1.47 3.89,2.2 4.85,7.55 4.66,6.18 1.28,.4 a2.11,2.11 0 0 1 -1.62,3.9 t-2.1,-1 -5.49,-7.16 -5.28,-7.56 -2.9,.67 -1.1,6.74 -.72,7.08 -1.48,3.06 -.86,.65 a2.01,2.01 0 0 1 -2.26,-3.32 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1426.1373, 1203.2989)" opacity="1"><g transform="scale(1)"><path d="M2.24,-.01 t.56,8.17 1.37,11.14 .82,2.95 a2.3,2.3 0 0 1 -4.38,1.44 t-.94,-3.34 -1.43,-11.84 -.48,-8.5 a2.24,2.24 0 0 1 4.48,-.02 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1443.8784, 1208.314)" opacity="1"><g transform="scale(1)"><path d="M2.47,.78 t-1.5,5.62 -1.71,7.81 2.43,1.38 3.88,-2.46 2.15,-3.8 -.69,-3.46 -3.46,-1.44 -1.84,-.13 a2.58,2.58 0 0 1 .42,-5.14 t3.71,.68 5.54,2.5 2.04,3.9 -.52,4.13 -1.94,3.98 -2.91,3.89 -3.77,3.41 -4.92,.97 -4.05,-2.28 -1.24,-4.19 .46,-5.36 1.74,-7.29 1.24,-4.28 a2.59,2.59 0 0 1 4.94,1.56 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1465.1754, 1207.2357)" opacity="1"><g transform="scale(1)"><path d="M2.52,.31 t-.48,5.61 -.3,7.7 .77,3.11 .59,1.02 a2.5,2.5 0 0 1 -3.87,3.17 t-1.13,-2.3 -1.33,-4.72 .25,-8.32 .46,-5.89 a2.54,2.54 0 0 1 5.04,.62 ZM-.43,17.42 t.41,-.31 4.1,-6.99 5.83,-8.84 4.63,-2.4 4,2.12 2.34,5.25 2.03,5.71 1.2,2.81 a2.52,2.52 0 0 1 -4.44,2.38 t-.66,-1.11 -2.8,-6.59 -3.67,-3.59 -4.87,7.96 -4.12,6.75 -.79,.69 a2.5,2.5 0 0 1 -3.19,-3.84 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1426.7321, 1179.5201)" opacity="1"><g transform="scale(1)"><path d="M-.44,-1.66 t1.32,-.36 1.31,-.37 a1.74,1.74 0 0 1 .9,3.38 t-1.33,.33 -1.32,.34 a1.72,1.72 0 0 1 -.88,-3.32 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1413.6295, 1282.5133)" opacity="1"><g transform="scale(1)"><path d="M-.41,-2.12 t5.04,-.87 7.28,-.88 7.57,.81 5.34,.81 a2.36,2.36 0 0 1 -.37,4.72 t-7.17,-.78 -12.03,-.17 -4.84,.6 a2.16,2.16 0 0 1 -.82,-4.24 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1469.5443, 1293.134)" opacity="1"><g transform="scale(1)"><path d="M2.6,-.17 t.5,4.38 .92,4.9 .42,.53 a2.49,2.49 0 0 1 -4.19,2.7 t-.72,-1.24 -1.43,-6.09 -.7,-4.84 a2.61,2.61 0 0 1 5.2,-.34 ZM-.03,10.25 t.19,-.6 -.05,-3.23 -4.62,-14.57 -6.09,-19.44 -2.04,-10.04 .51,-5.36 2.74,-4.31 4.48,-2.33 5.06,-1.13 4.69,-.07 4.86,2.28 3.32,3.05 .64,.99 a2.63,2.63 0 0 1 -4.24,3.08 t-1.73,-1.71 -4.17,-1.77 -4.42,.29 -3.76,1.24 -2.08,2.89 1.44,10.41 5.49,19.22 4.45,13.59 .67,4.91 -.3,3.11 -.29,.98 a2.49,2.49 0 0 1 -4.75,-1.48 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1459.5698, 1271.1866)" opacity="1"><g transform="scale(1)"><path d="M.45,-2.26 t5.67,.68 12.28,1.34 6.6,.66 a2.5,2.5 0 0 1 -.41,4.98 t-8.23,-.76 -12.52,-1.57 -4.29,-.81 a2.31,2.31 0 0 1 .9,-4.52 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1491.1152, 1255.4952)" opacity="1"><g transform="scale(1)"><path d="M2.93,-.92 t2.24,19.72 3.83,22.77 1.6,3.06 a2.7,2.7 0 0 1 -4.39,3.16 t-.97,-1.22 -2.37,-4.14 -3.39,-22.81 -1.99,-19.88 a2.74,2.74 0 0 1 5.44,-.66 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1516.4559, 1282.0811)" opacity="1"><g transform="scale(1)"><path d="M1.87,1.55 t-1.78,2.13 -3.57,4.98 -2.48,5.38 1.26,2.95 4.19,-.1 4.35,-1.77 3.87,-2.95 3.05,-3.52 2.13,-4.45 .65,-4.62 -2.34,-1.47 -3.04,1.07 -.9,.54 a2.49,2.49 0 0 1 -2.66,-4.2 t3.12,-1.45 5.22,-1.21 3.9,2.58 1.81,4.67 -.62,4.72 -1.93,4.64 -3.18,4.41 -4.36,3.96 -5.54,2.99 -6.03,1.13 -5.15,-1.15 -2.73,-3.05 -.1,-3.93 1.8,-4.8 4.34,-6.69 2.98,-3.89 a2.43,2.43 0 0 1 3.74,3.1 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1557.5437, 1275.179)" opacity="1"><g transform="scale(1)"><path d="M1.49,2.21 t-1.97,1.32 -4.45,3.48 -3.86,3.96 -.6,3.79 2.77,1.29 5.14,-3.7 4.49,-5.02 1.35,-2.02 a2.52,2.52 0 0 1 4.24,2.74 t-.82,1.26 -4.19,5.1 -5.66,5.35 -4.95,1.89 -4.92,-.5 -3.3,-2.9 -.71,-4.19 1.6,-4.31 3.53,-4.46 5.8,-4.92 3.53,-2.58 a2.67,2.67 0 0 1 2.98,4.42 ZM8.96,6.23 t.6,3.06 2.58,3.8 5.02,-3.34 3.03,-4.08 a2.2,2.2 0 0 1 3.71,2.36 t-1.51,2.55 -3.32,4.9 -3.93,3.41 -4.52,.3 -3.92,-3.03 -2.12,-5.64 -.58,-3.38 a2.52,2.52 0 0 1 4.96,-.91 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1585.5845, 1247.0311)" opacity="1"><g transform="scale(1)"><path d="M2.49,-.29 t1.54,16.41 2.01,18.7 1.65,5.41 2.49,4.37 1.33,1.23 a2.68,2.68 0 0 1 -2.97,4.45 t-1.42,-1.01 -3.06,-3.94 -2.76,-7.53 -2.46,-21.05 -1.33,-16.46 a2.51,2.51 0 0 1 4.98,-.58 ZM7.51,47.15 t.43,-1.01 .21,-3.45 -1.27,-5.63 -2.63,-6.14 -3.69,-5.02 -2.12,-2.09 a2.4,2.4 0 0 1 2.85,-3.86 t2.62,2.88 4.38,6.1 3.08,6.86 1.73,6.91 -.09,4.78 -.47,1.48 a2.68,2.68 0 0 1 -5.03,-1.81 ZM-2.52,21.59 t.02,-.27 .02,-.27 a2.42,2.42 0 0 1 4.81,.59 t-.04,.27 -.05,.26 a2.4,2.4 0 0 1 -4.76,-.58 ZM-.39,18.95 t8.59,-.2 16.43,-.42 7.84,-.23 a2.51,2.51 0 0 1 .51,5 t-6.19,.7 -16.36,.32 -10.18,-.37 a2.42,2.42 0 0 1 -.64,-4.8 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1666.6303, 1256.8431)" opacity="1"><g transform="scale(1)"><path d="M1.16,2.22 t-1.72,1.2 -3.91,3.37 -3.49,4.25 -1.87,4.52 1.3,3.14 4.74,.88 5.73,-.39 5.55,-1.72 6.69,-4.07 4.02,-2.92 a2.37,2.37 0 0 1 3.07,3.62 t-2.89,2.65 -5.84,4.41 -6.39,2.87 -7.15,1.27 -7.07,-.56 -5.45,-2.68 -2.23,-4.43 .69,-4.87 2.51,-4.97 4.3,-5.21 4.32,-3.87 1.69,-1.25 a2.92,2.92 0 0 1 3.4,4.76 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1679.0311, 1261.5886)" opacity="1"><g transform="scale(1)"><path d="M2.35,.69 t-1.8,6.65 -2.71,13.11 -.95,10 .77,7.17 .81,3.65 a2.4,2.4 0 0 1 -4.6,1.37 t-.92,-2.75 -1.14,-6.09 .55,-9.85 3.03,-15.57 2.26,-9.07 a2.45,2.45 0 0 1 4.7,1.38 Z" stroke-linecap="round" fill="var(--rvo-draw-blue, #4465e9)"/></g></g><g transform="matrix(1, 0, 0, 1, 1427.053, 1357.4058)" opacity="1"><g transform="scale(1)"><path d="M 0 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1427.9174, 1356.8667)" opacity="1"><g transform="scale(1)"><path d="M-.61,-2.4 t4.96,-1.18 10.74,-1.68 7.88,-.4 3.97,.49 1.87,.41 a2.53,2.53 0 0 1 -1.83,4.7 t-2.98,-.31 -8.32,.11 -10.21,1.53 -4.86,1.13 a2.47,2.47 0 0 1 -1.22,-4.8 ZM30.26,-1.53 t-.51,1.24 -.52,1.24 a2.42,2.42 0 0 1 -4.54,-1.68 t.42,-1.28 .42,-1.28 a2.53,2.53 0 0 1 4.73,1.76 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1483.8322, 1343.6058)" opacity="1"><g transform="scale(1)"><path d="M1.47,1.79 t-2.02,3.96 -3.28,7.59 -1.82,6.86 -.4,5.32 2.01,2.91 4.21,-.73 4.27,-3.77 4.46,-6.7 2.72,-5.17 .19,-.69 a2.57,2.57 0 0 1 4.89,1.57 t-2.24,4.57 -4.27,7.32 -4.49,5.03 -5.31,3.39 -5.44,.43 -4.18,-2.81 -1.78,-5.11 .5,-6.63 1.29,-5.61 3.44,-8.03 2.81,-6.1 a2.52,2.52 0 0 1 4.44,2.4 ZM13.33,9.76 t.05,-.02 .05,-.02 a2.57,2.57 0 0 1 1.83,4.8 t-.04,.01 -.05,.02 a2.57,2.57 0 0 1 -1.84,-4.79 ZM16.91,12.21 t.25,3.94 1.61,6.2 4.33,3.12 2.97,.86 a2.6,2.6 0 0 1 -.8,5.13 t-3.63,-.77 -5.54,-2.55 -3.01,-4.44 -1.21,-7.16 -.1,-4.51 a2.57,2.57 0 0 1 5.13,.18 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1515.5402, 1354.1195)" opacity="1"><g transform="scale(1)"><path d="M1.78,-.08 t-.15,1.76 .61,7.74 1.96,11.18 1.2,5.2 a2.76,2.76 0 0 1 -5.3,1.56 t-1,-3.15 -1.4,-5.53 -.99,-9.06 -.4,-8.44 .19,-1.76 a2.65,2.65 0 0 1 5.28,.5 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1527.3504, 1357.6754)" opacity="1"><g transform="scale(1)"><path d="M3.05,-.12 t.08,4.97 .73,6.68 .65,1.7 a3.21,3.21 0 0 1 -4.61,4.47 t-1.13,-1.44 -1.52,-3.87 -.34,-7.5 .04,-5.09 a3.05,3.05 0 0 1 6.1,.08 ZM.2,12.96 t1.05,-.81 5.15,-7.06 5.42,-7.85 3.79,-2 4.13,1.82 3.87,7.52 4.36,3.07 3.02,-5.48 2.08,-12.74 2.15,-13.07 .93,-3.59 a2.64,2.64 0 0 1 5.02,1.68 t-.81,3.11 -1.85,12.83 -1.87,13.39 -2.14,6.99 -3.63,5.4 -4.75,1.43 -4.21,-2.78 -3.97,-7.44 -6.58,1.5 -5.76,7.96 -1.39,1.14 a3.21,3.21 0 0 1 -4.01,-5.02 ZM39.84,-28.76 t.19,.09 .19,.1 a2.65,2.65 0 0 1 -2.35,4.75 t-.19,-.1 -.19,-.1 a2.64,2.64 0 0 1 2.35,-4.74 ZM41.64,-26.72 t.71,8.81 1.69,20.21 1.91,15.65 .94,4.26 a3.04,3.04 0 0 1 -5.55,2.46 t-.85,-2.81 -1.6,-8.43 -1.6,-22.36 -.84,-16.75 a2.65,2.65 0 0 1 5.19,-1.04 ZM42.46,20.89 t.24,-.14 .23,-.14 a3.02,3.02 0 0 1 3.29,5.07 t-.23,.15 -.22,.16 a3.04,3.04 0 0 1 -3.31,-5.1 ZM41.57,22.77 t.33,-4.43 -.67,-13.14 -1.42,-11.59 .8,-5.08 3.82,-2.22 11.15,2.26 8.57,2.28 a2.84,2.84 0 0 1 -1.03,5.58 t-4.01,-.73 -6.47,-1.55 -5.24,-2.34 -1.32,10.25 1.48,16.61 .01,4.85 a3.02,3.02 0 0 1 -6,-.75 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1495.8564, 1342.7414)" opacity="1"><g transform="scale(1)"><path d="M-.89,-2.09 t2.62,-1.18 4.86,-1.85 4.22,-.96 6.14,.39 4.15,.68 a2.28,2.28 0 0 1 -.68,4.52 t-5.13,-.29 -9.77,1.29 -4.63,1.58 a2.27,2.27 0 0 1 -1.78,-4.18 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1658.3802, 1340.8543)" opacity="1"><g transform="scale(1)"><path d="M3.36,1.77 t-2.07,4.02 -2.52,6.29 -.21,4.72 1.99,3.96 4,.34 9.47,-7.88 7.23,-6.73 a2.54,2.54 0 0 1 3.66,3.52 t-5.99,6.52 -8.66,8.58 -5.8,2.85 -5.47,.05 -4.08,-2.89 -2.42,-4.31 -.72,-4.82 .65,-5.62 2.08,-6.07 2.37,-4.59 .95,-1.48 a3.29,3.29 0 0 1 5.54,3.54 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1684.0975, 1342.5788)" opacity="1"><g transform="scale(1)"><path d="M2.84,1.56 t-1.15,2.11 -2.42,5.61 -2.52,10.84 -1.5,10.53 .12,5.29 .36,2.1 a3.41,3.41 0 0 1 -6.45,2.22 t-.61,-2.07 .28,-10.73 2.48,-14.72 3.66,-10.18 2.07,-4.12 a3.24,3.24 0 0 1 5.68,3.12 ZM-9.02,36.1 t1.45,-.6 1.46,-.6 a3.19,3.19 0 0 1 2.85,5.7 t-1.35,.8 -1.36,.8 a3.41,3.41 0 0 1 -3.05,-6.1 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 1649.0518, 1177.5817)" opacity="1"><g transform="scale(1)"><path d="M.71,2.7 t-1.45,.75 -2.96,2.11 -2.54,3.52 -1.59,4.58 1.9,3.2 10.05,-3.63 10.89,-7.31 3.31,-2.91 a2.68,2.68 0 0 1 3.91,3.67 t-1.64,1.91 -5.96,5.12 -10.06,6.4 -8.92,4.1 -5.69,.03 -3.51,-3.03 -.79,-5.11 1.73,-7.09 2.77,-5.8 4.48,-3.8 3.25,-2.11 a3.05,3.05 0 0 1 2.82,5.4 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1668.8383, 1173.6449)" opacity="1"><g transform="scale(1)"><path d="M2.68,1.31 t-1.13,2.29 -2.27,5.68 -2,9.26 -.58,9.64 .25,3.79 a2.76,2.76 0 0 1 -5.44,.89 t-.65,-3.2 .03,-9.22 1.64,-9.6 2.88,-7.86 1.91,-4.29 a2.98,2.98 0 0 1 5.36,2.62 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1723.4608, 1247.0311)" opacity="1"><g transform="scale(1)"><path d="M2.72,-.57 t1.58,6.15 3.44,20.5 2.65,16.05 .79,1.7 a2.75,2.75 0 0 1 -5,2.29 t-1.4,-4.25 -2.94,-16.62 -3.06,-18.26 -1.5,-5.88 a2.85,2.85 0 0 1 5.44,-1.68 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1720.4954, 1241.8535)" opacity="1"><g transform="scale(1)"><path d="M.88,-2.54 t5.64,1.53 17.8,2.81 20.18,1.55 23.5,-.28 24.95,.62 25.45,1.08 21.73,-.69 12.99,-1.66 18.52,-1.51 34.26,.49 44.92,1.51 44.15,.97 45.95,.79 35.83,.39 23.74,.16 26.93,-.42 22.4,-2.14 14.45,-1.51 15.6,-1.05 15.24,-.89 9,1.6 2.49,3.6 .66,21.02 .57,21.41 .75,2.81 .36,.24 a3.25,3.25 0 0 1 -5.06,4.09 t-.93,-1.35 -1.55,-5.88 -.56,-20.55 .5,-18.35 -6.89,-2.46 -14.07,.83 -13.74,.87 -11.46,.78 -8.98,1.64 -17.64,1.27 -25.19,.43 -23.74,-.07 -28.36,-.33 -34.25,-.39 -32.99,-.49 -37.5,-.95 -39.22,-1.36 -28.03,-.76 -27.79,1.85 -35.48,1.69 -23.81,-1.01 -8.03,-1.04 -18.97,.31 -26.64,-.17 -20.68,-2.05 -14.42,-2.65 -4.22,-1.25 a2.67,2.67 0 0 1 1.64,-5.08 ZM509.42,53.17 t-.56,1.19 -.55,1.18 a3.13,3.13 0 0 1 -5.79,-2.38 t.44,-1.23 .44,-1.23 a3.25,3.25 0 0 1 6.02,2.47 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1728.0437, 1294.4819)" opacity="1"><g transform="scale(1)"><path d="M.81,-2.41 t3.51,.86 13.53,.88 21.11,.16 19.3,-.3 18.23,-.26 14.79,-.1 7.55,-.01 6.97,1.69 16.17,2.7 35.04,5.06 32.8,4.8 26.86,1.43 38.82,.7 39.88,-.37 32.89,.16 22,1.1 12.74,1.15 14.46,.99 26.85,-.57 34.24,-2.23 29.29,-3.65 22.71,-3.19 16.15,-2.51 6.34,-1.46 a2.84,2.84 0 0 1 1.24,5.54 t-6.55,1.48 -16.39,2.55 -20.38,2.86 -27.1,3.57 -29.93,2.56 -28.78,.85 -22.82,-1.01 -14.84,-1.29 -19.03,-.99 -29.3,-.13 -39.49,.5 -39.35,-.48 -27.87,-1.26 -33.52,-4.87 -35.69,-5.34 -17.61,-3.12 -7.3,-1.91 -6.95,.02 -14.87,.05 -17.21,.15 -20.05,.18 -22.44,-.16 -13.56,-.98 -4.06,-.98 a2.54,2.54 0 0 1 1.62,-4.82 ZM513.75,10.23 t-1.65,-.03 -1.65,-.02 a2.79,2.79 0 0 1 .17,-5.58 t1.48,-.02 1.48,-.02 a2.84,2.84 0 0 1 .17,5.67 ZM510.55,4.6 t1.87,.07 1.87,.08 a2.64,2.64 0 0 1 .05,5.28 t-1.91,.08 -1.91,.07 a2.79,2.79 0 0 1 .03,-5.58 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1728.0437, 1299.604)" opacity="1"><g transform="scale(1)"><path d="M2.23,.47 t1.04,8.09 1.95,15.22 1.18,11.39 .91,6.34 .64,2.09 a2.06,2.06 0 0 1 -3.82,1.56 t-.9,-2.74 -1.29,-6.99 -1.69,-13.17 -1.94,-15.24 -.64,-6.31 a2.28,2.28 0 0 1 4.56,-.24 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1759.0499, 1340.4221)" opacity="1"><g transform="scale(1)"><path d="M.57,-2.29 t10.69,2.75 12.96,3.2 6.87,.59 11.88,1.56 22.22,1.28 22.61,-.6 29.66,.47 28.69,.63 18.18,-1.05 22.22,-.32 23.35,1.01 36.76,.2 43.61,.51 33.75,.99 35.29,-.24 39.83,-.52 27.23,-.1 13.96,.58 15.03,-.31 11.3,-1.72 2.37,-3.32 .36,-7.42 .46,-12.75 .09,-10.11 -1.68,-4.79 -1.07,-5.08 .94,-7.27 .97,-5.68 .03,-1.08 a2.9,2.9 0 0 1 5.8,.07 t0,2.28 -.94,6.64 .59,8.91 1.75,6.53 -.48,10.72 -.3,13.73 -.09,7.56 -2.9,4.19 -4.38,2.52 -11.33,1.75 -14.97,.48 -22.05,-.32 -35.67,.18 -41.28,.47 -42.01,-.61 -36.24,-.99 -32.51,.17 -29.04,-.66 -23.79,-.97 -22.06,.77 -17.61,.9 -25.41,-1.07 -28.94,-.49 -22.72,.43 -19.91,-1.69 -12.02,-1.71 -7.29,-.69 -13.16,-3.22 -10.74,-2.71 a2.36,2.36 0 0 1 1.14,-4.58 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1737.9669, 1338.9672)" opacity="1"><g transform="scale(1)"><path d="M-.3,-2.43 t9.34,.41 14.76,1.27 5.43,.86 a2.4,2.4 0 0 1 .73,4.74 t-2.29,.29 -4.23,-.52 -6.36,-1.18 -10.93,-.59 -6.51,-.2 a2.54,2.54 0 0 1 .06,-5.08 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1960.6076, 1247.626)" opacity="1"><g transform="scale(1)"><path d="M2.48,-.35 t1.42,12.65 1.8,33.94 .16,23.47 .34,6.68 .35,9 .03,7.12 .25,2.63 a2.04,2.04 0 0 1 -4.06,.5 t-.27,-2.31 -.04,-7.26 -.47,-9.08 -.52,-6.77 -.14,-7.56 -.72,-21.15 -1.74,-28.7 -1.35,-12.46 a2.51,2.51 0 0 1 4.96,-.7 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 2079.074, 1250.2661)" opacity="1"><g transform="scale(1)"><path d="M3.04,-.48 t.34,10.23 1.96,22.62 1.46,16.78 -1.4,11.09 -.52,14.15 .41,13.58 -.31,6.14 a2.4,2.4 0 0 1 -4.78,-.35 t.16,-6.67 -.62,-11.89 -.68,-7.86 1.4,-10.39 1.22,-9.74 -1.78,-14.38 -1.98,-22.85 -.3,-10.46 a2.71,2.71 0 0 1 5.42,0 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1840.9045, 1249.0252)" opacity="1"><g transform="scale(1)"><path d="M2.08,.53 t-.95,6.76 -2.24,23.09 -1.3,25.69 -.62,18.75 .03,16.03 .66,6.64 a2.71,2.71 0 0 1 -5.36,.75 t-.37,-2.9 -.66,-7.06 .3,-13.5 .54,-18.76 1.18,-25.94 2.29,-23.62 1.04,-7.09 a2.79,2.79 0 0 1 5.46,1.16 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 1739.6914, 1257.977)" opacity="1"><g transform="scale(1)"><path d="M.22,-.16 q10.04,.47 12.66,.55 t4.11,.1 2.68,.01 2.1,-.01 1.79,-.01 1.71,.03 1.13,.27 .08,.5 -.27,.62 .25,.54 .72,.29 .96,.27 1.02,.29 1,.25 1.11,.23 1.12,.18 1.09,.15 1.32,.1 1.68,.08 2.04,.07 2.27,.06 2.34,.07 2.33,.09 2.29,.08 2.31,.09 2.36,.06 2.38,.05 2.39,.05 2.41,.03 2.41,.02 2.4,0 2.45,.01 2.48,-.02 2.48,-.03 2.5,-.04 2.53,-.01 2.6,.06 2.68,.19 2.8,.32 2.91,.37 2.99,.35 3.07,.33 3.16,.26 3.28,.17 3.41,.08 3.51,.04 3.53,-.01 3.45,-.11 3.36,-.21 3.19,-.24 3.02,-.22 2.88,-.18 2.71,-.1 2.56,-.05 2.42,-.02 2.27,-.01 2.18,0 2.14,.09 2.19,.24 2.26,.34 2.39,.37 2.5,.36 2.58,.37 2.64,.41 2.62,.44 2.54,.46 2.41,.47 2.3,.47 2.17,.41 2.05,.37 1.99,.3 1.95,.26 1.93,.23 1.98,.21 2.06,.2 2.14,.2 2.21,.22 2.27,.21 2.32,.2 2.36,.19 2.39,.21 2.37,.21 2.37,.23 2.36,.26 2.32,.27 2.27,.32 2.18,.32 2.05,.3 1.96,.25 1.91,.15 1.92,.06 2,.03 2.08,.01 2.18,-.03 2.24,-.05 2.26,-.06 2.23,-.04 2.19,-.02 2.1,.01 2.07,.1 1.99,.18 1.9,.19 1.85,.17 1.8,.11 1.75,.05 1.76,.02 1.8,.01 1.84,-.05 1.9,-.15 1.95,-.18 2,-.21 2.1,-.18 2.21,-.15 2.31,-.16 2.43,-.16 2.54,-.15 2.61,-.11 2.66,-.06 2.69,-.04 2.75,-.05 2.79,-.07 2.86,-.1 2.92,-.14 2.98,-.15 3.04,-.14 3.07,-.16 3.1,-.15 3.11,-.13 3.08,-.1 3.08,-.06 3.03,-.02 2.95,-.01 2.86,-.01 2.78,.01 2.74,.07 2.71,.12 2.72,.14 2.73,.14 2.78,.12 2.85,.12 2.93,.09 3.05,.06 3.17,.02 3.28,.01 3.38,.01 3.44,0 3.46,0 3.42,.04 3.38,.13 3.33,.2 3.25,.24 3.23,.25 3.24,.25 3.22,.24 3.22,.23 3.26,.19 3.3,.16 3.4,.1 3.55,.05 3.71,.01 3.88,.01 4,.01 4.1,-.02 4.18,-.02 4.21,-.01 4.16,-.01 4.05,-.02 3.92,-.07 3.76,-.1 3.55,-.09 3.32,-.11 3.09,-.12 2.83,-.11 2.52,-.12 2.2,-.12 1.87,-.06 1.75,-.05 1.81,-.07 1.55,-.13 1.5,-.21 1.58,-.43 1.09,-.67 .82,-.62 1.14,-.45 1.38,-.38 1.4,-.36 1.26,-.42 1.17,-.56 1.07,-.72 .78,-.95 .11,-.91 -.64,-.63 -1.12,-.49 -1.48,-.41 -1.62,-.3 -1.36,.06 -.87,.53 -.46,.78 -.27,.88 -.2,1.02 -.16,1.19 -.14,1.42 -.14,1.7 -.14,1.98 -.14,2.1 -.13,1.94 -.17,1.85 -.2,1.84 -.22,1.54 -.21,1.25 -.23,1.13 -.24,1.06 -.24,1.02 -.25,1.04 -.24,1.06 -.24,1.12 -.24,1.19 -.25,1.23 -.22,1.25 -.26,1.5 -.38,1.7 -.55,1.22 -.84,.66 -1.24,.51 -1.58,.46 -1.51,.31 -1.29,.17 -1.39,.08 -1.69,.04 -2.07,.02 -2.35,0 -2.49,.01 -2.46,0 -2.43,0 -2.43,0 -2.44,0 -2.48,.04 -2.53,.16 -2.56,.27 -2.59,.33 -2.62,.36 -2.65,.37 -2.66,.36 -2.67,.32 -2.71,.28 -2.81,.24 -2.98,.24 -3.18,.26 -3.35,.27 -3.51,.25 -3.62,.21 -3.63,.15 -3.62,.08 -3.58,.03 -3.53,.02 -3.46,0 -3.43,-.04 -3.38,-.12 -3.33,-.21 -3.28,-.26 -3.2,-.26 -3.09,-.29 -3.01,-.3 -2.91,-.34 -2.83,-.36 -2.78,-.36 -2.75,-.36 -2.72,-.34 -2.69,-.33 -2.66,-.29 -2.62,-.26 -2.54,-.23 -2.43,-.22 -2.28,-.22 -2.17,-.23 -2.05,-.24 -1.98,-.21 -1.95,-.18 -1.95,-.15 -1.97,-.13 -2.02,-.1 -2.02,-.06 -2.01,-.04 -1.98,-.04 -1.96,-.01 -1.98,-.01 -2.02,0 -2.05,0 -2.1,0 -2.1,0 -2.09,-.02 -2.1,-.06 -2.08,-.14 -2.08,-.2 -2.09,-.24 -2.08,-.24 -2.08,-.22 -2.11,-.21 -2.12,-.16 -2.13,-.15 -2.12,-.14 -2.12,-.14 -2.09,-.15 -2.04,-.16 -1.95,-.17 -1.85,-.2 -1.76,-.21 -1.62,-.18 -1.42,-.14 -1.31,-.1 -1.34,-.07 -1.37,-.02 -1.67,-.01 -1.9,-.01 -1.63,.03 -1.34,.08 -1.24,.09 -1.18,.1 -1.12,.09 -1.08,.06 -1.07,.04 -1.05,.03 -1.07,.01 -1.09,0 -1.11,.01 -1.13,0 -1.13,0 -1.14,0 -1.2,0 -1.32,0 -1.52,0 -1.76,0 -1.98,-.05 -2.05,-.11 -1.99,-.16 -1.88,-.14 -1.82,-.11 -1.84,-.07 -1.91,-.04 -1.97,-.01 -2.04,-.02 -2.11,-.04 -2.15,-.08 -2.22,-.16 -2.28,-.27 -2.33,-.38 -2.4,-.45 -2.45,-.52 -2.49,-.58 -2.57,-.6 -2.62,-.61 -2.65,-.61 -2.63,-.56 -2.61,-.52 -2.57,-.44 -2.53,-.37 -2.51,-.31 -2.5,-.24 -2.49,-.2 -2.5,-.16 -2.54,-.13 -2.58,-.12 -2.61,-.11 -2.59,-.12 -2.49,-.15 -2.38,-.2 -2.23,-.3 -2.13,-.41 -2.07,-.53 -2.05,-.63 -2.12,-.68 -2.18,-.73 -2.25,-.74 -2.28,-.73 -2.28,-.68 -2.32,-.56 -2.34,-.44 -2.37,-.31 -2.35,-.23 -2.35,-.14 -2.33,-.07 -2.31,-.05 -2.31,-.02 -2.31,-.01 -2.28,.04 -2.24,.11 -2.16,.11 -2.06,.06 -1.95,.03 -1.83,.01 -1.75,0 -1.64,-.02 -1.58,-.11 -1.55,-.17 -1.54,-.19 -1.55,-.16 -1.46,-.1 -1.3,-.07 -1.21,-.05 -1.15,-.02 -1.09,-.01 -1.16,0 -1.19,0 -1.17,0 -1.3,0 -1.37,0 -1.34,0 -1.42,0 -1.39,0 -1.34,0 -1.43,-.06 -1.56,-.17 -1.75,-.26 -1.96,-.33 -2.06,-.32 -2.02,-.28 -1.89,-.21 -1.78,-.14 -1.73,-.09 -1.73,-.05 -1.77,-.02 -1.81,-.01 -1.82,-.01 -1.81,-.03 -1.77,-.09 -1.69,-.13 -1.65,-.15 -1.62,-.17 -1.57,-.23 -1.55,-.27 -1.53,-.28 -1.5,-.28 -1.51,-.19 -1.5,-.1 -1.51,-.04 -1.45,.01 -1.58,.18 -1.49,.27 -1.14,.26 -1.08,.3 -1.09,.34 -1.34,.45 -1.46,.54 -1.17,.68 -.43,.8 .42,.72 .99,.62 1.31,.44 1.43,.23 1.48,.1 1.36,-.09 1.14,-.34 1.14,-.64 1.06,-.79 .93,-.77 .94,-.82 .98,-.87 1.08,-.92 1.12,-.92 1.13,-.87 1.13,-.8 1.1,-.72 1.05,-.63 1.02,-.53 1,-.44 1.01,-.38 1.13,-.37 1.39,-.38 1.82,-.4 2.21,-.44 2.45,-.44 2.49,-.43 2.4,-.4 2.3,-.35 2.33,-.34 2.41,-.35 2.49,-.38 2.51,-.4 2.51,-.44 2.46,-.42 2.37,-.35 2.27,-.26 2.23,-.14 2.16,-.06 2.17,-.02 2.19,-.01 2.23,.02 2.3,.14 2.37,.22 2.48,.24 2.59,.26 2.68,.23 2.8,.22 2.93,.18 3.06,.1 3.19,.06 3.31,.03 3.4,.01 3.43,-.03 3.43,-.07 3.41,-.08 3.37,-.06 3.34,-.05 3.29,-.03 3.28,-.06 3.25,-.09 3.26,-.11 3.31,-.16 3.34,-.22 3.36,-.25 3.3,-.24 3.21,-.25 3.08,-.18 2.95,-.09 2.85,-.04 2.79,-.02 2.77,-.01 2.76,.06 2.75,.14 2.76,.16 2.73,.2 2.75,.2 2.82,.2 3.95,.13 4.59,.02 4.02,-.13 3.82,-.27 3.72,-.32 3.62,-.32 3.5,-.29 3.3,-.2 3.05,-.1 2.75,-.04 2.48,-.02 2.32,.04 2.23,.15 2.27,.26 2.36,.29 2.47,.31 2.56,.3 2.64,.28 2.67,.27 2.72,.22 2.78,.18 2.86,.16 2.93,.1 3,.04 3.07,.02 3.12,0 3.11,.01 3.06,-.02 2.96,-.05 2.83,-.07 2.68,-.05 2.57,-.02 2.44,0 2.32,.07 2.26,.2 2.26,.28 2.34,.3 2.46,.31 2.56,.34 2.69,.34 2.82,.32 2.97,.3 3.1,.29 3.16,.2 3.14,.13 3.08,.1 3.04,.07 2.98,.11 2.92,.14 2.86,.17 2.74,.23 2.64,.26 2.57,.3 2.5,.33 2.46,.36 2.44,.34 2.46,.31 2.52,.29 2.62,.23 2.74,.19 2.86,.16 2.94,.11 2.99,.07 3,.03 5.32,.07 6.65,.11 l2.83,.05 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 2124.48, 1273.94)" opacity="1"><g transform="scale(1)"><path d="M0,0 q9.05,.52 11.36,.68 t3.71,.39 2.03,.58 .77,.71 -.01,.76 -.57,.92 -1.05,1.05 -1.51,1.17 -1.93,1.19 -2.18,1.09 -2.29,.95 -2.33,.78 -2.34,.61 -2.4,.5 -2.49,.43 -2.58,.37 -2.71,.33 -2.87,.28 -3.04,.26 -3.16,.24 -3.22,.23 -3.2,.22 -3.1,.21 -2.91,.18 -2.68,.15 -2.41,.13 -2.16,.09 -1.89,.03 -1.81,.02 -1.73,.01 -1.53,-.07 -1.33,-.24 -1.08,-.41 -.93,-.49 -.96,-.5 -1.05,-.46 -1.15,-.38 -1.28,-.32 -1.34,-.27 -1.3,-.23 -1.31,-.17 -1.37,-.1 -1.37,.01 -1.21,.33 -.64,.53 .16,.49 .88,.52 1.68,.56 2.44,.56 3.01,.51 3.33,.37 3.38,.2 3.34,.09 3.36,.03 3.4,.02 4.51,-.01 5.07,-.02 4.3,-.01 3.97,-.01 3.81,-.03 3.78,-.1 3.76,-.17 3.74,-.23 3.71,-.27 3.68,-.26 3.68,-.25 3.61,-.21 3.47,-.13 3.3,-.08 3.11,-.03 2.92,-.01 2.76,-.01 2.66,.05 2.62,.08 2.58,.05 2.57,.02 2.57,0 2.5,-.16 2.4,-.34 2.26,-.46 2.1,-.5 1.95,-.5 1.71,-.46 1.66,-.48 1.75,-.57 1.62,-.52 1.57,-.51 1.74,-.67 1.92,-.86 1.97,-1.05 1.83,-1.15 1.51,-1.11 1.16,-1 .9,-.9 .79,-.85 .76,-.91 .74,-1.01 .67,-1.12 .56,-1.24 .41,-1.43 .22,-1.53 .09,-1.46 -.03,-1.51 -.32,-1.61 -.53,-1.53 -.38,-1.34 -.08,-1.24 .23,-1.18 .4,-1.15 .35,-1.17 .18,-1.2 -.3,-1 -.72,-.32 -.6,.3 -.72,.61 -.92,.74 -2.15,3.3 -2.94,5.14 l-1.26,2.19 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-blue-highlight, color(display-p3 0.308 0.6632 0.9996))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 1741.0949, 1310.2246)" opacity="1"><g transform="scale(1)"><path d="M-.54,.76 q-.03,11.1 .06,14.06 t.21,4.69 .36,2.97 .48,2.05 .68,1.35 .74,.51 .48,-.29 .3,-.69 .19,-.98 .11,-1.3 .06,-1.63 .03,-1.88 .01,-1.98 .01,-1.83 0,-1.7 .03,-1.58 .2,-1.31 .41,-1.04 .58,-1.02 .62,-.99 .57,-.87 .58,-.86 .75,-1.12 .9,-1.34 .91,-1.31 .87,-.84 .81,-.01 .91,.54 1.01,.63 1.06,.48 1.32,.33 1.68,.17 2,.07 2.12,-.07 2.03,-.25 1.84,-.29 1.59,-.25 1.56,-.17 1.69,-.09 1.54,-.03 1.41,-.02 1.56,-.01 1.81,0 2.03,.01 2.13,.02 2.16,.01 2.13,-.07 2.15,-.23 2.27,-.37 2.41,-.43 2.5,-.46 2.53,-.49 2.49,-.47 2.37,-.4 2.24,-.33 2.06,-.22 1.83,-.12 1.75,-.07 1.81,-.03 1.6,.05 1.35,.16 1.34,.21 1.42,.2 1.62,.14 1.87,.08 2.12,.03 2.17,.02 2.05,0 1.78,.01 1.66,0 1.67,0 1.63,0 1.57,.06 1.37,.17 1.22,.24 1.26,.32 1.49,.37 1.49,.32 1.26,.25 1.15,.2 1.11,.16 1.35,.15 1.68,.15 1.75,.19 1.77,.25 1.77,.3 1.78,.32 1.8,.34 1.78,.35 1.5,.3 1.19,.21 1.1,.13 1.19,.07 1.4,.04 1.54,.01 1.51,0 1.66,.01 1.64,0 1.36,0 1.28,.07 1.22,.19 1.27,.28 1.43,.4 1.72,.47 2,.49 2.18,.47 2.24,.39 2.24,.29 2.21,.18 2.2,.11 2.19,.06 2.18,.06 2.17,.1 2.12,.15 2.06,.2 1.99,.28 1.93,.35 1.91,.38 1.91,.39 1.96,.39 2.06,.35 2.18,.3 2.32,.22 2.47,.14 2.59,.08 2.66,.03 2.71,.02 2.74,0 2.7,.02 2.63,.04 2.56,.09 2.49,.15 2.4,.15 2.31,.18 2.24,.18 2.19,.19 2.19,.19 2.21,.16 2.26,.1 2.34,.05 2.44,.04 2.51,.02 2.61,0 2.73,.01 2.81,0 2.91,0 2.92,0 2.9,0 2.85,0 2.76,0 2.67,0 2.58,0 2.46,.03 2.38,.1 2.34,.17 2.38,.17 2.45,.14 2.53,.12 2.61,.06 2.65,.04 2.69,.02 2.74,0 2.76,.01 2.77,0 2.76,0 2.75,.01 2.72,.06 2.68,.09 2.62,.16 2.56,.19 2.53,.2 2.52,.21 2.51,.2 3.22,.22 3.51,.24 2.92,.19 2.67,.16 2.57,.13 2.56,.1 2.55,.06 2.53,.03 2.51,.01 2.5,.01 2.5,0 2.52,0 2.54,0 2.57,0 2.6,-.02 2.64,-.08 2.67,-.15 2.72,-.16 2.75,-.17 2.75,-.2 2.76,-.22 2.77,-.27 2.79,-.3 2.83,-.32 2.86,-.34 2.89,-.33 2.91,-.33 2.89,-.31 2.87,-.25 2.82,-.19 2.75,-.11 2.7,-.05 2.64,-.02 2.56,-.01 2.5,0 2.42,.01 2.37,.06 2.3,.06 2.26,.05 2.23,.01 2.21,.01 2.25,.01 2.28,-.03 2.28,-.11 2.32,-.15 2.33,-.17 2.34,-.19 2.34,-.15 2.32,-.11 2.27,-.07 2.23,-.02 2.19,-.01 2.13,-.01 2.09,.01 2.07,.04 2.03,.07 2.01,.07 1.97,.04 1.91,.02 1.86,.01 1.8,.01 1.66,0 1.71,0 1.76,0 1.75,0 1.74,0 1.59,0 .88,0 -.16,.09 -.77,.23 -.71,.48 0,.55 .68,.27 1.03,.12 1.09,-.01 1.19,-.19 1.41,-.33 1.54,-.36 1.5,-.26 1.44,-.09 1.2,.25 .66,.76 .29,1.1 .01,1.27 -.31,1.35 -.52,1.28 -.65,1.18 -.74,.97 -.81,.8 -.86,.84 -.86,.86 -.97,.87 -1.12,.75 -1.18,.51 -1.24,.26 -1.22,.11 -1.07,.05 -1.07,.04 -1.14,.06 -1.29,.1 -1.53,.14 -1.78,.16 -2.01,.18 -2.13,.16 -2.09,.11 -2.04,.06 -2.05,.03 -2.11,.01 -2.19,0 -2.31,.01 -2.46,0 -2.62,-.03 -2.81,-.09 -2.96,-.1 -3.1,-.09 -3.23,-.07 -3.31,-.03 -3.39,-.01 -3.44,-.01 -3.5,0 -3.54,.03 -3.6,.09 -3.69,.13 -3.73,.15 -3.78,.11 -3.79,.05 -3.81,.02 -3.88,.01 -3.96,0 -4.04,-.03 -4.09,-.09 -4.12,-.14 -4.14,-.21 -4.11,-.24 -4.04,-.26 -3.96,-.28 -3.88,-.28 -3.83,-.27 -3.78,-.22 -3.71,-.17 -3.66,-.11 -3.6,-.05 -3.51,-.04 -3.43,-.02 -3.35,-.04 -3.32,-.06 -3.31,-.07 -3.28,-.11 -3.25,-.14 -4.12,-.19 -4.49,-.17 -3.76,-.12 -3.42,-.11 -3.24,-.13 -3.15,-.16 -3.1,-.21 -3.12,-.22 -3.15,-.22 -3.19,-.21 -3.18,-.19 -3.1,-.22 -2.97,-.25 -2.82,-.3 -2.72,-.34 -2.61,-.36 -2.57,-.39 -2.55,-.43 -2.53,-.45 -2.51,-.48 -2.5,-.46 -2.49,-.42 -2.49,-.34 -2.52,-.3 -2.53,-.27 -2.54,-.24 -2.59,-.19 -2.68,-.16 -2.77,-.17 -2.83,-.16 -2.9,-.18 -2.9,-.2 -2.91,-.22 -2.89,-.27 -2.86,-.31 -2.78,-.38 -2.69,-.41 -2.63,-.41 -2.59,-.41 -2.58,-.37 -2.59,-.33 -2.64,-.28 -2.67,-.21 -2.7,-.15 -2.7,-.09 -2.65,-.06 -2.58,-.04 -2.51,-.02 -2.45,-.02 -2.39,-.06 -2.35,-.1 -2.26,-.15 -2.19,-.17 -2.16,-.2 -2.11,-.2 -2.11,-.15 -2.13,-.16 -2.15,-.12 -2.17,-.06 -2.21,-.04 -2.22,-.02 -2.25,-.01 -2.97,.09 -3.29,.18 -2.75,.16 -2.46,.15 -2.25,.13 -2.09,.1 -1.92,.06 -1.81,.02 -1.75,.01 -1.69,0 -1.67,.01 -1.68,0 -1.64,0 -1.63,0 -1.62,0 -1.64,0 -1.64,0 -1.62,0 -1.61,0 -1.59,.03 -1.57,.09 -1.55,.15 -1.52,.18 -1.52,.21 -1.5,.21 -1.47,.2 -1.42,.17 -1.28,.16 -1.23,.12 -1.32,.12 -1.38,.1 -1.39,.05 -1.53,.03 -1.48,.01 -1.23,0 -1.22,-.04 -1.25,-.13 -1.26,-.16 -1.26,-.18 -1.27,-.19 -1.34,-.2 -1.52,-.27 -1.77,-.35 -2.01,-.44 -2.1,-.51 -2.05,-.53 -1.92,-.52 -1.77,-.5 -1.65,-.48 -1.73,-.51 -1.58,-.48 -1.24,-.36 -1.17,-.3 -1.25,-.24 -1.31,-.22 -1.32,-.15 -1.31,-.1 -1.3,-.05 -1.26,-.03 -1.22,-.01 -1.17,0 -1.35,.09 -1.52,.22 -1.38,.25 -1.28,.26 -1.26,.33 -1.2,.47 -1.02,.68 -.63,.86 -.32,.92 -.21,1.1 -.15,1.28 -.09,1.31 -.03,1.26 .2,1.18 .62,1.06 1.02,1 1.22,.89 1.35,.72 1.7,.67 2.1,.63 2.38,.57 2.53,.44 2.52,.33 2.46,.22 2.48,.12 2.51,.08 2.58,.06 2.68,.02 2.77,-.01 2.87,-.11 2.96,-.25 3.03,-.34 3.07,-.39 3.11,-.41 3.08,-.43 3.84,-.49 4.79,-.49 4.24,-.3 3.81,-.13 3.51,-.05 2.66,.01 2.27,.1 2.04,.18 1.94,.24 1.88,.26 1.87,.24 1.89,.19 1.93,.15 1.92,.12 1.86,.1 1.82,.09 1.77,.08 1.68,.07 1.61,.07 1.49,.08 1.52,.07 1.64,.04 1.7,.04 1.72,.03 1.52,.01 1.28,0 1.19,0 1.27,.01 1.35,0 1.39,0 1.46,0 1.32,0 1.1,0 1.15,0 1.39,0 1.72,0 2.04,0 2.19,-.05 2.18,-.13 2.04,-.15 1.92,-.11 1.89,-.06 1.88,-.02 1.89,-.02 1.92,0 1.96,0 1.99,.04 2.08,.1 2.17,.09 2.27,.05 2.36,.02 2.38,.01 2.38,0 2.34,.01 2.25,0 2.16,0 2.06,0 1.92,0 1.82,0 1.73,0 1.67,0 1.65,0 1.66,0 1.69,0 1.72,0 1.77,0 1.84,0 1.93,0 2.01,0 2.07,0 2.07,0 2.04,0 1.97,0 1.9,0 1.87,.03 1.8,.09 1.78,.13 1.79,.17 1.81,.14 1.84,.1 1.9,.07 1.97,.04 2.03,.02 2.09,.01 2.15,0 2.18,.01 2.23,0 2.26,-.04 2.27,-.09 2.25,-.11 2.19,-.09 2.13,-.06 2.08,-.03 2.06,-.01 2.06,0 2.06,.04 2.11,.13 2.17,.18 2.25,.18 2.35,.14 2.44,.09 2.51,.06 2.55,.02 2.56,-.02 2.57,-.15 4.84,-1.05 6.18,-1.63 l2.63,-.69 " stroke-linecap="round" fill="none" pointer-events="all" stroke="var(--rvo-draw-light-green-highlight, color(display-p3 0.563 0.9495 0.3857))" stroke-width="26.880000000000003" opacity="0.35"/></g></g><g transform="matrix(1, 0, 0, 1, 2687.5879, 1348.5852)" opacity="0.1"><g transform="scale(1)"><path d="M 0 0 m -3.47, 0 a 3.47,3.47 0 1,1 6.94,0 a 3.47,3.47 0 1,1 -6.94,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g></svg></div>
+
+<p>So unions allow us to access the same memory bits as different types. This is exactly
+what we want, and unlike the pointer method, it's allowed by the C standard (but not in
+C++, by the way).</p>
+<p>Accessing a float's bits can now be simplified using our <code>Bits</code> union:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">Bits</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">};</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">);</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bit_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bit_ix</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="p">}</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>And this is the way I like to do it.</p>
+<p>So let's put this into a reusable function <code>print_float_bits</code> where we pass in a float
+and get it to print the 32 bits to the console.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">print_float_bits</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%f -&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">);</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="n">Bits</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">};</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">);</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bit_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bit_ix</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1u</span><span class="p">;</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This function prints out the float first, then the 32 bits (4 bytes) that make up this
+float:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="go">1.000000 -&gt; 00111111 10000000 00000000 00000000</span>
+</span></code></pre></div>
+<h2 id="experiments">Experiments</h2>
+<p>Before doing any experimentation, the one thing I know about floating-point numbers is
+that they use sort of a binary version of scientific notation. Scientific notation is
+some coefficient <code>c</code>, multiplied by 10 to the power of some exponent <code>e</code>: <code>c × 10^e</code>.</p>
+<p>The binary version is simply <code>c × 2^e</code>.</p>
+<p>This means that if you increase the exponent by 1, the final number is doubled.</p>
+<p>So let's see what happens if we print 0.5, 1.0, and keep doubling a few more times:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">floats</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">8.0f</span><span class="p">};</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="w"> </span><span class="n">floats</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="w"> </span><span class="o">*</span><span class="n">floats</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="n">print_float_bits</span><span class="p">(</span><span class="n">floats</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="go">0.500000 -&gt; 00111111 00000000 00000000 00000000</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="go">1.000000 -&gt; 00111111 10000000 00000000 00000000</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="go">2.000000 -&gt; 01000000 00000000 00000000 00000000</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="go">4.000000 -&gt; 01000000 10000000 00000000 00000000</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="go">8.000000 -&gt; 01000001 00000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>If you look closely at the bits, you can see there is a certain sequence of bits that
+keeps incrementing as we're doubling the float (the first 9 bits). The 9th bit has this
+0-1-0-1 even/odd flipping pattern.</p>
+<p>These might be the exponent bits we're seeing.</p>
+<p>Another interesting thing we can do is look at 1.0, then double it to 2.0, then take the
+bits of 2.0 as an integer and subtract one. This should give us the highest possible
+float below 2.0.</p>
+<p>To see this better, I'm increasing the number of decimal places to 8 like so:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="p">...</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;% .8f -&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">);</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="p">...</span>
+</span></code></pre></div>
+<p>Note that I'm also adding a space in the format (<code>% .8f</code>). This reserves a space for the
+<code>-</code> sign, even if we have a positive number, which keeps all the numbers aligned.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="go"> 1.00000000 -&gt; 00111111 10000000 00000000 00000000</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="go"> 1.99999988 -&gt; 00111111 11111111 11111111 11111111</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="go"> 2.00000000 -&gt; 01000000 00000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>When you look at the bits, the 1.0 and the 1.999... float both seem to have the same
+exponent bits, but in the 1.999... version, all the trailing zeros have flipped to ones.</p>
+<p>Looking at this, it would make sense that all these bits that were flipped between 1.0
+and 1.999... are the coefficient bits, or "mantissa" bits.</p>
+<p>How about negative numbers? We can easily test a bunch of negative numbers, and see what
+happens:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="go"> 1.00000000 -&gt; 00111111 10000000 00000000 00000000</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="go">-1.00000000 -&gt; 10111111 10000000 00000000 00000000</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="go"> 1.50000000 -&gt; 00111111 11000000 00000000 00000000</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="go">-1.50000000 -&gt; 10111111 11000000 00000000 00000000</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="go"> 2.00000000 -&gt; 01000000 00000000 00000000 00000000</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="go">-2.00000000 -&gt; 11000000 00000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>Seems like it's the first bit. If it's 0, the number is positive; if it's a 1, the
+number is negative.</p>
+<p>This rule even holds true for the number 0.0:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="go"> 0.00000000 -&gt; 00000000 00000000 00000000 00000000</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="go">-0.00000000 -&gt; 10000000 00000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>You might have seen negative zero (-0.0) floating around in terminal outputs. This is
+where it comes from: there is a literal negative zero float, distinct from the normal
+zero.</p>
+<p>If we check for equality, the program says they are equal, which makes sense. But I
+wouldn't have been surprised if it had said false. It's generally not a good idea to
+compare floats for equality.</p>
+<p>So, what we've found is:</p>
+<ul>
+<li>The highest (leftmost) bit is the sign</li>
+<li>The next 8 highest bits are the exponent</li>
+<li>The last (lowest) 23 bits are the coefficient (a.k.a. mantissa)</li>
+</ul>
+<h2 id="fancy-terminal-colors">Fancy terminal colors</h2>
+<p>Now that we know each bit's role, we can give them different colors.</p>
+<p>In C, these are some macros I use to be able to print a few terminal colors:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="cp">#define ESC &quot;\033&quot;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="cp">#define RESET ESC &quot;[0m&quot;</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="cp">#define FG_GRN ESC &quot;[32m&quot;</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="cp">#define FG_YEL ESC &quot;[33m&quot;</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="cp">#define FG_CYA ESC &quot;[36m&quot;</span>
+</span></code></pre></div>
+<p>And in the <code>print_float_bits</code> function, I'm using them like this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">print_float_bits</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;% .8f -&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">);</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="n">Bits</span><span class="w"> </span><span class="n">bits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{.</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">};</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">32</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">);</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="n">FG_YEL</span><span class="p">);</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="n">FG_GRN</span><span class="p">);</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="n">FG_CYA</span><span class="p">);</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a>
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bit_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">31</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+</span><span id="__span-27-18"><a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">bit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">bit_ix</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1u</span><span class="p">;</span>
+</span><span id="__span-27-19"><a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bit</span><span class="p">);</span>
+</span><span id="__span-27-20"><a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-27-21"><a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="n">RESET</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-27-22"><a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This prints out floats like this:</p>
+<p><img alt="Terminal colors" src="../../../../2026-10-02_how-floats-work/terminal-colors.png" /></p>
+<p>Yellow is the sign bit, the exponent bits are green, and the mantissa is blue.</p>
+<h2 id="decoding-the-bits">Decoding the bits</h2>
+<p>We now know which bits do what, but how do they combine into the actual number? There
+are two small tricks:</p>
+<ul>
+<li>The exponent is stored with a <em>bias</em> of 127. So the real exponent is the stored value
+  minus 127. For 1.0, the exponent bits are <code>01111111</code> = 127, and 127 - 127 = 0.</li>
+<li>The coefficient always starts with an invisible <code>1.</code> in front of it, because in binary
+  scientific notation, the leading digit is always 1 anyway. So there's no point in
+  storing it.</li>
+</ul>
+<p>Put together:</p>
+<p><code>value = (-1)^sign × 1.mantissa × 2^(exponent - 127)</code></p>
+<p>Let's check 1.5: the sign is 0, the exponent bits are 127 (so 2^0 = 1), and the
+mantissa bits are <code>1000...</code>, which makes the coefficient <code>1.1</code> in binary. That's
+1 + 1/2 = 1.5. So we get 1 × 1.5 × 1 = 1.5.</p>
+<h2 id="special-floats">Special floats</h2>
+<p>We've been defining floats, and then looking at their binary representation.</p>
+<p>How about we flip it: define some bits, and look at which float we get? We can define
+integers in binary format using the <code>0b...</code> syntax. This is officially part of C since
+C23, but GCC and Clang have supported it as an extension for much longer.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">Bits</span><span class="w"> </span><span class="n">bits</span><span class="p">;</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mb">0b00000000000000000000000000000000</span><span class="p">;</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="n">print_float_bits</span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="go"> 0.00000000 -&gt; 00000000 00000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>If we set all bits to 0, we get a float of 0.0. We already knew this.</p>
+<p>How about we flip all bits to 1s?</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mb">0b11111111111111111111111111111111</span><span class="p">;</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="n">print_float_bits</span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="go">nan -&gt; 11111111 11111111 11111111 11111111</span>
+</span></code></pre></div>
+<p>We get <code>nan</code>! (On Linux you might see <code>-nan</code>, because the sign bit is set.)</p>
+<p>Let's see what we get if we only set the exponent bits to 1:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mb">0b01111111100000000000000000000000</span><span class="p">;</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="n">print_float_bits</span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="go"> inf -&gt; 01111111 10000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>We get <code>inf</code>!</p>
+<p>Can we flip the sign of <code>inf</code>? Let's try setting the highest bit to 1:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">bits</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mb">0b11111111100000000000000000000000</span><span class="p">;</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="n">print_float_bits</span><span class="p">(</span><span class="n">bits</span><span class="p">.</span><span class="n">f</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="go">-inf -&gt; 11111111 10000000 00000000 00000000</span>
+</span></code></pre></div>
+<p>Yes, we can :) So as you can see, all those strange flavors of numbers like <code>nan</code> and
+<code>inf</code> are nothing more than specific bit patterns.</p>
+<hr />
+<p>That's where I'll leave it for now. I hope that was helpful. I much prefer this method
+of exploration by hacking away at them, instead of reading the documentation.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+  
+<aside class="rvo-subscribe">
+  <div class="rvo-subscribe__cta">
+    <h2 class="rvo-subscribe__title">Stay in the loop</h2>
+    <p class="rvo-subscribe__pitch">
+      Get new articles in your inbox. No spam, unsubscribe any time.
+    </p>
+  </div>
+  <form
+    class="rvo-subscribe__form"
+    action="https://app.kit.com/forms/9960727/subscriptions"
+    method="post"
+  >
+    <label class="rvo-subscribe__label" for="rvo-subscribe-email">
+      Email address
+    </label>
+    <input
+      class="rvo-subscribe__input"
+      id="rvo-subscribe-email"
+      type="email"
+      name="email_address"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
+    /><input type="hidden" name="fields[source]" value="https://vanderoost.com/articles/2026/10/02/how-floats-work/" />
+    <button class="rvo-subscribe__button md-button md-button--primary" type="submit">
+      Subscribe
+    </button>
+  </form>
+  <p class="rvo-subscribe__status" aria-live="polite"></p>
+</aside>
+      
+    </article>
+  </div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../../09/25/stop-using-rand/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Stop using rand()">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Stop using rand()
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../09/better-random-floats/" class="md-footer__link md-footer__link--next" aria-label="Next: Generating random floats">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Generating random floats
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://blendergrid.com" target="_blank" rel="noopener" title="blendergrid.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm112 352h32c17.7 0 32 14.3 32 32v80h-96v-80c0-17.7 14.3-32 32-32M96 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16M96 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/vanderoost" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/@richardvdoost" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M549.7 124.1c-6.2-23.7-24.8-42.3-48.3-48.6C458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5c-23.5 6.3-42 24.9-48.3 48.6C15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8C117.3 448 288.1 448 288.1 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6V175.2l142.7 81.2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.indexes", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.sections", "navigation.top", "content.tooltips", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+      
+        <script src="../../../../../javascripts/subscribe.js"></script>
+      
+    
+  </body>
+</html>

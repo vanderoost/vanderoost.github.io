@@ -1,0 +1,2010 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="I automate tech companies">
+      
+      
+        <meta name="author" content="Richard van der Oost">
+      
+      
+        <link rel="canonical" href="https://vanderoost.com/articles/2026/10/19/ziggurat-method-for-gaussian-rng/">
+      
+      
+        <link rel="prev" href="../../09/better-random-floats/">
+      
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>The Ziggurat method - vanderoost</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/hero.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/subscribe.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <meta property="article:author" content="https://www.linkedin.com/in/richardvdoost/" />
+  <meta property="article:published_time" content="2026-10-19 12:00:00" />
+
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="The Ziggurat method - vanderoost" />
+<meta property="og:description" content="I automate tech companies" />
+<meta property="og:image" content="https://vanderoost.com/assets/images/social/articles/2026/10/19/ziggurat-method-for-gaussian-rng/index.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://vanderoost.com/articles/2026/10/19/ziggurat-method-for-gaussian-rng/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="The Ziggurat method - vanderoost" />
+<meta property="twitter:description" content="I automate tech companies" />
+<meta property="twitter:image" content="https://vanderoost.com/assets/images/social/articles/2026/10/19/ziggurat-method-for-gaussian-rng/index.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-ziggurat-method" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header"><nav class="md-header__inner md-grid" aria-label="Header">
+    <div class="md-header__zone md-header__zone--start">
+      <a href="../../../../.." title="vanderoost" class="md-header__button md-logo" aria-label="vanderoost" data-md-component="logo">
+        
+  
+  <svg width="196" height="196" viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+<path d="M118 98.0001C118 109.046 109.046 118 98 118C86.9543 118 78.0001 109.046 78.0001 98.0001C78.0001 86.9544 86.9543 78.0001 98 78.0001C109.046 78.0001 118 86.9544 118 98.0001Z" style="fill:var(--md-primary-fg-color);fill-opacity:1;"/>
+<path d="M86.6864 154.569C92.9348 160.817 103.066 160.817 109.314 154.569L117.799 146.083C119.361 144.521 121.894 144.521 123.456 146.083L140.427 163.054C141.989 164.616 141.989 167.149 140.427 168.711L131.941 177.196C113.196 195.941 82.8042 195.941 64.059 177.196L55.5737 168.711C54.0116 167.149 54.0116 164.616 55.5737 163.054L72.5443 146.083C74.1064 144.521 76.6391 144.521 78.2012 146.083L86.6864 154.569Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M177.196 64.0589C195.941 82.8041 195.941 113.196 177.196 131.941L168.711 140.426C167.149 141.989 164.616 141.989 163.054 140.426L146.083 123.456C144.521 121.894 144.521 119.361 146.083 117.799L154.569 109.314C160.817 103.065 160.817 92.9347 154.569 86.6863L146.083 78.2011C144.521 76.639 144.521 74.1063 146.083 72.5442L163.054 55.5736C164.616 54.0115 167.149 54.0116 168.711 55.5736L177.196 64.0589Z" style="fill:var(--md-primary-fg-color);"/>
+<path d="M49.9169 72.5442C51.479 74.1063 51.479 76.639 49.9169 78.2011L41.4316 86.6863C35.1832 92.9347 35.1832 103.065 41.4316 109.314L49.9169 117.799C51.479 119.361 51.479 121.894 49.9169 123.456L32.9463 140.426C31.3842 141.989 28.8516 141.989 27.2895 140.426L18.8042 131.941C0.0590258 113.196 0.0590258 82.8041 18.8042 64.0589L27.2895 55.5736C28.8516 54.0115 31.3842 54.0115 32.9463 55.5736L49.9169 72.5442Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M64.059 18.8041C82.8042 0.0589638 113.196 0.0589428 131.941 18.8041L140.427 27.2894C141.989 28.8515 141.989 31.3841 140.427 32.9462L123.456 49.9168C121.894 51.4789 119.361 51.4789 117.799 49.9168L109.314 41.4315C103.065 35.1831 92.9348 35.1832 86.6864 41.4315L78.2012 49.9168C76.6391 51.4789 74.1064 51.4789 72.5443 49.9168L55.5737 32.9462C54.0116 31.3841 54.0116 28.8515 55.5737 27.2894L64.059 18.8041Z" style="fill:var(--md-default-fg-color);"/>
+</svg>
+
+      </a>
+      <label class="md-header__button md-icon" for="__drawer">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </label>
+
+      <div class="md-header__title" data-md-component="header-title">
+        <div class="md-header__ellipsis">
+
+          <a href="../../../../.." title="vanderoost" aria-label="vanderoost">
+            <div class="md-header__topic">
+              <span class="md-ellipsis">
+                vanderoost
+              </span>
+            </div>
+            <div class="md-header__topic" data-md-component="header-topic">
+              <span class="md-ellipsis">
+                
+                The Ziggurat method
+                
+              </span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../portfolio/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Case Studies
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+
+    <div class="md-header__zone md-header__zone--end">
+      
+        
+          <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+        
+      
+
+      
+        <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      
+
+      
+
+      
+
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    vanderoost
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../portfolio/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/dentist-appointment-routing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dentist appointment routing workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/3d-printing-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automating a 3D printing pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/blendergrid-swarm-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud computing infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gaussian-random-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gaussian random numbers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-central-limit-theorem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The central limit theorem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kurtosis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kurtosis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmarking-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmarking performance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rejection-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rejection sampling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#divide-and-conquer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Divide and conquer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-the-area-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why the area matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bisection-method-to-find-the-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bisection method to find the area
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inverse-of-the-probability-density-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inverse of the probability density function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-layers-more-efficient" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More layers = more efficient
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-the-most-out-of-a-32-bit-integer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting the most out of a 32 bit integer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#refactoring-into-the-rng-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refactoring into the RNG library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#procedurally-generating-the-coordinate-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Procedurally generating the coordinate tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hooking-it-up-to-the-makefile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hooking it up to the Makefile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-performance-tweaks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final performance tweaks
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to Articles
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://avatars.githubusercontent.com/u/11665420?v=4" alt="Richard van der Oost">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>
+                        
+                      </strong>
+                      <br>
+                      Tech founder
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-10-19 12:00:00+00:00" class="md-ellipsis">October 19, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/tutorials/">Tutorials</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              15 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+              <ul class="md-post__meta md-nav__list">
+                <li class="md-nav__item md-nav__item--section">
+                  <div class="md-post__title">
+                    <span class="md-ellipsis">
+                      Related links
+                    </span>
+                  </div>
+                  <nav class="md-nav">
+                    <ul class="md-nav__list">
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/vanderoost/rng.c" class="md-nav__link" target="_blank" rel="noopener">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    rng.c on Github
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../09/25/stop-using-rand/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stop using rand()
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                    </ul>
+                  </nav>
+                </li>
+              </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:c" class="md-tag">C</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:from-scratch" class="md-tag">From scratch</a>
+      
+    
+  </nav>
+
+
+
+<h1 id="the-ziggurat-method">The Ziggurat method</h1>
+<div class="rvo-video"><iframe src="https://www.youtube-nocookie.com/embed/sNmcf5tlLh0" title="Fast Gaussian RNG in C with the Ziggurat method" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+
+<p>In this article I document my journey down the Gaussian random numbers rabbit hole.</p>
+<!-- more -->
+
+<h2 id="gaussian-random-numbers">Gaussian random numbers</h2>
+<p>While creating the RNG library, I knew it had to have an <code>rng_norm()</code> function to sample
+random numbers from a normal distribution.</p>
+<p>Gaussian (or normal) random numbers are a very common type of random number. You need
+them to initialise neural network weights for example.</p>
+<p>So I created a basic <code>rng_norm()</code> function using a trick I learned from throwing dice:</p>
+<p>If you throw two or more dice, and take the sum, the mean will be more common than the
+outliers.</p>
+<p>For example: When you throw 2 dice, the mean is 7, which has a probability of 1/6. The
+outliers 2 and 12 have a probability of 1/36.</p>
+<h2 id="the-central-limit-theorem">The central limit theorem</h2>
+<p>The probability distribution of two dice looks pyramid shaped. If you sum two random
+floats between 0-1, you'll get a similar distribution:</p>
+<p><img alt="Histogram of the sum of two random floats" src="../../../../2026-10-16_ziggurat-method/histogram-sum-two-random-floats.png" /></p>
+<p>But as the sample size increases, the distribution starts to approach a bell curve.
+This is the idea of <strong>the central limit theorem</strong>.</p>
+<p>It turns out if you take 12 random floats in range [0-1), like this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">rng_norm</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">-6.0f</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">result</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">rng_f</span><span class="p">();</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>...you end up with a standard deviation of 1. And the histogram looks a lot like the
+classic bell curve:</p>
+<p><img alt="Histogram of the sum of twelve random floats" src="../../../../2026-10-16_ziggurat-method/histogram-sum-12-random-floats.png" /></p>
+<p>The more random numbers you sample, the closer you get to a true normal distribution.
+So 12 is not giving us a "true" normal distribution. Even though the mean is 0.0 and
+the standard deviation is exactly 1.0.</p>
+<p>So if summing 12 random floats doesn't result in true accurate normal distribution, how
+can we "measure" the quality of the curve?</p>
+<h2 id="kurtosis">Kurtosis</h2>
+<p>There is another way to measure a distribution besides mean and standard deviation:
+<strong>kurtosis</strong>. The "kurtosis" measures the "tails" of a distribution. The way it's
+calculated is very similar to <strong>variance</strong>.</p>
+<p>The variance is the average of all squared deviations (taking them to the 2nd power).
+The kurtosis is the average of all deviations to the <em>4th</em> power.</p>
+<p>This is what the calculation for both looks like in C:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">double</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">kur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">SAMPLE_COUNT</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mean</span><span class="p">;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">dev_sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dev</span><span class="p">;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="n">var</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">dev_sq</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="n">kur</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">dev_sq</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dev_sq</span><span class="p">;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">var</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">SAMPLE_COUNT</span><span class="p">;</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">kur</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">SAMPLE_COUNT</span><span class="p">;</span>
+</span></code></pre></div>
+<p>This means that kurtosis is very sensitive to the tails of the distribution. The samples
+close to the mean contribute relatively little to the final number.</p>
+<p>So what is the kurtosis of our <code>rng_norm()</code> function when it sums up 12 random floats?
+It turns out to be exactly 2.9 in the limit. When we take 10 million random samples
+that's usually where it lands.</p>
+<p>The kurtosis of a "true" normal distribution is exactly 3.0. So although it's not far
+off, we can tell it's not perfect.</p>
+<p>Because of a kurtosis of 3 being exactly Gaussian, a common way to represent the "excess
+kurtosis" is by subtracting 3 This way, a 0 excelss kurtosis means a perfect Gaussian
+distribution. Our function is giving a -0.1 which means the tails are too "thin".</p>
+<p>We can improve the kurtosis by taking a lot more than 12 samples. Here are a few
+results:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Samples</th>
+<th style="text-align: right;">Kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">-0.10</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">-0.08</td>
+</tr>
+<tr>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">-0.04</td>
+</tr>
+<tr>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">-0.02</td>
+</tr>
+<tr>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">-0.01</td>
+</tr>
+</tbody>
+</table>
+<p>As you can see, it gets better, but we are trading accuracy for performance. So let's
+benchmark the run time as well to see how much time we're spending.</p>
+<h2 id="benchmarking-performance">Benchmarking performance</h2>
+<p>I'm using <code>clock_gettime_nsec_np()</code> to measure the elapsed nanoseconds. It simply
+returns the nanoseconds as a single <code>uint64_t</code>. So let's do that before and after the
+loop, and take 10 million samples in between.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#define SAMPLE_COUNT (10 * 1000 * 1000)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="n">sample_start_ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock_gettime_nsec_np</span><span class="p">(</span><span class="n">CLOCK_MONOTONIC</span><span class="p">);</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">SAMPLE_COUNT</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_norm</span><span class="p">();</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">}</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kt">uint64_t</span><span class="w"> </span><span class="n">sample_time_ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock_gettime_nsec_np</span><span class="p">(</span><span class="n">CLOCK_MONOTONIC</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sample_start_ns</span><span class="p">;</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kt">double</span><span class="w"> </span><span class="n">ns_per_sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">sample_time_ns</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">SAMPLE_COUNT</span><span class="p">;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;sample time: %.2f ns</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ns_per_sample</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Turns out it takes around 12 nanoseconds per <code>rng_norm()</code> call (which uses 12 <code>rng_f()</code>
+samples). So that's about 1 ns per <code>rng_f()</code> call.</p>
+<p>Increasing the samples increases run time more or less linearly.</p>
+<p>So this is our baseline:</p>
+<ul>
+<li>Accuracy: -0.1</li>
+<li>Time: 12 ns</li>
+</ul>
+<p>Let's look at alternatives and see if we can improve on this.</p>
+<h2 id="rejection-sampling">Rejection sampling</h2>
+<p>There are many alternative ways to achieve Gaussian RNG. One very simple approach is
+<strong>rejection sampling</strong>.</p>
+<p>This is a very simple and flexible approach. As long as you can specify your probability
+distribution as a function that maps x to y, you can sample from it.</p>
+<p>The way it works is:</p>
+<ol>
+<li>Get a random x sample in the range you want to sample</li>
+<li>Get a random y sample from 0 to the max of the probability density function</li>
+<li>If the y sample is under the curve at x, you accept the sample, and return x. If
+   not, you go back to step 1 and repeat.</li>
+</ol>
+<p>We can implement this to see how well it performs. The probability density of a
+standard normal distribution is e^(-x²/2). It peaks at exactly 1, which is convenient,
+because then our y sample is just a random float between 0 and 1:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#define CUTOFF 3.0f</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">prob_dens</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">expf</span><span class="p">(</span><span class="mf">-0.5f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kt">float</span><span class="w"> </span><span class="nf">rng_norm_new</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">CUTOFF</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rng_f</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">2.0f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">CUTOFF</span><span class="p">;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_f</span><span class="p">();</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">prob_dens</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="c1">// Accept</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>There is one variable we have to choose up front: The x range. Let's start with a range
+of [-3.0, 3.0].</p>
+<p>This gives us a kurtosis of -0.17 and a sample time of 39 ns. If we want a better
+kurtosis, we have to include more of the tails, so increase the x range.</p>
+<p>If we try a range from -6.0 to 6.0 for example, the kurtosis becomes 0.00. That's
+perfect, as far as I can measure.</p>
+<p>The problem with this method is the "repeat" step. If a sample gets rejected, you have
+to start over. Every round costs two calls to <code>rng_f()</code> because we need x and y.</p>
+<p>As we increase the x range, efficiency goes down. We reject a higher % of samples and
+have to try again a lot more. The sample time goes up to 43 ns for the range [-6, 6].</p>
+<p>Here's how sample time scales with range, where a range of [-3.0, 3.0] is measured as
+6.0:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Range</th>
+<th style="text-align: right;">Sample time [ns]</th>
+<th style="text-align: right;">Excess kurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">7.9</td>
+<td style="text-align: right;">-2.8354</td>
+</tr>
+<tr>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">26.0</td>
+<td style="text-align: right;">-1.5831</td>
+</tr>
+<tr>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">39.1</td>
+<td style="text-align: right;">-0.0205</td>
+</tr>
+<tr>
+<td style="text-align: right;">16.0</td>
+<td style="text-align: right;">46.0</td>
+<td style="text-align: right;">0.0040</td>
+</tr>
+<tr>
+<td style="text-align: right;">32.0</td>
+<td style="text-align: right;">61.0</td>
+<td style="text-align: right;">0.0007</td>
+</tr>
+</tbody>
+</table>
+<h2 id="divide-and-conquer">Divide and conquer</h2>
+<p>Rejection sampling seems like a bad idea, but there are some things we can do to make it
+more efficient. This is where the <strong>Ziggurat method</strong> comes in.</p>
+<p>The first principle of the Ziggurat method reminds me a lot of divide and conquer, which
+is an approach many algorithms use for optimisation.</p>
+<p>We can divide our 2D sample area into horizontal layers. Then we can resize these layers
+such that they "hug" the probability distribution. This allows us to throw away a lot of
+"dead" space that only held rejected samples anyways.</p>
+<p>I'm going to take a very simple probability function, the "pyramid shape". And I'm only
+going to focus on the positive side of the x axis. So we're looking at the 2D domain of
+x: [0, 1] y: [0, 1].</p>
+<p>Let's try to run the code this way. We have to introduce this concept of layers. The
+new approach will add a new step. Besides only picking a random x and y, we need to
+pick, a layer as well.</p>
+<p>I specify the layers by the points where they touch the curve. Two layers need three
+points. The x of a point is the width of the layer above it, and the difference
+between two y values is the height of a layer.</p>
+<p>So let's pick a random layer 50/50, pick x, pick y, and see if we accept the sample or
+reject it. If we reject it, we try again:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#define LAYER_COUNT 2</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">};</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">};</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">prob_dens</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="kt">float</span><span class="w"> </span><span class="nf">rng_norm_new</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lay_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_u</span><span class="p">()</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">LAYER_COUNT</span><span class="p">;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_f</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">];</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">lay_ix</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">];</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rng_f</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lay_h</span><span class="p">;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">prob_dens</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"> </span><span class="c1">// Accept</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Let's look at the histogram after picking 10 million of these samples:</p>
+<p><img alt="Ziggurat method with different layer areas" src="../../../../2026-10-16_ziggurat-method/histogram-wrong-ziggurat-method.png" /></p>
+<p>Something seems off..</p>
+<h2 id="why-the-area-matters">Why the area matters</h2>
+<p>We have two layers of different areas, but we're picking them 50/50. This results in an
+uneven distribution of samples:</p>
+<div class="rvo-drawing"><svg xmlns="http://www.w3.org/2000/svg" direction="ltr" width="1050.514257609354" height="1248.350312443659" viewBox="6450.257443323731 12370.68695350716 1050.514257609354 1248.350312443659" stroke-linecap="round" stroke-linejoin="round" class="tl-container tl-theme__force-sRGB" style="background-color: transparent;" role="img" aria-label="Inequal layer areas lead to bad results"><title>Inequal layer areas lead to bad results</title><defs/><g transform="matrix(1, 0, 0, 1, 6566.6153, 12715.7833)" opacity="1"><g transform="scale(1)"><path d="M2.03,-1.13 t1.88,5.61 4.49,19.32 5.08,32.24 3.63,28.91 2.43,34.09 2.15,49.61 .88,56.19 -.71,62.83 -.9,64.76 -.27,65.25 .1,66.21 .78,64.89 1.89,61.39 2.61,57.81 1.62,53.98 .79,46.91 1.67,41.49 1.45,28.04 .65,8.9 .39,1.28 a2.53,2.53 0 0 1 -4.25,2.73 t-.62,-1.17 -1.03,-8.61 -1.62,-29.45 -1.67,-43.12 -.76,-46.89 -1.62,-53.87 -2.61,-57.84 -1.91,-61.47 -.78,-64.96 -.08,-66.27 .27,-65.27 .9,-64.8 .71,-62.75 -.85,-56 -2.16,-49.48 -2.45,-33.83 -3.59,-28.73 -4.87,-31.99 -4.29,-18.8 -1.85,-5.34 a2.43,2.43 0 0 1 4.52,-1.8 ZM29.47,847.65 t.43,-.11 1.23,-1.48 .8,-1.39 a2.42,2.42 0 0 1 4.26,2.27 t-1.22,2.07 -2.32,2.65 -1.1,.59 a2.53,2.53 0 0 1 -2.08,-4.6 ZM36.2,846.93 t-1.76,3.14 -1.75,3.14 a2.22,2.22 0 0 1 -3.94,-2.05 t1.59,-3.24 1.58,-3.24 a2.42,2.42 0 0 1 4.28,2.25 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6513.4265, 13517.7502)" opacity="1"><g transform="scale(1)"><path d="M0,-2.19 t10.68,-1.63 18.19,-1.65 24.41,.18 29.93,-.85 36.88,-3.5 51.21,-4.91 58.85,-3.95 71.11,-2.69 82.04,-2.01 85.43,-1.67 84.06,-1.64 78.42,-1.77 70.6,-2.04 61.53,-2.35 51.41,-2.73 41.1,-2 39.43,-.53 40.98,1.77 24.12,2.77 12.02,1.12 10.02,.79 2.61,.69 a2.43,2.43 0 0 1 -.82,4.8 t-3.21,-.76 -10.25,-.83 -11.35,-1 -14.51,-1.9 -22.72,-1.73 -32.49,-.54 -38.26,.94 -42.14,2.18 -52.84,2.72 -62.84,2.29 -71.6,1.97 -79.32,1.74 -84.62,1.63 -85.12,1.59 -81.33,1.92 -70.1,2.72 -60.65,4.31 -51.85,4.85 -33.78,2.7 -28.07,.19 -23.01,-.08 -15.03,1.71 -8.34,1.4 a2.15,2.15 0 0 1 -.78,-4.22 ZM983.9,-26.06 t-2.41,-.91 -2.42,-.91 a2.31,2.31 0 0 1 1.78,-4.28 t2.24,.73 2.25,.72 a2.43,2.43 0 0 1 -1.44,4.65 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6553.7054, 12739.6532)" opacity="1"><g transform="scale(1)"><path d="M1.59,-.61 t4.47,5.25 15.92,17.11 17.23,19.16 12.29,16.18 14.81,18.1 22.61,23.88 25.8,26.39 32.42,31.3 42.04,40.69 44.95,43.82 46.35,45.48 44.4,43.26 38.19,35.17 29.44,27.69 32.67,34.4 38.14,41.58 36.51,38.99 36.01,37.36 35.81,37.18 35.96,35.78 36.15,35.69 35.91,36.4 35.48,33.69 29.44,25.86 26.86,24.05 16.3,15.08 1.42,1.12 a3.22,3.22 0 0 1 -4.01,5.05 t-14.73,-13.58 -26.27,-23.46 -28.97,-25.46 -35.5,-33.42 -35.87,-36.36 -36.11,-35.77 -36.01,-35.81 -35.71,-37.16 -35.97,-37.4 -36.45,-38.78 -37.87,-41.32 -32.21,-34.3 -29.06,-27.74 -38.14,-35.11 -43.99,-42.78 -46.32,-45.66 -45.31,-44.33 -42.13,-40.96 -33,-31.74 -28.32,-28.9 -24.84,-26.46 -15.06,-18.37 -12.26,-15.94 -17.08,-18.83 -16.04,-17.25 -4.61,-5.42 a2.73,2.73 0 0 1 4.26,-3.4 ZM784.28,791.14 t.06,-.11 .06,-.12 a3.22,3.22 0 0 1 5.76,2.88 t-.06,.11 -.05,.11 a3.22,3.22 0 0 1 -5.77,-2.87 ZM784.2,793.31 t-.55,-1.93 -.54,-1.93 a3.12,3.12 0 0 1 5.95,-1.86 t.65,1.9 .64,1.9 a3.22,3.22 0 0 1 -6.15,1.92 ZM788.94,787.27 t1.21,2.87 1.2,2.88 a2.82,2.82 0 0 1 -4.96,2.68 t-1.58,-2.96 -1.59,-2.97 a3.12,3.12 0 0 1 5.72,-2.5 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 7288.6539, 13465.5734)" opacity="1"><g transform="scale(1)"><path d="M1.57,.19 t-.28,13.13 .24,31.94 .53,18.83 a1.99,1.99 0 0 1 -3.98,.12 t-.77,-18.87 -.37,-32.13 .39,-13.26 a2.12,2.12 0 0 1 4.24,.24 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 7293.8624, 13570.3157)" opacity="1"><g transform="scale(1)"><path d="M2.52,-.66 t-.13,16.16 -.51,23.24 -.39,7.09 a2.51,2.51 0 0 1 -5,-.2 t.49,-23.19 .5,-23.18 a2.52,2.52 0 0 1 5.04,.08 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6469.2599, 13499.1628)" opacity="1"><g transform="scale(1)"><path d="M2.32,-.13 t1.45,17.3 2.67,28.2 1.23,10.89 a2.17,2.17 0 0 1 -4.31,.53 t-1.92,-14.08 -2.85,-28.33 -.91,-14.25 a2.33,2.33 0 0 1 4.64,-.26 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6533.8036, 12763.1404)" opacity="1"><g transform="scale(1)"><path d="M-.21,-2.33 t13.34,-.87 25.3,-.73 23.49,1.35 11.53,1.2 a2.17,2.17 0 0 1 -.4,4.32 t-13.93,-.92 -25.4,-1.05 -22.5,.61 -11.01,.75 a2.34,2.34 0 0 1 -.42,-4.66 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6482.9412, 12744.0902)" opacity="1"><g transform="scale(1)"><path d="M2.46,-1.38 t.03,15.85 -.46,26.93 -1.02,14.85 -.52,3.77 a2.29,2.29 0 0 1 -4.56,-.45 t.22,-3.69 .8,-30.42 .59,-26.74 a2.46,2.46 0 0 1 4.92,-.1 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6570.2748, 13151.723)" opacity="1"><g transform="scale(1)"><path d="M.02,-2.5 t1.87,-.79 4.97,-1.29 9.34,-.18 6.24,.31 a2.28,2.28 0 0 1 .52,4.54 t-2.36,.32 -6.45,-.25 -6.44,-.34 -4.26,.9 -1.91,.68 a2.09,2.09 0 0 1 -1.52,-3.9 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6490.797, 13147.6007)" opacity="1"><g transform="scale(1)"><path d="M.62,2.1 t-1.67,.92 -3.49,3.16 -2.54,4.57 -.99,4.62 .88,4.04 4.19,1.76 5.47,-1.28 4.6,-3.22 3.7,-4.04 2.19,-4 .65,-4.57 -1.97,-3.48 -4.01,.57 -2.05,1.4 a2.56,2.56 0 0 1 -3.7,-3.54 t.7,-.8 3.28,-2.28 4.75,-1.24 4.44,1.68 3.15,4.15 .59,5.09 -1.27,5.03 -2.85,5.18 -4.47,4.85 -5.9,3.95 -6.7,1.76 -6.06,-1.15 -3.77,-3.41 -1.13,-4.77 .64,-5.41 1.91,-5.53 3.43,-4.72 3.84,-2.89 1.68,-.92 a2.57,2.57 0 0 1 2.48,4.52 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6517.16, 13164.5528)" opacity="1"><g transform="scale(1)"><path d="M1.71,4.37 t0,0 0,0 a3.66,3.66 0 0 1 -3.28,-6.56 t0,0 0,0 a3.66,3.66 0 0 1 3.28,6.56 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6533.1, 13164.4725)" opacity="1"><g transform="scale(1)"><path d="M-1.89,-1.18 t2.65,-1.84 4.12,-3.21 1.61,-3.49 -2.08,-2.71 -6.65,-.99 -7.04,-1.81 -2.94,-3.93 1.59,-6.61 3.17,-5.94 3.72,-2.41 7.94,-.52 10.48,-.77 5.02,-.81 a2.99,2.99 0 0 1 1.2,5.87 t-4.43,1.04 -9.48,1.09 -7.26,-.37 -3.26,1.66 -.77,4.75 5.31,3.48 7.33,2.03 3.59,4.01 -.29,5.87 -5.82,6.68 -4.23,3.63 a2.92,2.92 0 0 1 -3.48,-4.7 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6589.9483, 13143.9412)" opacity="1"><g transform="scale(1)"><path d="M1.01,-1.16 t13.96,.12 21.43,1.36 14.19,1.16 15.77,-1.07 32.71,-5.97 38.68,-7.43 31.6,-3.7 33.13,-1.37 33.54,-.9 32.04,-1 32.26,.26 34.05,.19 34.17,-1.23 33.88,-1.97 36.55,-1.56 35.16,-1.06 40.93,-.38 43.73,-.19 37.09,.61 32.81,1.77 29.4,1.55 20.48,1.48 10.51,.63 7.06,-.26 1.35,-.11 a2.19,2.19 0 0 1 .3,4.38 t-1.34,.08 -7.46,.16 -10.8,-.71 -20.44,-1.44 -29.29,-1.42 -32.65,-1.67 -37.01,-.58 -43.7,.18 -40.85,.38 -35.08,1.06 -36.52,1.56 -33.87,1.96 -34.32,1.24 -34.19,-.19 -32.14,-.26 -32.01,1.01 -33.56,.91 -32.85,1.36 -31.26,3.62 -38.64,7.08 -35.19,5.85 -18.95,.83 -12.34,-1.24 -18.57,-1.06 -13.75,-.14 a1.94,1.94 0 0 1 0,-3.88 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7282.199, 13131.2657)" opacity="1"><g transform="scale(1)"><path d="M-.67,1.9 t-.81,.05 -1.13,6.52 1.45,26.61 2.87,32.57 1.24,28.57 -.19,19.39 -1.62,9.36 -1.54,10.97 1.01,13.92 1.9,13.27 .96,21.5 .39,39.29 -.05,34.93 1.4,23.15 2.18,14.42 .66,20.68 -.98,27.23 -.99,10.72 a2.52,2.52 0 0 1 -5.03,-.26 t1.02,-11.67 .91,-25.7 -1.4,-21.52 -2.42,-15.62 -1.14,-15.99 .02,-29.66 -.14,-42.72 -2.13,-34.66 -2.03,-18.26 .87,-9.77 1.85,-11.04 .8,-21.82 -1.87,-35.25 -2.75,-32.77 -.61,-19.48 2.18,-8.78 3.03,-3.1 1.25,-.28 a2.64,2.64 0 0 1 .84,5.2 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6939.258, 13121.935)" opacity="1"><g transform="scale(1)"><path d="M-.58,2.58 t-1.08,-.06 -2.78,1.28 -1.77,1.77 -.06,.43 a2.53,2.53 0 0 1 -4.72,-1.81 t1.55,-2.19 4.19,-3.36 3.78,-1.11 1.13,.05 a2.5,2.5 0 0 1 -.24,5 ZM-7.59,2.79 t.15,.07 .14,.06 a2.52,2.52 0 0 1 -2.07,4.61 t-.15,-.07 -.15,-.07 a2.53,2.53 0 0 1 2.08,-4.6 ZM-10.32,3.66 t1,-2.12 .99,-2.13 a2.52,2.52 0 0 1 5.02,-.52 t-.02,1.29 -1.52,3.95 -1.51,2.66 a2.52,2.52 0 0 1 -3.96,-3.13 ZM-6.63,1.54 t-.11,-.04 -.11,-.03 a2.52,2.52 0 0 1 1.62,-4.78 t.11,.04 .11,.04 a2.52,2.52 0 0 1 -1.62,4.77 ZM-3.54,-.59 t-.26,.75 .15,.78 .41,.03 a2.51,2.51 0 0 1 -3.61,3.48 t-.89,-1.32 -.84,-2.85 .04,-1.53 a2.52,2.52 0 0 1 5,.66 ZM-7.05,1.2 t.54,-.67 .5,-1.39 -.03,-.73 a2.51,2.51 0 0 1 4.95,-.81 t-.23,2.28 -.97,3.31 -.75,1.04 a2.51,2.51 0 0 1 -4.01,-3.03 ZM-4.28,.41 t-.33,-.09 -.33,-.1 a2.51,2.51 0 0 1 1.42,-4.82 t.33,.1 .34,.1 a2.51,2.51 0 0 1 -1.43,4.81 ZM-2.69,-.2 t-.49,.38 -1.14,2.31 -.52,2.22 .12,.3 a2.56,2.56 0 0 1 -5.06,.79 t.18,-2.43 1.49,-4.58 1.82,-2.57 .52,-.4 a2.51,2.51 0 0 1 3.08,3.98 ZM-5.92,3.21 t.5,.31 .5,.31 a2.56,2.56 0 0 1 -2.66,4.37 t-.5,-.31 -.5,-.3 a2.56,2.56 0 0 1 2.66,-4.38 ZM-7.28,3.67 t.62,-.27 2.41,-3.02 1.78,-2.75 a2.48,2.48 0 0 1 4.32,2.41 t-1.24,2.26 -2.89,3.87 -2.29,1.9 -.64,.29 a2.56,2.56 0 0 1 -2.07,-4.69 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6581.0002, 12755.5191)" opacity="1"><g transform="scale(1)"><path d="M1.14,-2.06 t11.2,-.09 24.22,.08 17.57,-.43 12.64,-2.3 15.4,-2.05 15.32,-.53 28.58,-2.08 25.85,-2.01 13.41,.15 13.15,.02 7.25,0 4.86,1.05 23.34,1.34 25.97,.54 10.55,1 8.04,1.69 7.54,1.11 24.61,.55 22.55,.17 7.89,-.99 8.39,-.68 3.26,.32 a2.66,2.66 0 0 1 -.74,5.27 t-3.24,-.22 -8.01,.72 -10.46,.91 -26.16,-.32 -28.6,-2.09 -13.18,-2 -26.69,-.84 -25.87,-1.76 -8.9,-1.04 -18,-.2 -33.7,1.53 -35.85,2.27 -23.24,1.95 -13.33,2.42 -7.99,.95 -15.9,-.37 -22.58,-.15 -9.09,.23 a2.06,2.06 0 0 1 -.06,-4.12 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6918.4181, 12753.6492)" opacity="1"><g transform="scale(1)"><path d="M-2.08,-2.87 t.56,-.74 2.31,-1.83 3.83,-1.62 4.81,-.6 2.73,-.08 a2.48,2.48 0 0 1 -.24,4.96 t-2.15,.03 -4.53,.73 -2.91,1.41 -.55,.7 a2.44,2.44 0 0 1 -3.86,-2.96 ZM14.49,-4.9 t-.55,3.09 -.68,14.48 1.05,23.41 2.92,23.52 2.01,19.54 -1.17,27.08 -1.78,38.35 -1.59,30.25 -1.53,33.02 -.21,43.33 .14,29.05 1.13,15.3 1.73,24.11 1.45,23.83 -.01,15.21 -.88,13.67 -.1,5.68 a1.96,1.96 0 0 1 -3.91,-.02 t.01,-4.84 .79,-14.6 .43,-12.57 -1.02,-10.55 -1.29,-19.87 -1.68,-19.74 -1.12,-15.5 .1,-27.79 .26,-41.48 1.42,-34.51 1.52,-30.92 1.61,-38.25 1.13,-27.94 -2.11,-19.2 -3.07,-23.82 -1.14,-24.01 .67,-14.87 .56,-3.16 a2.48,2.48 0 0 1 4.91,.72 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6686.6867, 12806.2209)" opacity="1"><g transform="scale(1)"><path d="M 1.24 .7 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6836.9224, 12833.67)" opacity="1"><g transform="scale(1)"><path d="M .15 .08 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6739.0979, 12878.1514)" opacity="1"><g transform="scale(1)"><path d="M 0 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6683.7307, 12984.8438)" opacity="1"><g transform="scale(1)"><path d="M 1.4 -.31 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6824.7899, 12947.8233)" opacity="1"><g transform="scale(1)"><path d="M -1.01 .86 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6775.4149, 13061.9827)" opacity="1"><g transform="scale(1)"><path d="M .31 .07 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6871.9188, 13033.1327)" opacity="1"><g transform="scale(1)"><path d="M 1.32 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6626.9626, 12916.3321)" opacity="1"><g transform="scale(1)"><path d="M 0 -1.32 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6642.6681, 13089.7403)" opacity="1"><g transform="scale(1)"><path d="M 0 -.54 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6727.8974, 13028.8561)" opacity="1"><g transform="scale(1)"><path d="M -1.17 .07 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6683.5702, 13215.9519)" opacity="1"><g transform="scale(1)"><path d="M-2.37,-2.1 t5.09,-3.62 5.09,-3.62 a2.26,2.26 0 0 1 2.74,3.61 t-4.87,3.91 -4.87,3.92 a2.64,2.64 0 0 1 -3.18,-4.2 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6914.7648, 13234.0703)" opacity="1"><g transform="scale(1)"><path d="M .15 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6764.0601, 13415.7232)" opacity="1"><g transform="scale(1)"><path d="M .39 -1.24 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 7003.962, 13401.8073)" opacity="1"><g transform="scale(1)"><path d="M-2.61,-1.21 t1.4,-2.62 1.39,-2.61 a2.55,2.55 0 0 1 4.62,2.14 t-1.1,2.75 -1.09,2.76 a2.87,2.87 0 0 1 -5.22,-2.42 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 7199.2222, 13222.8759)" opacity="1"><g transform="scale(1)"><path d="M 1.32 -.16 m -3.71, 0 a 3.71,3.71 0 1,1 7.42,0 a 3.71,3.71 0 1,1 -7.42,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 7162.4423, 13430.108)" opacity="1"><g transform="scale(1)"><path d="M.58,2.8 t-2.25,.47 -2.26,.47 a2.86,2.86 0 0 1 -1.16,-5.6 t2.25,-.47 2.26,-.47 a2.86,2.86 0 0 1 1.16,5.6 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 7094.6342, 13249.5475)" opacity="1"><g transform="scale(1)"><path d="M -1.25 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6827.1226, 13334.5422)" opacity="1"><g transform="scale(1)"><path d="M-.39,-1.93 t3.44,-.8 3.44,-.8 a2.17,2.17 0 0 1 .86,4.26 t-3.48,.6 -3.48,.6 a1.97,1.97 0 0 1 -.78,-3.86 ZM7.35,.73 t-3.47,.66 -3.47,.66 a2.09,2.09 0 0 1 -.82,-4.09 t3.45,-.75 3.45,-.74 a2.17,2.17 0 0 1 .86,4.26 Z" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6664.1313, 13380.8872)" opacity="1"><g transform="scale(1)"><path d="M .15 -1.25 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6796.6435, 13218.4389)" opacity="1"><g transform="scale(1)"><path d="M -.94 -.78 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-black, #1d1d1d)"/></g></g><g transform="matrix(1, 0, 0, 1, 6626.7282, 12909.9573)" opacity="1"><g transform="scale(1)"><path d="M1.73,1.28 t-.54,3.51 .58,5.18 3.24,.34 1.68,-3.4 -1.98,-.62 -1.04,1.29 .5,-.15 a2.61,2.61 0 0 1 5.22,.19 t-.79,2.28 -3.26,3.21 -4.63,-.51 -2.25,-4.21 1.76,-5.23 4.84,-2.69 4.89,2 1.78,5.32 -1.92,5.58 -4.21,2.87 -5.17,-1.04 -3.76,-4.37 -.39,-6.74 .59,-3.81 a2.48,2.48 0 0 1 4.86,1 ZM5.81,9.95 t-.41,-.37 -.08,.92 .32,1.3 a2.57,2.57 0 0 1 -2.42,4.54 t-1.79,-1.21 -1.65,-4.23 2.37,-4.88 3.91,-1.39 1.7,.48 a2.61,2.61 0 0 1 -1.95,4.84 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6683.5702, 12981.1103)" opacity="1"><g transform="scale(1)"><path d="M2.82,.18 t-.15,2 .7,1.51 .86,-.49 a2.65,2.65 0 0 1 5,-1.75 t.11,3.02 -1.74,4.83 -4.64,1.27 -4.38,-3.56 -1.5,-5.11 .1,-2.08 a2.83,2.83 0 0 1 5.64,.36 ZM7.06,4.95 t-.77,.05 -1.49,1.99 -.22,-.55 -.47,-.89 -.97,1.58 a3,3 0 0 1 -5.94,-.82 t.95,-2.7 2.41,-4.21 3.84,-2.08 4.39,1.51 1.71,4.61 -1.99,5.21 -3.65,3.55 -3.94,-.77 -1.54,-4.3 2.25,-4.82 3.31,-2.38 1.47,-.23 a2.65,2.65 0 0 1 .65,5.25 ZM2.04,4.38 t1.7,1.52 1.71,1.52 a2.75,2.75 0 0 1 -3.44,4.3 t-1.86,-1.33 -1.85,-1.33 a3,3 0 0 1 3.74,-4.68 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6726.188, 13021.3089)" opacity="1"><g transform="scale(1)"><path d="M1.37,1.77 t-.92,1.15 -1.62,3.33 -.58,4.37 2.24,1.82 2.55,-2.84 -1.32,-.67 .3,.64 1.41,.18 -.63,1.32 a3.1,3.1 0 0 1 -6.01,-1.52 t2.08,-2.88 5.19,-2.96 4.51,2.61 .16,5.11 -3.18,3.87 -4.28,1.76 -4.55,-1.25 -2.19,-4.53 1.27,-5.04 3.17,-3.37 4.61,-1 4.14,2.87 1.04,5.36 -1.64,4.87 -3.13,3.28 -4.64,.87 -4.59,-2.64 -2.11,-4.69 .04,-4.45 1.34,-4.43 1.96,-3.51 .92,-1.17 a2.85,2.85 0 0 1 4.46,3.54 ZM.94,7.43 t4.92,1.77 4.93,1.77 a2.77,2.77 0 0 1 -1.68,5.27 t-5.23,-1.52 -5.23,-1.52 a3.1,3.1 0 0 1 2.29,-5.77 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6776.2665, 13050.9364)" opacity="1"><g transform="scale(1)"><path d="M1.76,.96 t-.96,2.53 -1.47,5.29 .42,4.56 2.12,.06 -1.04,-1.59 -3.6,2.33 -.06,-.03 .9,-.67 -.42,1.55 a3.14,3.14 0 0 1 -6.28,.15 t.14,-1.52 1.84,-3.84 4.02,-2.98 4.46,1.12 2.03,4.82 -1.23,5.11 -2.83,3.42 -4.51,1.29 -4.22,-2.88 -.56,-5.48 2.17,-4.32 3.17,-2.83 4.12,-1.32 4.57,1.06 3.16,4.1 -.46,5.39 -4.32,3.33 -5.52,-1.03 -3.25,-4.65 -.05,-6.31 1.63,-6.04 .95,-2.54 a2.72,2.72 0 0 1 5.08,1.92 ZM-3.56,12.58 t1.65,1.44 1.65,1.45 a2.88,2.88 0 0 1 -3.52,4.55 t-1.82,-1.24 -1.81,-1.24 a3.14,3.14 0 0 1 3.85,-4.96 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6640.8785, 13086.556)" opacity="1"><g transform="scale(1)"><path d="M.56,1.67 t-1.21,.64 -2.09,3.27 .04,4.44 2.7,.75 2.69,-3 -.28,-3.81 -3.54,-1.32 -4.09,2.23 .6,2.94 4.65,.88 3.2,-1.32 .89,-.94 a2.99,2.99 0 0 1 5.04,3.24 t-2.69,2.28 -6,2.76 -6.6,-.08 -5.24,-3.09 -1.18,-5.67 2.47,-4.9 3.91,-3.01 4.67,-1.61 4.65,.34 3.95,2.36 2.1,4.03 -.19,4.5 -1.9,4.29 -3.41,3.58 -4.51,1.75 -4.56,-.83 -3.19,-3.68 -.56,-5.67 2.47,-6.06 3.24,-3.66 1.29,-.69 a2.87,2.87 0 0 1 2.68,5.06 ZM6.41,11.04 t-.66,-.13 -2.43,2.17 -1.79,2.3 a2.66,2.66 0 0 1 -4.46,-2.91 t1.49,-2.46 3.33,-3.74 3.42,-1.25 1.56,.04 a2.99,2.99 0 0 1 -.46,5.98 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6685.1315, 13197.9878)" opacity="1"><g transform="scale(1)"><path d="M1.89,.9 t-1.42,4.69 -1.37,7.08 2.24,2.22 3.31,-2.49 -.97,-1.52 -3.03,2.73 .92,.64 2.85,-1.21 .96,.06 a2.97,2.97 0 0 1 -1.76,5.67 t-3.3,-1.13 -4,-3.86 1.21,-4.79 4.81,-2.08 4.98,2.27 1.72,5.17 -1.84,4.96 -3.65,3.3 -5.23,.49 -4.06,-3.9 -.03,-6.03 2.74,-5.22 4.25,-4.13 5.09,-1.16 3.88,3.4 .84,5.12 -1.44,4.2 -2.61,3.43 -4.03,2.16 -4.68,-.48 -3.67,-4.32 -1.15,-5.21 1.75,-6.92 1.51,-4.94 a2.74,2.74 0 0 1 5.18,1.8 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6790.9661, 13210.3547)" opacity="1"><g transform="scale(1)"><path d="M1.8,1.13 t-1.21,2.57 -2.18,5.76 -.61,5.17 2.42,.98 3.2,-3.31 .88,-4.49 -2.65,-1.78 -4,2.34 -1.59,2.23 .04,.29 a2.99,2.99 0 0 1 -5.86,-1.14 t.32,-1.19 2.17,-3.47 3.75,-3.47 4.27,-1.63 4.41,.46 3.46,3.33 1.19,5.1 -1.26,5.13 -2.62,4.27 -3.92,2.78 -5.15,.02 -3.98,-4.05 -.51,-6.18 2.71,-7.55 2.04,-4.43 a2.6,2.6 0 0 1 4.68,2.26 ZM-5.37,7.72 t.76,.52 2.09,-.42 1.33,-.94 a2.98,2.98 0 0 1 3.16,5.05 t-3.54,1.3 -5.13,.5 -1.6,-.81 a2.99,2.99 0 0 1 2.93,-5.2 ZM2.83,11.11 t-1.09,1.77 -1.09,1.78 a2.89,2.89 0 0 1 -5.33,-2.25 t1.32,-2.36 1.32,-2.36 a2.98,2.98 0 0 1 4.87,3.42 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6913.833, 13229.1705)" opacity="1"><g transform="scale(1)"><path d="M3.21,-.27 t-.16,1.83 .13,2.22 .29,.39 a3.11,3.11 0 0 1 -5.78,2.31 t-.52,-1.6 -.45,-3.57 .07,-1.96 a3.22,3.22 0 0 1 6.42,.38 ZM1.39,2.32 t.65,.18 .65,.19 a3.1,3.1 0 0 1 -1.61,5.98 t-.66,-.17 -.65,-.17 a3.11,3.11 0 0 1 1.62,-6.01 ZM.16,3.11 t.69,-.45 -.7,1.1 .73,1.49 3.29,-2.26 2.7,-1.75 1.54,.45 a2.82,2.82 0 0 1 .12,5.63 t-3.93,.04 -6.28,-2.42 -1.87,-5.48 2.29,-4.89 4.3,-2.11 4.89,1.65 2.85,5.02 -.44,5.4 -2.25,3.91 -3.37,2.75 -4.4,.92 -4.63,-2.03 -2.46,-5.38 .69,-5.51 2.46,-3.51 3.98,-2.17 4.95,.99 2.69,4.51 -1.38,5.55 -2.27,3.18 -.74,.51 a3.1,3.1 0 0 1 -3.45,-5.14 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6833.6578, 13327.1554)" opacity="1"><g transform="scale(1)"><path d="M.23,2.55 t-1.36,.52 -2.63,2.5 -1.76,4.17 1.81,2.01 2.99,-2.82 -.06,-4.64 -1.32,.21 1.31,3.5 1.32,3.65 -.57,2.34 a2.69,2.69 0 0 1 -5.36,-.3 t.18,-3.33 1.16,-5.44 3.07,-3.22 4.78,.12 3.21,4.32 -1.53,5.68 -5.24,2.52 -5.24,-1.68 -2.84,-3.76 -.51,-4.28 1.98,-4.47 4.9,-2.52 5.06,2.17 2.02,4.84 -.31,4.81 -1.87,4.91 -3.73,4.53 -5.64,1.37 -4.71,-3.57 -1.06,-5.79 1.51,-5.69 3.37,-4.99 3.65,-2.58 1.4,-.51 a2.9,2.9 0 0 1 2.02,5.42 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6663.508, 13369.6867)" opacity="1"><g transform="scale(1)"><path d="M2.02,1.51 t-1.43,1.53 -2.8,3.59 -1.96,4.63 1.24,1.05 2.85,-3.83 -.28,-.63 1.01,.27 2.56,-2.73 .24,-1.32 a2.87,2.87 0 0 1 5.57,1.43 t-.64,2.17 -2.35,4.44 -4.06,4.09 -4.88,1.54 -3.9,-3.01 -.6,-5.43 1.92,-4.38 2.74,-3.08 3.98,-1.67 3.98,2.16 .94,5.28 -1.73,4.76 -2.73,3.67 -4.08,2.65 -4.84,-.66 -2.58,-4.55 .62,-5.28 2.55,-4.86 3.18,-4.1 1.44,-1.53 a2.78,2.78 0 0 1 4.04,3.8 ZM6.03,7.65 t-.28,-.18 -.38,4.56 .08,6.15 .17,1.4 a2.55,2.55 0 0 1 -5.02,.81 t-.57,-4.26 -.18,-7.18 1.96,-4.92 3.09,-2.06 1.55,-.05 a2.87,2.87 0 0 1 -.42,5.73 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6762.1902, 13409.2681)" opacity="1"><g transform="scale(1)"><path d="M3.13,-.47 t-.83,5.21 -.57,7.79 1.49,.21 1.2,-4.42 -.54,.37 -.44,4.89 -1.91,2.16 -1.96,.09 -.01,.39 a3.33,3.33 0 0 1 -4.3,-5.07 t3.48,-.85 5.78,.97 2.6,4.79 -2.29,4.44 -5.03,-.55 -2.71,-5.07 .47,-5.63 2.1,-4.72 3.84,-2.93 4.52,.95 2.34,4.37 -.29,4.97 -1.64,4.3 -3.14,3.53 -4.81,.55 -3.85,-3.99 -1.11,-5.06 .91,-7.42 .9,-5.35 a2.95,2.95 0 0 1 5.8,1.08 ZM-.37,11.2 t.44,.48 3.3,1.01 2.86,.52 a2.97,2.97 0 0 1 -.64,5.91 t-4.03,-.52 -5.2,-1.48 -1.16,-.95 a3.33,3.33 0 0 1 4.43,-4.97 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 6997.4268, 13389.3601)" opacity="1"><g transform="scale(1)"><path d="M1.7,1.47 t-.57,2.84 -.28,5.15 2.43,1.5 2.66,-2.98 -.05,-3.32 -.59,-1.13 a2.78,2.78 0 0 1 4.35,-3.45 t1.03,1.71 .86,4.54 -.89,4.73 -2.18,3.64 -3.93,2.31 -5.35,-1.27 -3.5,-3.74 -.5,-3.89 .68,-4.84 .57,-2.86 a2.68,2.68 0 0 1 5.26,1.06 ZM8.82,4.23 t-.89,.49 -1.03,2.52 .7,-1.77 .84,-3.81 a3.04,3.04 0 0 1 5.99,1.02 t-.82,3.04 -2,4.86 -3.48,2.79 -4.65,-.81 -2.36,-4.52 1.11,-4.95 2.52,-2.95 1.38,-.76 a2.78,2.78 0 0 1 2.69,4.85 ZM11.16,5.19 t-.19,-.01 -.19,-.02 a3.04,3.04 0 0 1 .57,-6.05 t.18,.02 .19,.02 a3.04,3.04 0 0 1 -.56,6.04 ZM13.75,3.56 t-.48,.93 -.83,4.05 -.34,3.12 a2.77,2.77 0 0 1 -5.54,-.15 t.3,-4.26 .91,-5.4 .61,-1.14 a3.04,3.04 0 0 1 5.37,2.85 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 7157.4623, 13418.3705)" opacity="1"><g transform="scale(1)"><path d="M2.84,-.06 t-1.5,4.89 -1.81,8.14 1.63,1.21 2.46,-4.47 .27,-4.95 -.86,-.22 .79,.78 1.11,-2 -.31,-.51 a3.09,3.09 0 0 1 6.05,-1.24 t.2,1.93 -.96,4.27 -3.15,3.73 -5.03,.97 -4.34,-3.41 -.71,-5.47 1.97,-4.25 3.85,-2.33 4.65,1.29 2.66,4.64 .14,5.47 -1.43,5.98 -2.98,6.31 -5.07,3.49 -5.04,-2.2 -2.01,-6.23 .2,-5.52 2.01,-7.16 1.69,-5.2 a2.94,2.94 0 0 1 5.52,2.06 ZM9.8,4.41 t-.7,.67 -1.45,2.57 -.22,4.8 .53,2.9 a2.96,2.96 0 0 1 -4.88,3.34 t-1.59,-2.65 -1.07,-5.69 1.77,-5.71 2.27,-3.67 1.03,-1 a3.09,3.09 0 0 1 4.31,4.44 Z" stroke-linecap="round" fill="var(--rvo-draw-light-green, #4cb05e)"/></g></g><g transform="matrix(1, 0, 0, 1, 7201.9437, 13216.4209)" opacity="1"><g transform="scale(1)"><path d="M2.49,1.27 t-1.21,1.68 -2.37,4.53 -1.17,4.19 -.02,1.34 a2.89,2.89 0 0 1 -5.61,1.41 t.07,-2.94 1.69,-6.57 2.85,-5.3 1.25,-1.66 a2.81,2.81 0 0 1 4.52,3.32 ZM-3.63,11.21 t.53,.4 2.29,-2 2.81,-4.43 1.21,-4.13 -1.14,.25 -.96,4.18 .36,1.85 a2.81,2.81 0 0 1 -5.57,.74 t-.32,-3.2 .94,-5.44 3.04,-3.7 4.24,-1.3 3.95,2.71 .99,5.37 -1.84,5.43 -3.45,5.12 -5.09,3.3 -3.95,.32 -.95,-.47 a2.89,2.89 0 0 1 2.91,-5 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 7094.2455, 13241.6916)" opacity="1"><g transform="scale(1)"><path d="M2.94,.61 t-.55,2.55 -.18,3.86 .37,1.33 a2.96,2.96 0 0 1 -5.11,2.99 t-.66,-1.42 -.73,-3.41 .46,-4.55 .52,-2.57 a3,3 0 0 1 5.88,1.22 ZM-.2,6.89 t.98,-.01 1.97,-2 .99,.31 2.09,1.73 4.17,-2.69 3.94,-4.67 1.84,-2.56 a2.61,2.61 0 0 1 4.36,2.88 t-3.03,4.46 -6.21,6.77 -6.29,2.04 -4.94,-2.81 -1.45,-5.04 1.41,-4.21 2.88,-2.91 4.22,-.04 2.43,3.94 -1.08,5.17 -2.76,3.77 -3.34,1.58 -1.73,.19 a2.96,2.96 0 0 1 -.45,-5.9 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6873.1592, 13029.1647)" opacity="1"><g transform="scale(1)"><path d="M1.53,-.41 t.51,1.9 2.53,.87 1.04,-3.03 -3.45,-1.8 -1.05,.36 1.43,.15 a3.01,3.01 0 0 1 -1.15,5.92 t-1.49,-.29 -4.01,-1.95 -1.69,-4.83 3.33,-4.42 5.52,-1.02 4.82,1.37 2.97,3.02 1.19,4.48 -.77,4.49 -2.51,3.49 -4.39,1.64 -5.03,-2.34 -2.91,-4.41 -.59,-2 a2.96,2.96 0 0 1 5.7,-1.6 ZM4.79,2.05 t-.68,1.56 -.69,1.57 a2.82,2.82 0 0 1 -5.28,-1.96 t.5,-1.63 .5,-1.63 a3.01,3.01 0 0 1 5.65,2.09 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6815.1507, 12944.5587)" opacity="1"><g transform="scale(1)"><path d="M2.28,-1.87 t.92,1.15 2.49,5.62 1.57,4.48 a2.88,2.88 0 0 1 -5.02,2.83 t-.58,-1.18 -1.33,-4.07 -1.69,-3.99 -.92,-1.1 a2.95,2.95 0 0 1 4.56,-3.74 ZM4.83,7.91 t1.06,.06 4.95,-1.79 5.03,-2.73 1.14,-.87 a2.91,2.91 0 0 1 3.41,4.71 t-1.66,1.15 -6.19,3.21 -6.22,2.04 -1.68,-.01 a2.88,2.88 0 0 1 .16,-5.77 ZM16.56,6.89 t-.55,-.64 -2.1,-1.06 -1.55,-.42 a3.02,3.02 0 0 1 1.69,-5.8 t2.42,.94 3.41,2.01 .99,1.07 a2.91,2.91 0 0 1 -4.31,3.9 ZM12.54,-1.08 t3.01,-.56 3,-.55 a3.06,3.06 0 0 1 1.25,5.98 t-2.97,.51 -2.96,.51 a3.02,3.02 0 0 1 -1.33,-5.89 ZM16.69,2.57 t-.2,-.37 -2.67,-.48 -4.42,-.59 -1.95,-.49 a3.2,3.2 0 0 1 .65,-6.36 t3.83,.65 5.98,1.35 2.96,1.73 .8,1.02 a3.06,3.06 0 0 1 -4.98,3.54 ZM10.97,-2.35 t-.02,.3 -.02,.31 a3.2,3.2 0 0 1 -6.38,-.37 t.01,-.3 .02,-.31 a3.2,3.2 0 0 1 6.39,.37 ZM9.64,-4.49 t.98,.74 .98,.75 a3.16,3.16 0 0 1 -3.76,5.08 t-1,-.71 -1,-.72 a3.2,3.2 0 0 1 3.8,-5.14 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6832.5656, 12815.7059)" opacity="1"><g transform="scale(1)"><path d="M3.15,.74 t-.04,5.45 .05,4.06 .08,-1.4 a2.83,2.83 0 0 1 5.66,-.24 t-.07,1.39 -1.45,3.57 -4.06,2.65 -4.29,-1.86 -1.66,-8.01 -.06,-5.69 a2.92,2.92 0 0 1 5.84,.08 ZM4.52,11.09 t-.37,-.24 -.38,-.24 a2.84,2.84 0 0 1 3.12,-4.74 t.37,.25 .36,.25 a2.83,2.83 0 0 1 -3.1,4.72 ZM7.05,10.5 t-.72,.52 -.89,1.86 -.17,1.36 a2.87,2.87 0 0 1 -5.74,-.17 t.89,-3.13 2.04,-4.04 1.15,-.91 a2.84,2.84 0 0 1 3.44,4.51 ZM1.23,11.53 t.77,-.3 1.03,-2.2 .27,-1.91 a2.93,2.93 0 0 1 5.85,-.3 t-.03,2.07 -1.4,4.3 -2.75,2.91 -1.39,.67 a2.87,2.87 0 0 1 -2.35,-5.24 ZM6.78,9.85 t-.21,-.09 -.43,2.73 .57,3 .79,.19 a3.06,3.06 0 0 1 -2.76,5.45 t-1.83,-1.27 -2.41,-4.16 -.15,-5.12 1.55,-3.97 2.45,-2.14 1.32,-.38 a2.93,2.93 0 0 1 1.11,5.76 ZM3.83,16.38 t1.38,-1.39 1.38,-1.38 a2.82,2.82 0 0 1 4.23,3.75 t-1.21,1.53 -1.2,1.54 a3.06,3.06 0 0 1 -4.58,-4.05 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6739.0979, 12868.975)" opacity="1"><g transform="scale(1)"><path d="M3.11,0 t-.01,2.5 .46,4.28 .46,1.79 a2.93,2.93 0 0 1 -5.03,3.01 t-.89,-3.29 -.9,-5.79 -.01,-2.5 a2.96,2.96 0 0 1 5.92,0 ZM1.06,7.18 t1.01,-.11 2.09,-2.25 -.42,-.66 -2.23,4.19 1.54,2.47 2.25,-2.25 .28,-1.86 .3,.14 a3.21,3.21 0 0 1 -5.95,-2.44 t1.06,-1.54 4.31,-1.49 4.99,2.66 1.33,5.61 -1.65,4.72 -3.24,2.96 -4.51,1.06 -4.78,-2.57 -2.25,-5.17 .97,-5.4 2.49,-4.77 3.85,-3.08 4.59,.11 3.04,3.81 -.24,5.2 -2.78,4.14 -3.47,2 -1.69,.31 a2.93,2.93 0 0 1 -.89,-5.79 ZM4.55,2.87 t1.22,.84 1.22,.84 a3.02,3.02 0 0 1 -3.1,5.19 t-1.32,-.68 -1.32,-.67 a3.21,3.21 0 0 1 3.3,-5.52 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6682.7927, 12799.4574)" opacity="1"><g transform="scale(1)"><path d="M2.76,2.84 t-.86,1.37 -1.91,3.92 -1.63,5.51 -.5,5.32 2.41,2.36 4.88,-1.89 4.68,-4.15 3.44,-4.41 1.92,-4.31 -2.49,-1.55 -3.08,.6 a3.02,3.02 0 0 1 5.8,1.67 t-2.02,2.4 -4.61,1.93 -3.53,-3.24 .58,-5.26 3.61,-3.83 4.35,-1.56 4.29,.95 2.79,4.07 -.14,5.88 -2.57,5.63 -4.18,5.3 -4.11,3.93 -5.18,3 -6.72,1.08 -4.54,-2.89 -1.49,-5.65 .63,-6.85 2.06,-6.63 2.19,-4.54 .87,-1.36 a3,3 0 0 1 5.06,3.2 ZM15.39,7.36 t-.8,2.26 -.81,2.26 a2.88,2.88 0 0 1 -5.46,-1.84 t.66,-2.25 .66,-2.26 a3.02,3.02 0 0 1 5.75,1.83 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6947.5828, 12750.2304)" opacity="1"><g transform="scale(1)"><path d="M1.13,-2.81 t2.37,.01 2.37,.02 a2.39,2.39 0 0 1 .08,4.78 t-2.37,.1 -2.37,.09 a2.5,2.5 0 0 1 -.08,-5 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6983.9738, 12749.1443)" opacity="1"><g transform="scale(1)"><path d="M.09,-1.74 t4.97,-.1 6.51,-.27 1.53,-.16 a1.74,1.74 0 0 1 .4,3.44 t-4.64,.42 -6.8,.28 -2.15,-.13 a1.74,1.74 0 0 1 .18,-3.48 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7026.5915, 12747.2745)" opacity="1"><g transform="scale(1)"><path d="M1.25,-1.77 t11.45,.81 11.44,.81 a1.72,1.72 0 0 1 -.24,3.42 t-11.41,-.82 -11.4,-.82 a1.7,1.7 0 0 1 .16,-3.4 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7088.4877, 12746.4969)" opacity="1"><g transform="scale(1)"><path d="M.38,-1.56 t8.19,1.64 8.2,1.65 a1.63,1.63 0 0 1 -.56,3.22 t-8.3,-1.69 -8.29,-1.7 a1.61,1.61 0 0 1 .76,-3.12 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7124.416, 12751.3166)" opacity="1"><g transform="scale(1)"><path d="M-.22,-1.69 t11.6,-1.82 13.31,-1.92 1.71,-.11 a1.73,1.73 0 0 1 .24,3.46 t-3.17,.24 -13.21,1.89 -10.04,1.64 a1.7,1.7 0 0 1 -.44,-3.38 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7152.2538, 12749.2184)" opacity="1"><g transform="scale(1)"><path d="M .15 .31 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7181.4926, 12746.0341)" opacity="1"><g transform="scale(1)"><path d="M.04,-1.91 t11.06,-.32 11.06,-.32 a2,2 0 0 1 .16,4 t-2.39,.13 -11.18,.23 -8.79,.1 a1.91,1.91 0 0 1 .08,-3.82 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7227.6833, 12748.1323)" opacity="1"><g transform="scale(1)"><path d="M-.25,-1.79 t5.17,-1.02 5.17,-1.03 a1.87,1.87 0 0 1 .82,3.64 t-5.33,.99 -5.33,1 a1.8,1.8 0 0 1 -.5,-3.58 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7263.6116, 12746.3426)" opacity="1"><g transform="scale(1)"><path d="M.28,-1.53 t3.82,-1.1 3.82,-1.1 a1.7,1.7 0 0 1 .96,3.26 t-3.8,1.15 -3.8,1.15 a1.76,1.76 0 0 1 -1,-3.36 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7276.5956, 12745.4849)" opacity="1"><g transform="scale(1)"><path d="M.39,-1.3 t2.29,-.89 2.3,-.89 a1.73,1.73 0 0 1 1.24,3.22 t-2.29,.89 -2.3,.89 a1.73,1.73 0 0 1 -1.24,-3.22 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7311.6722, 12748.9839)" opacity="1"><g transform="scale(1)"><path d="M -.47 .55 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7285.8523, 12758.006)" opacity="1"><g transform="scale(1)"><path d="M-1.13,-2.03 t1.07,-.55 1.06,-.56 a2.25,2.25 0 0 1 2.2,3.94 t-1.04,.61 -1.03,.62 a2.33,2.33 0 0 1 -2.26,-4.06 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7293.3193, 12810.263)" opacity="1"><g transform="scale(1)"><path d="M1.74,.02 t-.15,11.62 -.3,13.73 -.14,2.12 a1.77,1.77 0 0 1 -3.54,-.21 t.33,-13.65 .32,-13.65 a1.74,1.74 0 0 1 3.48,.04 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7288.4935, 12953.5007)" opacity="1"><g transform="scale(1)"><path d="M1.76,.03 t.33,8.18 .58,10.94 .25,2.76 a1.84,1.84 0 0 1 -3.66,.36 t-.55,-5.94 -.51,-11.15 .04,-5.21 a1.76,1.76 0 0 1 3.52,.06 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7289.3513, 13016.4893)" opacity="1"><g transform="scale(1)"><path d="M1.72,.36 t-1.68,10.04 -1.68,10.05 a1.8,1.8 0 0 1 -3.56,-.46 t.32,-2.56 1.74,-10.17 1.42,-7.62 a1.76,1.76 0 0 1 3.44,.72 Z" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7286.1608, 13073.103)" opacity="1"><g transform="scale(1)"><path d="M 0 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 7286.2411, 13104.9089)" opacity="1"><g transform="scale(1)"><path d="M 0 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-light-blue, #4ba1f1)"/></g></g><g transform="matrix(1, 0, 0, 1, 6565.992, 12434.9792)" opacity="1"><g transform="scale(1)"><path d="M-2,-.12 t-.73,-3.18 -.74,-3.19 a1.57,1.57 0 0 1 3.06,-.7 t.73,3.18 .74,3.19 a1.57,1.57 0 0 1 -3.06,.7 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6563.4989, 12421.4521)" opacity="1"><g transform="scale(1)"><path d="M-1.26,.92 t-.86,-1.17 -.85,-1.17 a1.57,1.57 0 0 1 2.53,-1.84 t.85,1.17 .85,1.17 a1.57,1.57 0 0 1 -2.52,1.84 Z" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6563.4989, 12421.4521)" opacity="1"><g transform="scale(1)"><path d="M 0 0 m -3.66, 0 a 3.66,3.66 0 1,1 7.32,0 a 3.66,3.66 0 1,1 -7.32,0" stroke-linecap="round" fill="var(--rvo-draw-red, #e03131)"/></g></g><g transform="matrix(1, 0, 0, 1, 6564.6653, 12426.9691)" opacity="1"><g transform="scale(1)"><path d="M-2.08,-.67 t-.57,-2.07 -1.11,-2.63 -.54,-.56 a1.81,1.81 0 0 1 1.51,-3.29 t1.52,1.69 2.12,3.77 .61,2.09 a1.84,1.84 0 0 1 -3.54,1 ZM-1.92,-6.79 t-.38,.78 -.45,6.07 1.77,17.05 3.71,20.53 2.11,14.73 -1.3,18.14 -1.95,24.49 .47,22.11 1.63,17.56 .94,17.81 1.12,20.42 1.33,21.61 .54,22.79 -.43,24.43 -.75,24.35 -1.7,27.78 -1.98,25.85 -.92,15.05 -.49,5.48 a1.97,1.97 0 0 1 -3.94,-.21 t.38,-16.35 2.13,-32.76 2,-24.86 1.24,-27.48 .66,-27.1 -.62,-16.69 -1.19,-19.12 -1.31,-23.1 -1.96,-27.75 -1.24,-27.5 1.34,-21.09 1.7,-14.84 .28,-11.62 -2.35,-14.36 -3.5,-20.74 -1.36,-16.4 .72,-5.55 .49,-1.07 a1.81,1.81 0 0 1 3.26,1.56 Z" stroke-linecap="round" fill="var(--rvo-draw-orange, #e16919)"/></g></g><g transform="matrix(1, 0, 0, 1, 6555.9578, 12414.9169)" opacity="1"><g transform="scale(1)"><path d="M1.47,.22 t2.96,6.33 2.96,6.33 a1.62,1.62 0 0 1 -2.96,1.31 t-2.87,-6.2 -2.87,-6.19 a1.6,1.6 0 0 1 2.78,-1.58 Z" stroke-linecap="round" fill="var(--rvo-draw-orange, #e16919)"/></g></g><g transform="matrix(1, 0, 0, 1, 6564.6653, 12434.0473)" opacity="1"><g transform="scale(1)"><path d="M1.75,.29 t1.78,6.04 3.74,10.64 4.35,8.61 3.91,8.25 9.02,17.72 10.79,20.31 8.32,15.32 7.7,13.34 10.26,15.73 16.86,29.11 15.29,29.03 12.25,17.68 16.84,21.45 13.11,18.43 9.6,20.34 10.16,23.87 10.9,22.41 18.46,30.93 14.59,23.68 13.19,29.08 13.61,31.25 11.29,27.89 13.88,31.71 10.63,20.38 6.17,11.46 6.72,11.45 6.7,11.19 13.2,21.02 16.42,27.4 10.23,18.76 8.6,16 7.47,13.43 8.25,11.97 6.02,9.11 3.97,14.02 3.73,14.22 6.87,13.38 7.33,12.16 1.35,1.37 a3.05,3.05 0 0 1 -3.91,4.68 t-2.44,-2.64 -8.33,-13.41 -6.85,-13.59 -3.67,-14.1 -3.61,-13.22 -5.69,-8.5 -8.34,-12.11 -7.69,-13.85 -8.56,-15.98 -10.11,-18.55 -16.33,-27.33 -13.23,-21.13 -6.68,-11.16 -6.82,-11.67 -6.21,-11.56 -10.64,-20.46 -15.02,-34.81 -11.15,-27.88 -12.41,-28.51 -12.96,-28.84 -12.76,-20.78 -12.43,-19.66 -8.3,-15.14 -8,-15.86 -10.53,-24.68 -9.8,-22.04 -13.01,-19.06 -17.4,-22.49 -13.59,-19.97 -15.53,-30.11 -15.25,-27.4 -10.03,-16.1 -8.41,-15.17 -8.05,-15.46 -9.79,-18.67 -8.17,-15.98 -3.81,-8.18 -4.33,-8.41 -4.43,-12.04 -2.33,-7.5 a1.57,1.57 0 0 1 3.04,-.82 ZM371.31,705.04 t-1.58,-1.54 -1.58,-1.53 a2.88,2.88 0 0 1 3.87,-4.29 t1.69,1.41 1.69,1.42 a3.05,3.05 0 0 1 -4.09,4.53 Z" stroke-linecap="round" fill="var(--rvo-draw-orange, #e16919)"/></g></g><g transform="matrix(1, 0, 0, 1, 6456.5782, 12380.3154)" opacity="1"><g transform="scale(1)"><path d="M2.62,-.07 t-2.43,11.32 -2.48,16.03 -.05,4.7 a1.78,1.78 0 0 1 -3.56,.1 t0,-5.02 2.49,-16.48 2.49,-11.45 a1.82,1.82 0 0 1 3.54,.8 Z" stroke-linecap="round" fill="var(--rvo-draw-orange, #e16919)"/></g></g><g transform="matrix(1, 0, 0, 1, 6493.4383, 12414.7626)" opacity="1"><g transform="scale(1)"><path d="M.74,1.4 t-1.6,1.74 -1.6,1.75 a1.72,1.72 0 0 1 -2.54,-2.31 t1.58,-1.76 1.58,-1.76 a1.74,1.74 0 0 1 2.58,2.34 Z" stroke-linecap="round" fill="var(--rvo-draw-orange, #e16919)"/></g></g><g transform="matrix(1, 0, 0, 1, 6521.8995, 12418.3357)" opacity="1"><g transform="scale(1)"><path d="M-1.22,-.77 t1.45,-2.99 1.58,-6.11 -1.13,-4.97 -3.08,-3.24 -3.57,-3.16 -2.73,-4.5 -1.13,-4.75 .71,-6.52 2.14,-6.36 3.37,-2.97 5,-1.19 6.53,.73 11.57,3.61 7.91,2.79 a2.09,2.09 0 0 1 -1.3,3.98 t-9.57,-3.07 -12.28,-3.54 -5.29,.52 -3.44,3.43 -1.23,5.21 .33,5.56 2.08,4.25 3.44,3.02 3.37,3.26 2.04,4.85 .18,5.5 -1.98,5.36 -1.45,3 a1.95,1.95 0 0 1 -3.52,-1.7 Z" stroke-linecap="round" fill="var(--rvo-draw-orange, #e16919)"/></g></g></svg></div>
+
+<p>Here the top layer area is half the bottom layer area. But because we pick layers with
+50/50 chance, we end up cramming the same amount of samples in the layer with half the
+area. (Doubling the density of samples in the top layer). This leads to an uneven
+distribution, breaking the pyramid shape.</p>
+<p>The probability of picking a layer should be proportional to its area. So either we
+change our probabilities, or the areas.</p>
+<p>Picking layers with equal probability is very nice and fast, so I'd say we try to make
+the layers equal area.</p>
+<p>The way I want to do this, is not by figuring out the equations for the areas of each
+layer, and solving for equality. I'd much rather use a numerical method.</p>
+<h2 id="bisection-method-to-find-the-area">Bisection method to find the area</h2>
+<p>It's quite easy to pick an estimate of an area, and find out whether it's too big or to
+small.</p>
+<p>So to find the right area, I want to start with an upper and lower bound. Then take the
+midpoint (average) and test whether it's too small or too big. This determines our new
+area bounds. And we repeat. This is called the bisection method.</p>
+<p>The only thing we need is an initial bound for the area. So we need a number that we
+know for sure is smaller than the actual area, and we need a number that we know for
+sure is larger.</p>
+<p>The lower bound is easy: zero. For the upper bound, I take the whole box we're sampling
+from (<code>X_LIM * Y_LIM</code>) and divide it by the number of layers. All the layers together
+can never be bigger than that box.</p>
+<p>So say we have a certain area we want to test. How do we check if the area is too large
+or too small?</p>
+<h2 id="inverse-of-the-probability-density-function">Inverse of the probability density function</h2>
+<p>The approach goes as follows. Our x_lim point determines the lower right corner of our
+first layer:</p>
+<p>Because the layer starts at x = 0, the width of the first layer is equal to x_lim.</p>
+<p>The area is known, because that's what we're testing. So it follows that the height of
+the layer is simply: height = area / width.</p>
+<p>That's the first layer done.</p>
+<p>What's the width of the second layer? We know at what value of y the base starts. The
+width is simply the width of the probability density at that y value.</p>
+<p>That's where we need the inverse of the probability density function. Normally you
+plug in an x and get out a y. Now we have a y, and we want to know which x goes with
+it.</p>
+<p>For our pyramid, y = 1 - x. The inverse happens to be the same: x = 1 - y.</p>
+<p>For the normal distribution it takes a bit more work. We start with y = e^(-x²/2). Take
+the natural log on both sides, multiply by -2, and take the square root. That gives us
+x = √(-2 ln y).</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">prob_dens</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">expf</span><span class="p">(</span><span class="mf">-0.5f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">prob_dens_inv</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">sqrtf</span><span class="p">(</span><span class="mf">-2.0f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">logf</span><span class="p">(</span><span class="n">y</span><span class="p">));</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Don't worry about the negative under the square root: ln y is negative for every y
+between 0 and 1, so it all works out.</p>
+<p>Now we know the width of the second layer. And since every layer has the same area, we
+also know its height. We keep doing this, layer after layer, until we have the full
+staircase.</p>
+<p>Then we look at where the top layer ends. If it ends above the top of the curve
+(y = 1), our area was too big. If it ends below, our area was too small. That's the test
+we need for the bisection method:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">#define X_LIM 8.0f</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="cp">#define Y_LIM 1.0f</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="cp">#define SEARCH_ROUNDS 32</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kt">float</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">LAYER_COUNT</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">X_LIM</span><span class="p">};</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="kt">float</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">LAYER_COUNT</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">0.0f</span><span class="p">};</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">calc_layers</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">area_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="n">area_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X_LIM</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Y_LIM</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">LAYER_COUNT</span><span class="p">;</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">SEARCH_ROUNDS</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">area_min</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">area_max</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">;</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="c1">// Figure out if our area is too big or too small</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">final_height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LAYER_COUNT</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">lay_width</span><span class="p">;</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">      </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lay_height</span><span class="p">;</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">      </span><span class="n">final_height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">];</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">final_height</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">Y_LIM</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="w">        </span><span class="k">break</span><span class="p">;</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prob_dens_inv</span><span class="p">(</span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]);</span>
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="w">      </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">X_LIM</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">X_LIM</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-6-30"><a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>
+</span><span id="__span-6-31"><a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="w">    </span><span class="c1">// Update the area bounds</span>
+</span><span id="__span-6-32"><a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">final_height</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">Y_LIM</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-33"><a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="w">      </span><span class="n">area_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area</span><span class="p">;</span>
+</span><span id="__span-6-34"><a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-35"><a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="w">      </span><span class="n">area_min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area</span><span class="p">;</span>
+</span><span id="__span-6-36"><a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-6-37"><a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-38"><a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a>
+</span><span id="__span-6-39"><a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a><span class="w">  </span><span class="c1">// Final pass with an area that&#39;s never too small</span>
+</span><span id="__span-6-40"><a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LAYER_COUNT</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-41"><a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area_max</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+</span><span id="__span-6-42"><a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lay_height</span><span class="p">;</span>
+</span><span id="__span-6-43"><a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a><span class="w">    </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">Y_LIM</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">Y_LIM</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+</span><span id="__span-6-44"><a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a>
+</span><span id="__span-6-45"><a id="__codelineno-6-45" name="__codelineno-6-45" href="#__codelineno-6-45"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prob_dens_inv</span><span class="p">(</span><span class="n">lay_ys</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]);</span>
+</span><span id="__span-6-46"><a id="__codelineno-6-46" name="__codelineno-6-46" href="#__codelineno-6-46"></a><span class="w">    </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">X_LIM</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">X_LIM</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-6-47"><a id="__codelineno-6-47" name="__codelineno-6-47" href="#__codelineno-6-47"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-6-48"><a id="__codelineno-6-48" name="__codelineno-6-48" href="#__codelineno-6-48"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>A few details I found out the hard way:</p>
+<p>The normal distribution never actually reaches zero, so we need a cutoff point:
+<code>X_LIM</code>. I clamp x so no layer can ever get wider than that. Without this clamp, the
+foundation of our ziggurat ends up in the wrong place, and the whole thing falls apart.</p>
+<p>After the search, I calculate the layers one final time using <code>area_max</code>. An area
+that's slightly too big only costs us a tiny bit of efficiency. An area that's slightly
+too small cuts off the top of the curve.</p>
+<p>And that's also why I clamp the final y to <code>Y_LIM</code>. Plugging a y above 1 into
+<code>prob_dens_inv()</code> gives you a NaN.</p>
+<h2 id="more-layers-more-efficient">More layers = more efficient</h2>
+<p>As you can imagine, adding more and more layers reduces the total area we're sampling
+from. Improving the ratio of accepted vs rejected samples.</p>
+<p>I like to pick layer count by powers of two, because then we can use random bits to
+pick the layer:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">#define LAYER_BITS 2</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="cp">#define LAYER_COUNT (1u &lt;&lt; LAYER_BITS)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lay_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_u</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">(</span><span class="mi">32</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">LAYER_BITS</span><span class="p">);</span>
+</span></code></pre></div>
+<p>This takes the top 2 bits of a random integer, giving us a layer index from 0 to 3. No
+modulo needed.</p>
+<h2 id="getting-the-most-out-of-a-32-bit-integer">Getting the most out of a 32 bit integer</h2>
+<p>We are currently calling a lot of RNG functions when creating our sample. We could be a
+bit more efficient with this by combining multiple things.</p>
+<p>When we call <code>rng_u()</code>, we get a random 32 bit integer, in other words: 32 random bits.
+We can use those bits for different things.</p>
+<p>We could use some bits for picking a random layer. We could use some bits for
+generating a random x float. And we can use one bit as the sign which makes our final
+sample flip with 50% chance.</p>
+<p>So with 8 layer bits, this is how I split up the 32 bits:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>| 23 bits: x float | 8 bits: layer | 1 bit: sign |
+</span></code></pre></div>
+<p>It's important to never use the same bits for two different things. Otherwise we can get
+some weird bias in the final samples.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">;</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">u</span><span class="p">;</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">}</span><span class="w"> </span><span class="n">Bits</span><span class="p">;</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="cp">#define RNG_ZIG_LAY_MASK ((1u &lt;&lt; RNG_ZIG_LAY_BITS) - 1)</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">roll</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_u</span><span class="p">();</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lay_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">roll</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">RNG_ZIG_LAY_MASK</span><span class="p">;</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="n">Bits</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="n">x</span><span class="p">.</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">roll</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0x1.0p-23f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">];</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="c1">// ...</span>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="n">x</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">roll</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">31</span><span class="p">;</span>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">f</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The highest 23 bits become a float between 0 and 1. We scale that by the width of the
+layer.</p>
+<p>For the sign, we shift the lowest bit all the way to the left. That's exactly where the
+sign bit of a float lives. So we can just OR it into the float bits directly, using the
+same union trick from the <a href="../../02/how-floats-work/">floats article</a>.</p>
+<h2 id="refactoring-into-the-rng-library">Refactoring into the RNG library</h2>
+<p>Now is a good time to move our experimental code into the RNG library.</p>
+<p>For speed, we want to inline the <code>rng_norm()</code> function. So I'll make it a
+<code>static inline</code> in the header. Just like we did with <code>rng_u()</code> and <code>rng_f()</code>.</p>
+<p>The coordinates of the tables will remain global variables. And I want to specify them
+in a separate .c file.</p>
+<p>So in the header, I only declare them as <code>extern</code>. This tells the compiler they exist,
+and the linker will find them later:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">#define RNG_ZIG_LAY_BITS 8</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[];</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[];</span>
+</span></code></pre></div>
+<p>This C file can then be automatically "generated" by another C file.</p>
+<h2 id="procedurally-generating-the-coordinate-tables">Procedurally generating the coordinate tables</h2>
+<p>Instead of calling the <code>calc_layers</code> function every time we want to generate gaussian
+numbers, I'd like to "pre generate" these layers.</p>
+<p>We could move the entire calc_layers logic into a separate .c file with a separate
+binary, and let that binary write another .c file.</p>
+<p>So <code>src/rng_zig_layers_gen.c</code> gets its own <code>main()</code>. It runs the same search as
+<code>calc_layers</code>, and prints the results to stdout as valid C:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// Write the layers to stdout</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;/* Procedurally generated by %s */</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">__FILE__</span><span class="p">);</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;const float lay_xs[] = {</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LAYER_COUNT</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%f,</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lay_xs_loc</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="p">}</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;};</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1">// ...and the same for lay_ys</span>
+</span></code></pre></div>
+<p>Then we can pipe the output straight into <code>src/rng/rng_zig_layers.c</code>.</p>
+<p>This way, we can run this, and generate our final .c file as part of the build process.
+We can configure this all in the Makefile.</p>
+<h2 id="hooking-it-up-to-the-makefile">Hooking it up to the Makefile</h2>
+<p>Because our entrypoint .c file is located in <code>src/</code>, the Makefile will automatically
+pick this up and make its binary a target.</p>
+<p>This target will depend on all the object files, including rng.o. Since rng.o also
+depends on the file that our rng_zig_layer_gen spits out, we have a circular dependency
+now.</p>
+<p>So to avoid this, we can create a dedicated rule for the generator binary:</p>
+<div class="language-Makefile highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nf">$(BIN)/rng_zig_layers_gen</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">SRC</span><span class="k">)</span>/<span class="n">rng_zig_layers_gen</span>.<span class="n">c</span> <span class="k">$(</span><span class="nv">SRC</span><span class="k">)</span>/<span class="n">rng</span>/<span class="n">rng</span>.<span class="n">h</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span>@mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>@D<span class="k">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</span></code></pre></div>
+<p>It only depends on its own .c file and the header. No library objects, so no circular
+dependency.</p>
+<p>We also have to add the generated .c file to our library sources. We can't rely on the
+wildcard for that, because the file might not exist yet when we run <code>make</code>. And we have
+to make a rule to tell make how to generate this .c file:</p>
+<div class="language-Makefile highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">GEN_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/rng/rng_zig_layers.c
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nv">LIB_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/*/*.c<span class="k">)</span><span class="w"> </span><span class="k">$(</span>GEN_SRCS<span class="k">)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nf">$(SRC)/rng/rng_zig_layers.c</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">BIN</span><span class="k">)</span>/<span class="n">rng_zig_layers_gen</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span>$&lt;<span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="nf">clean-gen</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span>@rm<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>GEN_SRCS<span class="k">)</span>
+</span></code></pre></div>
+<p>The <code>clean-gen</code> target is a bonus. It lets us get back to a clean tree with only the
+hand written sources.</p>
+<p>With all this in place. We can simply run <code>make</code> and everything will be taken care of:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="gp">$ </span>make<span class="w"> </span>clean-gen
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="gp">$ </span>make
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="go">cc -Wall -Wextra -O3 src/rng_zig_layers_gen.c -o bin/rng_zig_layers_gen</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="go">bin/rng_zig_layers_gen &gt; src/rng/rng_zig_layers.c</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="go">cc -Wall -Wextra -O3 src/benchmark.c -c -MMD -o obj/benchmark.o</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="go">cc -Wall -Wextra -O3 src/plt/plt.c -c -MMD -o obj/plt/plt.o</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="go">cc -Wall -Wextra -O3 src/rng/rng.c -c -MMD -o obj/rng/rng.o</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="go">cc -Wall -Wextra -O3 src/rng/rng_zig_layers.c -c -MMD -o obj/rng/rng_zig_layers.o</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="go">cc  obj/benchmark.o obj/plt/plt.o obj/rng/rng.o obj/rng/rng_zig_layers.o  -o bin/benchmark</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="go">cc -Wall -Wextra -O3 src/main.c -c -MMD -o obj/main.o</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="go">cc  obj/main.o obj/plt/plt.o obj/rng/rng.o obj/rng/rng_zig_layers.o  -o bin/main</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="go">...</span>
+</span></code></pre></div>
+<p>And because make knows the whole dependency chain, changing a setting in the generator
+(like <code>X_LIM</code>) recompiles the generator, regenerates the tables, recompiles the object
+file and relinks our binaries. All from a single <code>make</code>.</p>
+<h2 id="final-performance-tweaks">Final performance tweaks</h2>
+<p>Now, let's increase our total number of "layer bits" to 8, so we get 2^8 = 256 layers.
+This massively improves the efficiency, and we get ~3.5 nanoseconds per sample.</p>
+<p>But there is another massive efficiency gain we can get. In the majority of cases when
+picking an x sample, we don't even have to pick a y to check if it's below the curve.
+We can simply check the width of our next layer, and if we're below that number, we
+know for a fact that we are under the curve.</p>
+<p>So a random float sample + some math to check if we're below the probability
+distribution becomes a simple float comparison check:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="nf">rng_norm</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="n">Bits</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">roll</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rng_u</span><span class="p">();</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">lay_ix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">roll</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">RNG_ZIG_LAY_MASK</span><span class="p">;</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="n">x</span><span class="p">.</span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">roll</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">9</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0x1.0p-23f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">];</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">f</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[</span><span class="n">lay_ix</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">lay_ix</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">];</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">      </span><span class="kt">float</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[</span><span class="n">lay_ix</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rng_f</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lay_h</span><span class="p">;</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">prob_dens</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">f</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">        </span><span class="k">continue</span><span class="p">;</span><span class="w"> </span><span class="c1">// Reject</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">    </span><span class="n">x</span><span class="p">.</span><span class="n">u</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">roll</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">31</span><span class="p">;</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">f</span><span class="p">;</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Only when x lands in that small sliver to the right of the next layer, do we need a y
+sample and the <code>expf()</code> call.</p>
+<p>This final tweak gets us below 2 nanoseconds per sample!</p>
+<p>There are a few more tweaks we can do to just clean up our tables: We can do all
+calculations in double precision. And only at the very end, write everything out as
+floats.</p>
+<p>We can also increase accuracy by writing our floats in hex notation instead of regular
+decimal notation. This allows for specifying the float bits exactly as they are stored
+in memory:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;const float lay_xs[] = {</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">LAYER_COUNT</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%a,</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">lay_xs_loc</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">}</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">printf</span><span class="p">(</span><span class="s">&quot;};</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The <code>%a</code> format specifier prints a float in hexadecimal. And the cast to <code>float</code> is
+important. Without it, we'd be printing double precision values, which is just
+unnecessary data for our float arrays.</p>
+<p>The final layer coordinates will look like this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="cm">/* Procedurally generated by src/rng_zig_layers_gen.c */</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_xs</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="mf">0x1p+3</span><span class="p">,</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="mf">0x1.ec1894p+1</span><span class="p">,</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="mf">0x1.c5161cp+1</span><span class="p">,</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="mf">0x1.b0bbf2p+1</span><span class="p">,</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="mf">0x1.a29e1cp+1</span><span class="p">,</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="c1">// ...</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="p">};</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">lay_ys</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="mf">0x0p+0</span><span class="p">,</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="c1">// ...</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="mf">0x1.f4429cp-1</span><span class="p">,</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="mf">0x1p+0</span><span class="p">,</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="p">};</span>
+</span></code></pre></div>
+<hr />
+<p>And with that, we've finished our gaussian random number generator :)</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+  
+<aside class="rvo-subscribe">
+  <div class="rvo-subscribe__cta">
+    <h2 class="rvo-subscribe__title">Stay in the loop</h2>
+    <p class="rvo-subscribe__pitch">
+      Get new articles in your inbox. No spam, unsubscribe any time.
+    </p>
+  </div>
+  <form
+    class="rvo-subscribe__form"
+    action="https://app.kit.com/forms/9960727/subscriptions"
+    method="post"
+  >
+    <label class="rvo-subscribe__label" for="rvo-subscribe-email">
+      Email address
+    </label>
+    <input
+      class="rvo-subscribe__input"
+      id="rvo-subscribe-email"
+      type="email"
+      name="email_address"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
+    /><input type="hidden" name="fields[source]" value="https://vanderoost.com/articles/2026/10/19/ziggurat-method-for-gaussian-rng/" />
+    <button class="rvo-subscribe__button md-button md-button--primary" type="submit">
+      Subscribe
+    </button>
+  </form>
+  <p class="rvo-subscribe__status" aria-live="polite"></p>
+</aside>
+      
+    </article>
+  </div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../09/better-random-floats/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Generating random floats">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Generating random floats
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://blendergrid.com" target="_blank" rel="noopener" title="blendergrid.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm112 352h32c17.7 0 32 14.3 32 32v80h-96v-80c0-17.7 14.3-32 32-32M96 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16M96 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/vanderoost" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/@richardvdoost" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M549.7 124.1c-6.2-23.7-24.8-42.3-48.3-48.6C458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5c-23.5 6.3-42 24.9-48.3 48.6C15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8C117.3 448 288.1 448 288.1 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6V175.2l142.7 81.2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.indexes", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.sections", "navigation.top", "content.tooltips", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+      
+        <script src="../../../../../javascripts/subscribe.js"></script>
+      
+    
+  </body>
+</html>
