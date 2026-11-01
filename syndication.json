@@ -76,6 +76,17 @@
           "url": "https://dev.to/vanderoost/the-ziggurat-method-26jd"
         }
       }
+    },
+    "2026-10-30_c-matrix-library": {
+      "canonical_url": "https://vanderoost.com/articles/2026/10/30/c-matrix-library-from-scratch/",
+      "platforms": {
+        "devto": {
+          "id": "4958333",
+          "payload_hash": "1c02bbbbf0377f9eeb1cfeb4a4e6019a3f06481531971a14402497bf3e906ec6",
+          "synced_at": "2026-11-01T16:32:19Z",
+          "url": "https://dev.to/vanderoost/writing-a-c-matrix-library-1o64"
+        }
+      }
     }
   },
   "version": 1
