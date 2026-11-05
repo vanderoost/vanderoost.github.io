@@ -21,4 +21,4 @@ How bilitube handles data is described in its [privacy policy](privacy.md).
 
 bilitube is provided as is, without any warranty.
 
-Contact: richard@blendergrid.com
+Contact: richard@vanderoost.com

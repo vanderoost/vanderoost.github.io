@@ -52,4 +52,4 @@ deleting the local token file removes everything bilitube kept.
 
 ## Contact
 
-Questions about this policy: richard@blendergrid.com
+Questions about this policy: richard@vanderoost.com

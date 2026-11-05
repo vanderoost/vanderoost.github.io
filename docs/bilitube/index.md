@@ -17,4 +17,4 @@ not offered to anyone else.
 - [Privacy policy](privacy.md)
 - [Terms of use](terms.md)
 
-Contact: richard@blendergrid.com
+Contact: richard@vanderoost.com
