@@ -479,7 +479,20 @@ void print_float_bits(float f) {
 
 This prints out floats like this:
 
-![Terminal colors](terminal-colors.png)
+```console
+ 0.00000000 -> {yel}0{res}{grn}0000000 0{res}{cyn}0000000 00000000 00000000{res}
+-0.00000000 -> {yel}1{res}{grn}0000000 0{res}{cyn}0000000 00000000 00000000{res}
+ 1.00000000 -> {yel}0{res}{grn}0111111 1{res}{cyn}0000000 00000000 00000000{res}
+-1.00000000 -> {yel}1{res}{grn}0111111 1{res}{cyn}0000000 00000000 00000000{res}
+ 1.50000000 -> {yel}0{res}{grn}0111111 1{res}{cyn}1000000 00000000 00000000{res}
+-1.50000000 -> {yel}1{res}{grn}0111111 1{res}{cyn}1000000 00000000 00000000{res}
+ 2.00000000 -> {yel}0{res}{grn}1000000 0{res}{cyn}0000000 00000000 00000000{res}
+-2.00000000 -> {yel}1{res}{grn}1000000 0{res}{cyn}0000000 00000000 00000000{res}
+
+ 1.00000000 -> {yel}0{res}{grn}0111111 1{res}{cyn}0000000 00000000 00000000{res}
+ 1.99999988 -> {yel}0{res}{grn}0111111 1{res}{cyn}1111111 11111111 11111111{res}
+ 2.00000000 -> {yel}0{res}{grn}1000000 0{res}{cyn}0000000 00000000 00000000{res}
+```
 
 Yellow is the sign bit, the exponent bits are green, and the mantissa is blue.
 
@@ -517,7 +530,7 @@ print_float_bits(bits.f);
 ```
 
 ```console
- 0.00000000 -> 00000000 00000000 00000000 00000000
+ 0.00000000 -> {yel}0{res}{grn}0000000 0{res}{cyn}0000000 00000000 00000000{res}
 ```
 
 If we set all bits to 0, we get a float of 0.0. We already knew this.
@@ -530,7 +543,7 @@ print_float_bits(bits.f);
 ```
 
 ```console
-nan -> 11111111 11111111 11111111 11111111
+nan -> {yel}1{res}{grn}1111111 1{res}{cyn}1111111 11111111 11111111{res}
 ```
 
 We get `nan`! (On Linux you might see `-nan`, because the sign bit is set.)
@@ -543,7 +556,7 @@ print_float_bits(bits.f);
 ```
 
 ```console
- inf -> 01111111 10000000 00000000 00000000
+ inf -> {yel}0{res}{grn}1111111 1{res}{cyn}0000000 00000000 00000000{res}
 ```
 
 We get `inf`!
@@ -556,7 +569,7 @@ print_float_bits(bits.f);
 ```
 
 ```console
--inf -> 11111111 10000000 00000000 00000000
+-inf -> {yel}1{res}{grn}1111111 1{res}{cyn}0000000 00000000 00000000{res}
 ```
 
 Yes, we can :) So as you can see, all those strange flavors of numbers like `nan` and

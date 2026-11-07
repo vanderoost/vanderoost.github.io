@@ -293,12 +293,17 @@ def load(source: Path, config: dict) -> Post:
 def discover(root: Path, *, include_drafts: bool = False) -> list[Post]:
     """Every publishable post, oldest first."""
     config = site_config(root)
-    posts = [
-        load(source, config)
-        for source in sorted((root / "docs" / POSTS_DIR).glob("*/index.md"))
-    ]
+    sources = sorted((root / "docs" / POSTS_DIR).glob("*/index.md"))
     if not include_drafts:
-        posts = [post for post in posts if not post.draft]
+        # Decided from the frontmatter alone, before load() validates the rest:
+        # a draft is allowed to be unfinished (no title yet), and should not
+        # stop every other post from syndicating.
+        sources = [
+            source
+            for source in sources
+            if not is_draft(split_frontmatter(source.read_text(encoding="utf-8"))[0])
+        ]
+    posts = [load(source, config) for source in sources]
     return sorted(posts, key=lambda post: post.created)
 
 

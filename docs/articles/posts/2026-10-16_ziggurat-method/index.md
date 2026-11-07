@@ -44,7 +44,21 @@ outliers 2 and 12 have a probability of 1/36.
 The probability distribution of two dice looks pyramid shaped. If you sum two random
 floats between 0-1, you'll get a similar distribution:
 
-![Histogram of the sum of two random floats](histogram-sum-two-random-floats.png)
+```console { .rvo-plot }
+$ bin/main
+                                 ▂▅█▇▄▂                                 
+                              ▁▆████████▄▂                              
+                           ▃▄█████████████▇▅▂                           
+                        ▂▄▇██████████████████▇▄▂                        
+                     ▁▅▇█████████████████████████▅▂                     
+                  ▁▄▇██████████████████████████████▇▅▂                  
+               ▂▄▇████████████████████████████████████▇▄▁               
+            ▂▄▆██████████████████████████████████████████▇▅▂            
+         ▁▄▇████████████████████████████████████████████████▇▄▁         
+      ▁▄▆██████████████████████████████████████████████████████▆▄▁      
+   ▁▄▆████████████████████████████████████████████████████████████▆▄▁   
+▁▄▆██████████████████████████████████████████████████████████████████▆▄▁
+```
 
 But as the sample size increases, the distribution starts to approach a bell curve.
 This is the idea of **the central limit theorem**.
@@ -66,7 +80,21 @@ static inline float rng_norm(void) {
 ...you end up with a standard deviation of 1. And the histogram looks a lot like the
 classic bell curve:
 
-![Histogram of the sum of twelve random floats](histogram-sum-12-random-floats.png)
+```console { .rvo-plot }
+$ bin/main
+                                 ▂▄▇▇█▅▂                                
+                                ▅███████▆                               
+                              ▁▇██████████▂                             
+                             ▂█████████████▄                            
+                            ▃███████████████▄                           
+                           ▃█████████████████▆                          
+                          ▅███████████████████▆                         
+                         ▆██████████████████████▂                       
+                       ▂█████████████████████████▄                      
+                     ▁▅███████████████████████████▇▂                    
+                   ▂▅███████████████████████████████▆▃                  
+            ▁▁▂▃▄▅▇████████████████████████████████████▆▄▃▂▁▁           
+```
 
 The more random numbers you sample, the closer you get to a true normal distribution.
 So 12 is not giving us a "true" normal distribution. Even though the mean is 0.0 and
@@ -274,7 +302,21 @@ float rng_norm_new(void) {
 
 Let's look at the histogram after picking 10 million of these samples:
 
-![Ziggurat method with different layer areas](histogram-wrong-ziggurat-method.png)
+```console { .rvo-plot }
+$ bin/main
+█▆▄▂                                                                    
+█████▆▅▃▁                                                               
+█████████▇▅▄▂                                                           
+██████████████▆▅▃▁                                                      
+██████████████████▇▆▄▂                                                  
+███████████████████████▆▄▃▁                                             
+███████████████████████████▇▅▄▂                                         
+████████████████████████████████▆▄▃▁                                    
+████████████████████████████████████▇▇▆▅▄▃▂▁                            
+█████████████████████████████████████████████▇▆▆▅▄▃▂▁                   
+██████████████████████████████████████████████████████▇▆▅▅▄▃▂▁          
+███████████████████████████████████████████████████████████████▇▆▅▄▄▃▂▁ 
+```
 
 Something seems off..
 

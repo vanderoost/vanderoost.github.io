@@ -44,6 +44,10 @@ FENCE_OPEN = re.compile(
 )
 FENCE_TITLE = re.compile(r'\btitle="(?P<title>[^"]*)"')
 
+# hooks/console_colors.py's {grn}...{res} marks inside ```console blocks. The
+# platforms have no way to color code, so the marks go and the text stays.
+CONSOLE_MARK = re.compile(r"\{(?:red|grn|yel|blu|mag|cyn|res)\}")
+
 # Material's content tabs. "===+" only means the tab opens selected.
 TAB = re.compile(r'^(?P<marker>===\+?)[ \t]+"(?P<label>[^"]*)"[ \t]*$')
 
@@ -117,6 +121,9 @@ class Dialect:
     name: str
     youtube: Callable[[str, str], str]
     mermaid: bool = True
+    # How a $$ display-math block is spelled, given its LaTeX on one line.
+    # None leaves $$ as written, for a platform (or preview) that reads it.
+    math: Callable[[str], str] | None = None
 
 
 def _linked_thumbnail(video_id: str, caption: str) -> str:
@@ -333,14 +340,17 @@ def _fences(text: str, dialect: Dialect, where: str) -> str:
 
     Neither platform understands title= or linenums=, and both mis-lex the
     fence rather than ignoring the extras. The filename is real information,
-    so it survives as a bold line above the block.
+    so it survives as a bold line above the block. Console blocks also lose
+    their color marks.
     """
-    out, fence = [], None
+    out, fence, console = [], None, False
     for line in text.split("\n"):
         opening = FENCE.match(line)
         if fence is not None:
             if opening and opening.group("fence") >= fence:
                 fence = None
+            elif console:
+                line = CONSOLE_MARK.sub("", line)
             out.append(line)
             continue
         if not opening:
@@ -349,12 +359,13 @@ def _fences(text: str, dialect: Dialect, where: str) -> str:
 
         match = FENCE_OPEN.match(line)
         if not match:
-            fence = opening.group("fence")
+            fence, console = opening.group("fence"), False
             out.append(line)
             continue
 
         fence = match.group("fence")
         lang = match.group("lang") or ""
+        console = lang == "console"
         if lang == "mermaid" and not dialect.mermaid:
             lang = ""
         title = FENCE_TITLE.search(match.group("attrs") or "")
@@ -512,6 +523,45 @@ def _index(posts: list[Post]) -> dict[str, Post]:
     return index
 
 
+def _math(text: str, dialect: Dialect, where: str) -> str:
+    """Rewrite $$ display-math blocks for platforms with their own syntax.
+
+    The site renders $$ with arithmatex and KaTeX. A platform that does not
+    read $$ would show the raw LaTeX, so a dialect with a math spelling gets
+    every block in that spelling, on one line (whitespace in LaTeX is
+    insignificant, and unwrap() would join the lines anyway).
+    """
+    if dialect.math is None:
+        return text
+
+    out: list[str] = []
+    block: list[str] | None = None
+    for line, in_code in scan(text):
+        stripped = line.strip()
+        if in_code:
+            out.append(line)
+        elif block is not None:
+            if stripped == "$$":
+                out.append(dialect.math(" ".join(part for part in block if part)))
+                block = None
+            else:
+                block.append(stripped)
+        elif stripped == "$$":
+            block = []
+        elif stripped.startswith("$$") and stripped.endswith("$$") and len(stripped) > 4:
+            out.append(dialect.math(stripped[2:-2].strip()))
+        elif "$$" in stripped:
+            raise TransformError(
+                f"{where}: $$ math must open and close on lines of their own, "
+                f"or both on one line: {stripped[:70]}"
+            )
+        else:
+            out.append(line)
+    if block is not None:
+        raise TransformError(f"{where}: a $$ math block is never closed")
+    return "\n".join(out)
+
+
 def to_portable(
     post: Post,
     posts: list[Post],
@@ -536,6 +586,7 @@ def to_portable(
 
     body = _blocks(body, where)
     body = _fences(body, dialect, where)
+    body = _math(body, dialect, where)
 
     def inline(part: str) -> str:
         part = IMAGE.sub(lambda m: _image(m, post, dialect), part)

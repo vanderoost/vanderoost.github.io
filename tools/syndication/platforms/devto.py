@@ -10,7 +10,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Mapping
 
-from ..portable import Dialect
+from ..portable import Dialect, TransformError
 from .base import Article, MissingCredentials, Remote, request, slugify_tag
 
 log = logging.getLogger("syndication.devto")
@@ -20,6 +20,16 @@ API = "https://dev.to/api"
 # dev.to allows four tags, and they have to be plain alphanumerics.
 MAX_TAGS = 4
 
+
+def _katex(tex: str) -> str:
+    """Forem's math is a Liquid block tag; it does not read $$."""
+    # The body goes through Liquid, so {{ or {% inside the LaTeX would be
+    # read as template syntax rather than reaching KaTeX.
+    if "{{" in tex or "{%" in tex:
+        raise TransformError(f"LaTeX contains Liquid syntax ({{{{ or {{%): {tex[:70]}")
+    return "{% katex %}" + tex + "{% endkatex %}"
+
+
 # Forem renders body_markdown through Liquid, so this is a real embed rather
 # than a literal. lint.py lets a {% through only for the platform that asked.
 DIALECT = Dialect(
@@ -27,6 +37,7 @@ DIALECT = Dialect(
     youtube=lambda video_id, caption: "{% embed https://youtu.be/" + video_id + " %}",
     # Forem has no Mermaid renderer, so the fence degrades to a code block.
     mermaid=False,
+    math=_katex,
 )
 
 

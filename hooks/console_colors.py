@@ -35,8 +35,9 @@ COLORS = {
 
 # The highlighted HTML of one console block. Pygments has HTML-escaped the
 # text by now, so a literal < in the block is &lt; and any < here is a tag.
+# Extra classes from ```console { .rvo-plot } land in the same attribute.
 BLOCK = re.compile(
-    r'(<div class="language-console highlight">)(.*?)(</div>)', re.DOTALL
+    r'(<div class="language-console\b[^"]*">)(.*?)(</div>)', re.DOTALL
 )
 
 MARK = re.compile(r"\{(?P<color>" + "|".join(COLORS) + r")\}(?P<text>.*?)\{res\}")
@@ -44,6 +45,16 @@ MARK = re.compile(r"\{(?P<color>" + "|".join(COLORS) + r")\}(?P<text>.*?)\{res\}
 # A color mark left over after substitution: unclosed, or spanning lines.
 # Limited to the known names so output like {foo} in a block is left alone.
 LEFTOVER = re.compile(r"\{(?:" + "|".join(COLORS) + r"|res)\}")
+
+# Pygments' console lexer reads any line starting with # as a root prompt, so
+# output drawn with # characters (a histogram) comes out as prompt + comment
+# tokens in two colors. Articles here never show a root prompt, so those lines
+# are re-tagged as plain output. One line, as rendered with line_spans:
+LINE = re.compile(
+    r'(?P<start><span id="__span-[^"]*"><a [^>]*></a>)'
+    r'(?P<content><span class="gp">\s*#[^\n]*)(?P<end>\n</span>)'
+)
+TAG = re.compile(r"<[^>]+>")
 
 
 def _color(match: re.Match, page_file: str) -> str:
@@ -60,8 +71,14 @@ def _color(match: re.Match, page_file: str) -> str:
     return f'<span class="rvo-ansi-{COLORS[match.group("color")]}">{text}</span>'
 
 
+def _output_line(match: re.Match) -> str:
+    text = TAG.sub("", match.group("content"))
+    return f'{match.group("start")}<span class="go">{text}</span>{match.group("end")}'
+
+
 def _block(match: re.Match, page_file: str) -> str:
-    body = MARK.sub(lambda m: _color(m, page_file), match.group(2))
+    body = LINE.sub(_output_line, match.group(2))
+    body = MARK.sub(lambda m: _color(m, page_file), body)
     if leftover := LEFTOVER.search(body):
         raise PluginError(
             f"{page_file}: unmatched console color mark {leftover.group(0)!r}. "

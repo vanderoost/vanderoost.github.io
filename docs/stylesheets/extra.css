@@ -152,6 +152,17 @@ body {
 .md-typeset pre {
   line-height: var(--rvo-code-line-height);
 }
+/* Terminal plots drawn with block characters (▁ to █), from ```console
+   { .rvo-plot }. At the normal line height the rows have gaps between them. */
+.md-typeset .rvo-plot pre {
+  line-height: 1;
+}
+/* Neighbouring blocks leave a hairline seam where the glyph is a fraction of
+   a pixel narrower than its cell. A thin stroke closes it. Output rows only,
+   so the command line above the plot is not bolded. */
+.md-typeset .rvo-plot .go {
+  -webkit-text-stroke: 0.6px currentColor;
+}
 .md-typeset pre > code,
 .md-typeset .highlighttable .linenos,
 .md-typeset .highlight span.filename {
