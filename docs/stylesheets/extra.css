@@ -410,3 +410,28 @@ footer.md-footer {
   height: auto;
   display: block;
 }
+
+/* Terminal colors in console blocks, from hooks/console_colors.py.
+   Tokyonight Day / Night, matching the code highlighting above. */
+[data-md-color-scheme="default"] {
+  --rvo-ansi-red:     #f52a65;
+  --rvo-ansi-green:   #587539;
+  --rvo-ansi-yellow:  #8c6c3e;
+  --rvo-ansi-blue:    #2e7de9;
+  --rvo-ansi-magenta: #9854f1;
+  --rvo-ansi-cyan:    #007197;
+}
+[data-md-color-scheme="slate"] {
+  --rvo-ansi-red:     #f7768e;
+  --rvo-ansi-green:   #9ece6a;
+  --rvo-ansi-yellow:  #e0af68;
+  --rvo-ansi-blue:    #7aa2f7;
+  --rvo-ansi-magenta: #bb9af7;
+  --rvo-ansi-cyan:    #7dcfff;
+}
+.md-typeset .rvo-ansi-red     { color: var(--rvo-ansi-red); }
+.md-typeset .rvo-ansi-green   { color: var(--rvo-ansi-green); }
+.md-typeset .rvo-ansi-yellow  { color: var(--rvo-ansi-yellow); }
+.md-typeset .rvo-ansi-blue    { color: var(--rvo-ansi-blue); }
+.md-typeset .rvo-ansi-magenta { color: var(--rvo-ansi-magenta); }
+.md-typeset .rvo-ansi-cyan    { color: var(--rvo-ansi-cyan); }

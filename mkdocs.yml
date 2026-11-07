@@ -88,6 +88,7 @@ extra_css:
   - stylesheets/extra.css
   - stylesheets/hero.css
   - stylesheets/subscribe.css
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css
 # Drawings are inlined into the page by hooks/drawings.py, so the SVG files
 # themselves are never fetched by a browser. Shipping them anyway duplicated
 # every drawing into the gh-pages branch — around 12 MB per 250 drawings. Only
@@ -108,6 +109,7 @@ hooks:
   - hooks/youtube.py
   - hooks/drawings.py
   - hooks/external_links.py
+  - hooks/console_colors.py
 
 plugins:
   - social:
@@ -167,10 +169,15 @@ markdown_extensions:
           - overrides/.icons
   - def_list
   - pymdownx.keys
+  - pymdownx.arithmatex:
+      generic: true
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js
   - javascripts/subscribe.js
+  - javascripts/katex.js
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js
 
 copyright: |
   &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
