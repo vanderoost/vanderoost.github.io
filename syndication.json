@@ -16,8 +16,8 @@
       "platforms": {
         "devto": {
           "id": "4699963",
-          "payload_hash": "ed2248df1db2d68bc6e41231400e397acc644e21e54c53852cb5fec7caaee102",
-          "synced_at": "2026-09-21T09:39:48Z",
+          "payload_hash": "c155b513ff6014976c4667ab3ff9d6a154d68bd303de5548e56582949fc55a71",
+          "synced_at": "2026-11-07T22:17:16Z",
           "url": "https://dev.to/vanderoost/plotting-histograms-in-the-terminal-4hkg"
         }
       }
@@ -38,8 +38,8 @@
       "platforms": {
         "devto": {
           "id": "4742516",
-          "payload_hash": "0b6686a2a66529aeb2756a156491f40ce634a588288686b51503eecd137c9993",
-          "synced_at": "2026-09-27T15:37:42Z",
+          "payload_hash": "6d0625aeb5fcab8de8993eaa9ec7da9594b81ce5315ea292d0f42fde8324be28",
+          "synced_at": "2026-11-07T22:17:17Z",
           "url": "https://dev.to/vanderoost/stop-using-rand-166a"
         }
       }
@@ -49,8 +49,8 @@
       "platforms": {
         "devto": {
           "id": "4787257",
-          "payload_hash": "f890442fef81053d32ef07bac2b90017ea47d28fa29b5230cf43c22c235d27fe",
-          "synced_at": "2026-10-08T13:00:45Z",
+          "payload_hash": "c07bae14bb8ebe8021ab76849078e564b81bcb36f82eecdeebc88308fa914f97",
+          "synced_at": "2026-11-07T22:17:19Z",
           "url": "https://dev.to/vanderoost/how-floats-work-2853"
         }
       }
@@ -71,8 +71,8 @@
       "platforms": {
         "devto": {
           "id": "4878342",
-          "payload_hash": "54f22543a150369e6cbd7b829b9a1aa8c34343246e4fd3f2b2d950394b6234a4",
-          "synced_at": "2026-10-23T16:57:33Z",
+          "payload_hash": "1cc2455f34a53b805f754c5d6b1106b32126290c1e0be6ee80f62dad07e4ff47",
+          "synced_at": "2026-11-07T22:17:20Z",
           "url": "https://dev.to/vanderoost/the-ziggurat-method-26jd"
         }
       }
@@ -82,9 +82,20 @@
       "platforms": {
         "devto": {
           "id": "4958333",
-          "payload_hash": "1c02bbbbf0377f9eeb1cfeb4a4e6019a3f06481531971a14402497bf3e906ec6",
-          "synced_at": "2026-11-01T16:32:19Z",
+          "payload_hash": "bdeb9454488f072bf38e179ee269ea4fadabcc1386324245ae5913c16bc4be99",
+          "synced_at": "2026-11-07T22:17:22Z",
           "url": "https://dev.to/vanderoost/writing-a-c-matrix-library-1o64"
+        }
+      }
+    },
+    "2026-11-06_c-unit-testing": {
+      "canonical_url": "https://vanderoost.com/articles/2026/11/06/c-unit-testing-without-a-framework/",
+      "platforms": {
+        "devto": {
+          "id": "4995890",
+          "payload_hash": "1e4c8a74f2a40c4c5086a99b73885f53cbdac8e65e310e5ce346ca0924c3e5f1",
+          "synced_at": "2026-11-07T22:17:25Z",
+          "url": "https://dev.to/vanderoost/writing-c-unit-tests-without-a-framework-277b"
         }
       }
     }
