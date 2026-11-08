@@ -82,8 +82,8 @@
       "platforms": {
         "devto": {
           "id": "4958333",
-          "payload_hash": "bdeb9454488f072bf38e179ee269ea4fadabcc1386324245ae5913c16bc4be99",
-          "synced_at": "2026-11-07T22:17:22Z",
+          "payload_hash": "6601724e8e9aff933c3d1ead174ce3460e7069c793590b958f27eecaac56962b",
+          "synced_at": "2026-11-08T12:59:16Z",
           "url": "https://dev.to/vanderoost/writing-a-c-matrix-library-1o64"
         }
       }
@@ -93,8 +93,8 @@
       "platforms": {
         "devto": {
           "id": "4995890",
-          "payload_hash": "1e4c8a74f2a40c4c5086a99b73885f53cbdac8e65e310e5ce346ca0924c3e5f1",
-          "synced_at": "2026-11-07T22:17:25Z",
+          "payload_hash": "0955099a1184bc3bfd8c99293499fdc74fc287dab8ef4497034e45ab415c43ab",
+          "synced_at": "2026-11-08T12:59:18Z",
           "url": "https://dev.to/vanderoost/writing-c-unit-tests-without-a-framework-277b"
         }
       }
