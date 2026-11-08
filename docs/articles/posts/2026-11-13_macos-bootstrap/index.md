@@ -6,6 +6,7 @@ description: Setting up a brand new Mac from scratch with a single bash one-line
 slug: automated-macos-setup-bash-script
 categories:
   - Automation
+  - Tutorials
 tags:
   - macOS
   - Bash
@@ -23,54 +24,54 @@ In this article we're automating the entire setup of macOS with a bash bootstrap
 <!-- more -->
 
 I'm not a big fan of upgrading my macOS the moment a new version drops. It feels like a
-one-way door, and if something breaks it's kind of a pain in the neck. I rather have an
-old stable setup and wait for everything to become stable before upgrading.
+one-way door, and if something breaks it's kind of a pain in the neck. I'd rather keep
+an old, stable setup and wait for the teething problems to be ironed out.
 
-So up until last week I've been rollong a 3 year old macOS 14 (Sonoma). But at last,
-apps started complaining that my macOS was too old for the next update etc. So I figured
+So up until last week I had been rolling a 3-year-old macOS 14 (Sonoma). But at last,
+apps started complaining that my macOS was too old for the next update. So I figured
 this is the moment I have to finally get with the times.
 
 The most recent macOS as of writing this is macOS 27 (Golden Gate). That means I'm
 skipping two versions: macOS 15 (Sequoia) and 26 (Tahoe).
 
 With such a big leap, I thought it would be good to start fresh. So besides upgrading, I
-also did a factory reset to set it up like fresh out the Apple store.
+also did a factory reset to set it up like it came straight out of the Apple Store.
 
 To streamline this process, I've been using a bootstrap script that attempts to automate
-as much as possible of my Mac setup process.
- 
+as much as possible.
 
 The script starts with a bash one-liner from my
-[bootstrap repo](https://github.com/vanderoost/bootstrap) on GitHub. It:
+[bootstrap repo](https://github.com/vanderoost/bootstrap). It:
 
 *   Installs all my command line tools and apps with Homebrew
 *   Creates an SSH key and connects it to GitHub
 *   Sets all my macOS preferences, down to the apps in my Dock
 *   Links my dotfiles, so Ghostty, Neovim and tmux look and behave like I'm used to
 
-It doesn't only save me time. It also makes every Mac I set up exactly the same.
+It doesn't only save me time. It also makes every Mac I set up exactly the same, which
+is nice.
 
 There are a few moments during the bootstrap script run where I have to step in:
 clicking "Allow" on some permission popups, or logging in to something like Dropbox. But
 for most of the run I can just go make a coffee.
 
-In this article I'll walk through the script while it runs on a fresh Mac.
+Let's walk through the script and see what happens when you run it on a fresh Mac.
 
 ## The one-liner
 
-After the factory reset, you do the usual first-run setup. Create an account, and you
-land on a brand new desktop with all the default settings.
+After the factory reset, you do the usual stuff: Create an account, setup the
+fingerprints etc. Then you land on a brand new desktop with all the default settings.
 
-The script lives on GitHub, but this Mac has nothing on it. No git repos, no SSH keys,
-no Homebrew. So the one-liner has to work with whatever a fresh macOS comes with out of
-the box: bash and curl
+Now the bash one-liner: The script lives on GitHub, but this Mac has nothing on it. No
+git repos, no SSH keys, no Homebrew. So the one-liner has to work with whatever a fresh
+macOS comes with out of the box: `bash` and `curl`:
 
 ```console
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/vanderoost/bootstrap/main/install.sh)"
 ```
 
-`curl` downloads `install.sh`, and `bash -c` runs it. That's it. The same trick Homebrew
-uses for its own installer.
+`curl` downloads `install.sh`, and `bash -c` runs it. That's it. The Homebrew installer
+for example does the same trick.
 
 Only that one file is downloaded at this point. Later on, the script pulls in all files
 of the bootstrap repo.
@@ -81,7 +82,7 @@ The first thing it does is ask for a hostname, with the current one as the defau
 ==> STARTING MAC BOOTSTRAP SCRIPT
 This script will set up command line tools, ssh, git, install all Homebrew
 packages from the Brewfile, set up the Mac preferences and App preferences.
-Enter this Mac's hostname [Richard's MacBook Pro]: mb-pro
+Enter this Mac's hostname [Richard’s MacBook Pro]: mb-pro
 Your password is required for some admin work
 Password:
 ```
@@ -90,13 +91,13 @@ And then it asks for my password. That should be the last time.
 
 ## Asking for the password only once
 
-A lot of steps need `sudo`. (installing updates, setting the hostname, and Homebrew asks
-for your password all the time when it installs apps). This can get quite annoying, so I
+A lot of steps need `sudo`: installing updates, setting the hostname, and Homebrew asks
+for your password all the time when it installs apps. This can get quite annoying, so I
 wanted the script to ask for my password once, at the start, and then never bother me
 again.
 
-`sudo -v` refreshes your sudo timestamp, but that expires after a few minutes. And a
-bunch of installers ignore it. The only robust way I found was using a sudoers file.
+`sudo -v` refreshes your sudo timestamp, but that expires after a few minutes. And some
+installers reset it. The only robust way I found was using a **sudoers file**.
 
 Files in `/etc/sudoers.d` get read by `sudo` as extra rules. So the script writes a
 temporary one that says "this user doesn't need a password":
@@ -123,16 +124,16 @@ install_passwordless_sudo() {
 I named it `bootstrap-nopasswd`, so if you ever find it lying around, you know where it
 came from.
 
-The file is written to a temp file first, and checked with `visudo -c` before it's
+The rule is written to a temp file first, and checked with `visudo -c` before it's
 installed. A broken sudoers file can lock you out of `sudo` entirely, so we'll proceed
-with caution here. 
+with caution here!
 
-Of course, "never ask for a password" is not a rule you want to keep around. So it has to
-be removed when the script is done, or exits for whatever reason.
+Of course, the YOLO approach of "never ask for a password" is not a rule you want to
+keep. So it has to be removed when the script is done (or exits for any reason).
 
-That's what `trap` is for:
+That's what `trap` is doing here:
 
-```bash
+```bash hl_lines="11-12"
 release_privileges() {
     if [ -n "$SUDOERS_INSTALLED" ]; then
         SUDOERS_INSTALLED=""
@@ -152,7 +153,8 @@ reason. The second trap turns Ctrl+C (`INT`) into a normal `exit`, so the `EXIT`
 fires there too.
 
 Right after installing the rule, the script checks that it actually works. `sudo -k`
-throws away the cached password, and `sudo -n` runs without prompting:
+throws away the cached password, and `sudo -n` never prompts. It fails if a password
+would be needed:
 
 ```bash
 sudo -k
@@ -166,6 +168,25 @@ fi
 
 If `sudo -n true` fails, the rule isn't being picked up, and we fall back to the regular
 password prompts.
+
+As a backup, a small loop runs in the background and refreshes the sudo timestamp every
+30 seconds, for as long as the script is running:
+
+```bash
+(
+    trap - EXIT INT TERM
+    set +e
+    while kill -0 "$$" 2> /dev/null; do
+        sudo -n -v 2> /dev/null
+        sleep 30
+    done
+) &
+SUDO_KEEPALIVE_PID=$!
+```
+
+`kill -0` doesn't actually kill anything. It only checks if the process still exists. So
+once the script exits, the loop stops by itself. That's the `SUDO_KEEPALIVE_PID` the
+cleanup function kills, just in case.
 
 ## Staying awake
 
@@ -194,11 +215,11 @@ done. If it isn't, do it. If it is, say "All good" and move on:
 ```bash
 green_echo "CHECK HOMEBREW STATUS"
 if [ ! -x /opt/homebrew/bin/brew ]; then
-	echo "Installing Homebrew..."
-	NONINTERACTIVE=1 /bin/bash -c \
+    echo "Installing Homebrew..."
+    NONINTERACTIVE=1 /bin/bash -c \
         "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
-	echo "All good"
+    echo "All good"
 fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
@@ -230,12 +251,14 @@ the key is just an `ssh-keygen` one-liner:
 ssh-keygen -t ed25519 -f "$SSH_KEY_FILE" -q -N "" -C "$USER@$HOSTNAME"
 ```
 
+`-N ""` skips the passphrase, so the script doesn't have to stop and ask for one.
+
 The next step is usually opening `~/.ssh/id_ed25519.pub`, copying it, going to GitHub
 settings and pasting it in there.
 
-The best way I found automating this is using the [GitHub CLI](https://cli.github.com/)
-which can upload keys for us. But it has to be logged in first, and that's one of the few
-manual steps:
+The best way I found to automate this is the [GitHub CLI](https://cli.github.com/),
+which can upload keys for us. But it has to be logged in first, and that's one of the
+few manual steps:
 
 ```bash
 gh auth login --hostname github.com --git-protocol ssh --web \
@@ -247,7 +270,7 @@ You log in, paste the code, click "Authorize", and the script moves on.
 
 The `--scopes` are `admin:public_key` and `admin:ssh_signing_key`. Those are the
 permissions `gh` needs to manage SSH keys. By asking for them at login, a fresh Mac only
-needs one round trip through the browser.
+needs one login to add the keys.
 
 Then we upload the public key, twice:
 
@@ -256,19 +279,33 @@ add_github_key authentication
 add_github_key signing
 ```
 
-Once to authenticate (for `git clone` and `git push`), and once as a signing key, so my
-commits show up as "Verified" on GitHub. The key title is the hostname I picked at the
-start, so on GitHub I can see which key belongs to which machine.
+Once to authenticate (for `git clone` and `git push`), and once as a signing key. The
+key title is the hostname I picked at the start, so on GitHub I can see which key
+belongs to which Mac.
 
-Being able to add SSH keys to my account is a big privilege. I don't need my everyday
-`gh` token to have this kind of access. So once the keys are uploaded, the script hands
-those scopes back:
+For the signing key to be useful, git has to actually sign with it. So the script also
+configures that:
+
+```bash
+git config --global gpg.format ssh
+git config --global user.signingkey "$SSH_KEY_FILE.pub"
+git config --global commit.gpgsign true
+```
+
+Now every commit is signed with the same SSH key, and shows up as "Verified" on GitHub.
+
+Being able to add SSH keys to my account is a big boy privilege. I don't need my
+everyday `gh` token to have this kind of clearance. So once the keys are uploaded, the
+script hands those scopes back:
 
 ```bash
 # Key management is a privilege escalation, keep it off the daily token
 echo "Dropping the key-management scopes again"
 gh auth refresh --hostname github.com --remove-scopes "$GH_KEY_SCOPES"
 ```
+
+That's a second trip through the browser, but I'd rather click "Authorize" one more time
+than keep an over-powered token around.
 
 Finally, it checks that SSH access works by connecting to `git@github.com`. GitHub
 doesn't give you a shell there, but it does reply with a "successfully authenticated"
@@ -313,8 +350,8 @@ mas "Xcode", id: 497799835
 ...
 ```
 
-`brew` is for command line tools, `cask` for regular macOS apps, and `mas` for apps from
-the Mac App Store. Installing all of it is done in one line:
+`brew` is for command line tools, `cask` for regular Mac apps, and `mas` for apps from
+the App Store. Installing all of it is done in one line:
 
 ```bash
 brew bundle --no-upgrade --file "$BOOTSTRAP_DIR/Brewfile"
@@ -367,6 +404,9 @@ defaults write -globalDomain com.apple.trackpad.scaling -float 5.0
 That's another benefit of setting up preferences from the terminal: you can go beyond
 the standard scale.
 
+`-g`, `-globalDomain` and `NSGlobalDomain` all mean the same thing: the global domain
+with settings that apply to every app. You'll come across all three flavours in the wild.
+
 The rest of `preferences.sh` is a long list of things like this:
 
 ```bash
@@ -389,7 +429,8 @@ defaults write com.apple.screencapture location -string "$HOME/Downloads"
 
 Finding the right key for a setting can be a bit of a pain. A trick that works well:
 `defaults read` a domain, change the setting in System Settings, read it again, and see
-what changed. Or ask an LLM.
+what changed. I've used `diff` for this which worked quite nicely. Or just ask an LLM,
+it's easy enough to verify.
 
 Some changes only show up after the app restarts, so the script ends with:
 
@@ -432,15 +473,17 @@ login:
 <true/>
 ```
 
-The hex values are key codes: `0x39` is Caps Lock, `0xE0` is Left Control and `0x29` is
-Escape.
+The hex values are so called *USB HID usage IDs*. The `0x7000000` prefix is the keyboard
+page, and the last two digits are the key: `0x39` is Caps Lock, `0xE0` is Left Control
+and `0x29` is Escape.
 
 I've been using this for a couple of years now and it's pretty robust. It also applies
-the same key remapping to external keyboards the same way.
+to external keyboards so you don't have to worry about doing this for every keyboard you
+want to use.
 
 ## The Dock
 
-This is a cool party trick. When this part runs, you can see the Dock update live.
+This is a cool party trick. When this part runs, you can see the Dock icons changing live.
 
 The apps I want in the Dock are listed in a plain text file, in order:
 
@@ -464,8 +507,8 @@ defaults delete com.apple.dock
 killall Dock
 ```
 
-But this doesn't break the Dock, it just makes it fall back to the default Dock settings
-and icons.
+(This doesn't break the Dock, it just makes it fall back to the default Dock settings
+and icons.)
 
 Then it builds one `<dict>` per app, and writes them all at once:
 
@@ -485,12 +528,12 @@ rearranging my desktops based on recent use.
 
 ## Apps on their own desktop
 
-I like some apps to always go on the same Desktop. That's configured in another text
+I like some apps to always go on the same desktop. That's configured in another text
 file:
 
 ```text title="spaces-items.txt"
 1 com.mitchellh.ghostty
-2 com.apple.Safari
+2 org.mozilla.firefox
 3 com.apple.mail
 3 com.apple.Notes
 4 org.blenderfoundation.blender
@@ -529,8 +572,8 @@ until dropbox_ready; do
 done
 ```
 
-`read -t 5` waits for 5 seconds for me to press enter. If I don't, it times out, and the
-loop checks `dropbox_ready` again. So it's a polling loop, but I can skip it if I want.
+`read -t 5` waits up to 5 seconds for me to press enter. If I don't, it times out, and
+the loop checks `dropbox_ready` again. So it's a polling loop, but I can skip it if I want.
 
 On this Mac, Dropbox took ages to index before it synced the first folder. But I didn't
 have to do anything. I went and did some work on my other laptop, and the script just
@@ -539,15 +582,15 @@ picked up where it left off as soon as the folders showed up.
 The same idea sets up my Mail accounts. The bootstrap repo is public, so the email
 addresses and passwords can't be in there. Instead, `mail-setup.sh` reads them from a
 folder in my Bitwarden vault and generates a configuration profile. macOS doesn't let
-scripts install profiles anymore, so it opens System Settings and waits for me to approve
-it.
+scripts install profiles anymore, so it opens System Settings and waits for me to
+approve it.
 
 ## Dotfiles
 
-Then the dotfiles. The script clones my
+Then the dotfiles. The script clones my `home` and
 [`dotfiles`](https://github.com/vanderoost/dotfiles) repos into `~/git`, and runs the
-installer in my `home` repo, which symlinks everything into place. Some of my settings
-have private information in the `home` repo so I keep that one as a private repo.
+installer in `home`, which symlinks everything into place. The `home` repo has some
+private settings, so I keep that one private.
 
 This is the moment the Mac starts to feel like home. I open Ghostty, and it looks like
 my terminal. No title bar, my font, my colours. Neovim and tmux are configured too.
@@ -564,9 +607,8 @@ rcmd - e : open /System/Applications/Mail.app
 rcmd - n : open /System/Applications/Notes.app
 ```
 
-Right Cmd+T for the terminal, Right Cmd+W for the browser. Since every app lives on its
-own desktop, that switches desktops too. I almost never use the right Cmd key for
-anything else, so it's a free modifier.
+Right Cmd+T for the terminal, Right Cmd+W for the browser. I almost never use the right
+Cmd key for anything else, so it's a free modifier.
 
 ---
 
@@ -584,4 +626,4 @@ and change:
 *   `dock-items.txt` and `spaces-items.txt`
 *   Whatever you like in `preferences.sh`
 
-This was a necessary detour. Next week we're back to writing neural networks in C :)
+This was a necessary detour. Next week we're back to C, writing a neural network :)
