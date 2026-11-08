@@ -2,7 +2,7 @@
 date: 2026-11-06T12:00:00
 authors:
   - richard
-description: Unit testing in C without a framework. Plain C files, assert, a Makefile target and a 20 line bash script.
+description: Unit testing in C without a framework. Plain C files, assert, a Makefile target and a 20-line bash script.
 slug: c-unit-testing-without-a-framework
 categories:
   - Tutorials
@@ -10,7 +10,7 @@ tags:
   - C
   - From scratch
 links:
-  - mat.c on Github: https://github.com/vanderoost/mat.c
+  - mat.c on GitHub: https://github.com/vanderoost/mat.c
   - articles/posts/2026-10-30_c-matrix-library/index.md
   - articles/posts/2026-08-05_7-levels-effective-makefile-automation/index.md
 ---
@@ -22,9 +22,9 @@ links:
 Real C programmers write everything from scratch, reinvent wheels. I'm somewhat of a C
 programmer myself :)
 
-So when I felt the need to add unit tests to my C Matrix libraries, I didn't want to
-immediatly reach for the nearest C unit testing framework. I wanted to see what it takes
-to build my own.
+So when I felt the need to add unit tests to my C matrix library, I didn't want to
+immediately reach for the nearest C unit testing framework. I wanted to see what it
+takes to build my own.
 
 <!-- more -->
 
@@ -34,7 +34,7 @@ C already gives us everything we need for basic unit testing:
 *   **`assert()`** to make the program crash when a test fails
 
 That's it. The rest is adding a nice interface to kick off all the tests. The Makefile
-can take care of most of it, and I'll add little bit of bash for some nice formatting
+can take care of most of it, and I'll add a little bit of bash for some nice formatting
 and coloring.
 
 By the end of this article we'll be able to run `make test` and get this:
@@ -55,7 +55,6 @@ scratch. That's the code base I want to add tests to.
 This is what the project looks like:
 
 ```text
-.
 ├── Makefile
 └── src
     ├── main.c
@@ -95,7 +94,9 @@ time. It doesn't tell us anything about whether the results are correct.
 
 The first question: where do we put the tests?
 
-I don't want to mix test code into my source files. I have worked on projects where testing was added "for the sake of testing" and the source code started to bend itself around the fact that it's being tested.
+I don't want to mix test code into my source files. I have worked on projects where
+testing was added "for the sake of testing" and the source code started to bend itself
+around the fact that it's being tested.
 
 I don't like that.
 
@@ -237,6 +238,7 @@ debug:
 $ make debug
 test/test_dummy.c test/test_mat_mul.c
 ```
+
 And that prints out both test `.c` files. So far so good.
 
 ### From test sources to test binaries
@@ -342,6 +344,7 @@ Let's create `test/run_tests.sh`:
 
 echo "Running the tests"
 ```
+
 And make it executable if you haven't already: `chmod +x test/run_tests.sh`
 
 Now the bash script is called on `make test`:
@@ -429,7 +432,7 @@ Whatever you pass in is available as `$1`, `$2`, etc. inside the function.
 
 While we're at it, let's clean up the test names. I don't care about the `bin/test/`
 prefix, just the name of the test. `basename` takes care of that. And since we're using
-`printf` anyway, we print make the name with a fixed width, so all the results line up:
+`printf` anyway, we print the name with a fixed width, so all the results line up:
 
 ```bash
 for test in $@
@@ -453,7 +456,6 @@ $ make test
 test_dummy           {grn}-> PASS{res}
 test_mat_mul         {grn}-> PASS{res}
 ```
-
 
 ## Capturing the output
 
@@ -525,7 +527,7 @@ Every process has three streams, each with a number (a file descriptor):
 | stdout |               1 |
 | stderr |               2 |
 
-With `$(..)` we're catching only `stdout`. But we want to catch both `stdout` and
+With `$(...)` we're catching only `stdout`. But we want to catch both `stdout` and
 `stderr`. To achieve this, we can redirect `stderr` into `stdout` first, and then catch
 everything that ended up in `stdout`.
 
@@ -622,7 +624,8 @@ First problem: how do we include `mat.h` from a test file? In `main.c`, we write
 #include "mat/mat.h"
 ```
 
-But from inside the `test` directory, that path doesn't exist. The path inside double quotes is relative to the file doing the including. So we need this:
+But from inside the `test` directory, that path doesn't exist. The path inside double
+quotes is relative to the file doing the including. So we need this:
 
 ```c
 #include "../src/mat/mat.h"
@@ -821,7 +824,7 @@ bool mat_eq(Mat a, Mat b) {
     return false;
   }
 
-  for (size_t i = 0; i < b.rows * b.cols; ++i) {
+  for (size_t i = 0; i < a.rows * a.cols; ++i) {
     if (a.data[i] != b.data[i]) {
       return false;
     }
@@ -840,8 +843,8 @@ Assertion failed: (mat_eq(dst, exp)), function test_mat_mul_square, file test_ma
 ### Better failure messages
 
 Remember that our bash script hides all output unless a test fails? That means we can be
-super verbose with `printf`'s without worrying about cluttering up the terminal. It's
-hidden until you need it.
+super verbose with `printf()` calls without worrying about cluttering up the terminal.
+It's hidden until you need it.
 
 So let's say _why_ the matrices aren't equal:
 
@@ -856,7 +859,7 @@ bool mat_eq(Mat a, Mat b) {
     return false;
   }
 
-  for (size_t i = 0; i < b.rows * b.cols; ++i) {
+  for (size_t i = 0; i < a.rows * a.cols; ++i) {
     if (a.data[i] != b.data[i]) {
       printf("a:\n");
       mat_print(a);
@@ -955,7 +958,7 @@ static inline bool mat_eq(Mat a, Mat b) {
     return false;
   }
 
-  for (size_t i = 0; i < b.rows * b.cols; ++i) {
+  for (size_t i = 0; i < a.rows * a.cols; ++i) {
     if (a.data[i] != b.data[i]) {
       printf("a:\n");
       mat_print(a);
@@ -978,8 +981,9 @@ A few notes:
     header from the real source code called `helpers.h`.
 *   It's header-only. It's simple enough that a `.c` + `.h` pair would be overkill.
 *   Implementing functions in a header isn't conventional, but with `static inline` it's
-    acceptable. Every test file gets its own copy, and there are no duplicate symbol
-    errors at link time.
+    acceptable. `static` gives every test file its own copy, so there are no duplicate
+    symbol errors at link time. `inline` keeps the compiler from warning about it when a
+    test file doesn't use it.
 
 Because the Makefile includes the `.d` files generated by `-MMD`, every test that
 includes `helpers.h` gets recompiled when the helper changes.
@@ -1008,7 +1012,6 @@ test_mat_mul         {grn}-> PASS{res}
 This is the final project structure:
 
 ```text
-.
 ├── Makefile
 ├── compile_flags.txt
 ├── src
@@ -1104,4 +1107,4 @@ target and 20 lines of bash.
 Everything in this setup is something you can read and understand in a few minutes, and
 change whenever you want it to behave differently.
 
-You can grab the code from [github](https://github.com/vanderoost/mat.c).
+You can grab the code from [GitHub](https://github.com/vanderoost/mat.c).

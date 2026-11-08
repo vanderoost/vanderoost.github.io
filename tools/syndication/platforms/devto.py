@@ -8,6 +8,7 @@ content.
 from __future__ import annotations
 
 import logging
+import re
 from collections.abc import Mapping
 
 from ..portable import Dialect, TransformError
@@ -20,6 +21,9 @@ API = "https://dev.to/api"
 # dev.to allows four tags, and they have to be plain alphanumerics.
 MAX_TAGS = 4
 
+# A backslash before ASCII punctuation: what CommonMark treats as an escape.
+MARKDOWN_ESCAPE = re.compile(r"\\[!-/:-@\[-`{-~]")
+
 
 def _katex(tex: str) -> str:
     """Forem's math is a Liquid block tag; it does not read $$."""
@@ -27,6 +31,18 @@ def _katex(tex: str) -> str:
     # read as template syntax rather than reaching KaTeX.
     if "{{" in tex or "{%" in tex:
         raise TransformError(f"LaTeX contains Liquid syntax ({{{{ or {{%): {tex[:70]}")
+
+    # Forem applies Markdown's backslash escapes before KaTeX sees the tag, so
+    # the row break \\ arrives as a lone \ and a matrix collapses into one row.
+    # \cr is KaTeX's other row break, with no punctuation to escape.
+    tex = re.sub(r"\\\\\s*", r"\\cr ", tex)
+    # Any other backslash-punctuation (\{, \, \! ...) would be eaten the same
+    # way; refuse it rather than publish a formula that renders wrong.
+    if escaped := MARKDOWN_ESCAPE.search(tex):
+        raise TransformError(
+            f"LaTeX {escaped.group(0)!r} would lose its backslash to dev.to's "
+            f"Markdown escapes: {tex[:70]}"
+        )
     return "{% katex %}" + tex + "{% endkatex %}"
 
 
