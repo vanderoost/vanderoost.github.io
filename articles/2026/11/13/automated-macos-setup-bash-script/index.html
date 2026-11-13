@@ -1,0 +1,1904 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Setting up a brand new Mac from scratch with a single bash one-liner. Homebrew, SSH keys, GitHub, preferences, the Dock and dotfiles, all automated.">
+      
+      
+        <meta name="author" content="Richard van der Oost">
+      
+      
+        <link rel="canonical" href="https://vanderoost.com/articles/2026/11/13/automated-macos-setup-bash-script/">
+      
+      
+        <link rel="prev" href="../../06/c-unit-testing-without-a-framework/">
+      
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Setting up macOS with a bash one-liner - vanderoost</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/hero.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/subscribe.css">
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <meta property="article:author" content="https://www.linkedin.com/in/richardvdoost/" />
+  <meta property="article:published_time" content="2026-11-13 12:00:00" />
+
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Setting up macOS with a bash one-liner - vanderoost" />
+<meta property="og:description" content="Setting up a brand new Mac from scratch with a single bash one-liner. Homebrew, SSH keys, GitHub, preferences, the Dock and dotfiles, all automated." />
+<meta property="og:image" content="https://vanderoost.com/assets/images/social/articles/2026/11/13/automated-macos-setup-bash-script/index.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://vanderoost.com/articles/2026/11/13/automated-macos-setup-bash-script/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="Setting up macOS with a bash one-liner - vanderoost" />
+<meta property="twitter:description" content="Setting up a brand new Mac from scratch with a single bash one-liner. Homebrew, SSH keys, GitHub, preferences, the Dock and dotfiles, all automated." />
+<meta property="twitter:image" content="https://vanderoost.com/assets/images/social/articles/2026/11/13/automated-macos-setup-bash-script/index.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#setting-up-macos-with-a-bash-one-liner" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header"><nav class="md-header__inner md-grid" aria-label="Header">
+    <div class="md-header__zone md-header__zone--start">
+      <a href="../../../../.." title="vanderoost" class="md-header__button md-logo" aria-label="vanderoost" data-md-component="logo">
+        
+  
+  <svg width="196" height="196" viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+<path d="M118 98.0001C118 109.046 109.046 118 98 118C86.9543 118 78.0001 109.046 78.0001 98.0001C78.0001 86.9544 86.9543 78.0001 98 78.0001C109.046 78.0001 118 86.9544 118 98.0001Z" style="fill:var(--md-primary-fg-color);fill-opacity:1;"/>
+<path d="M86.6864 154.569C92.9348 160.817 103.066 160.817 109.314 154.569L117.799 146.083C119.361 144.521 121.894 144.521 123.456 146.083L140.427 163.054C141.989 164.616 141.989 167.149 140.427 168.711L131.941 177.196C113.196 195.941 82.8042 195.941 64.059 177.196L55.5737 168.711C54.0116 167.149 54.0116 164.616 55.5737 163.054L72.5443 146.083C74.1064 144.521 76.6391 144.521 78.2012 146.083L86.6864 154.569Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M177.196 64.0589C195.941 82.8041 195.941 113.196 177.196 131.941L168.711 140.426C167.149 141.989 164.616 141.989 163.054 140.426L146.083 123.456C144.521 121.894 144.521 119.361 146.083 117.799L154.569 109.314C160.817 103.065 160.817 92.9347 154.569 86.6863L146.083 78.2011C144.521 76.639 144.521 74.1063 146.083 72.5442L163.054 55.5736C164.616 54.0115 167.149 54.0116 168.711 55.5736L177.196 64.0589Z" style="fill:var(--md-primary-fg-color);"/>
+<path d="M49.9169 72.5442C51.479 74.1063 51.479 76.639 49.9169 78.2011L41.4316 86.6863C35.1832 92.9347 35.1832 103.065 41.4316 109.314L49.9169 117.799C51.479 119.361 51.479 121.894 49.9169 123.456L32.9463 140.426C31.3842 141.989 28.8516 141.989 27.2895 140.426L18.8042 131.941C0.0590258 113.196 0.0590258 82.8041 18.8042 64.0589L27.2895 55.5736C28.8516 54.0115 31.3842 54.0115 32.9463 55.5736L49.9169 72.5442Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M64.059 18.8041C82.8042 0.0589638 113.196 0.0589428 131.941 18.8041L140.427 27.2894C141.989 28.8515 141.989 31.3841 140.427 32.9462L123.456 49.9168C121.894 51.4789 119.361 51.4789 117.799 49.9168L109.314 41.4315C103.065 35.1831 92.9348 35.1832 86.6864 41.4315L78.2012 49.9168C76.6391 51.4789 74.1064 51.4789 72.5443 49.9168L55.5737 32.9462C54.0116 31.3841 54.0116 28.8515 55.5737 27.2894L64.059 18.8041Z" style="fill:var(--md-default-fg-color);"/>
+</svg>
+
+      </a>
+      <label class="md-header__button md-icon" for="__drawer">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </label>
+
+      <div class="md-header__title" data-md-component="header-title">
+        <div class="md-header__ellipsis">
+
+          <a href="../../../../.." title="vanderoost" aria-label="vanderoost">
+            <div class="md-header__topic">
+              <span class="md-ellipsis">
+                vanderoost
+              </span>
+            </div>
+            <div class="md-header__topic" data-md-component="header-topic">
+              <span class="md-ellipsis">
+                
+                Setting up macOS with a bash one-liner
+                
+              </span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../portfolio/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Case Studies
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+
+    <div class="md-header__zone md-header__zone--end">
+      
+        
+          <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+        
+      
+
+      
+        <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      
+
+      
+
+      
+
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    vanderoost
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../portfolio/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/dentist-appointment-routing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dentist appointment routing workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/3d-printing-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automating a 3D printing pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/blendergrid-swarm-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud computing infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-one-liner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The one-liner
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asking-for-the-password-only-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asking for the password only once
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#staying-awake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Staying awake
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#all-good" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        All good
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssh-keys-without-copy-pasting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSH keys without copy-pasting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-script-downloads-itself" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The script downloads itself
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-brewfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Brewfile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preferences-with-defaults" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preferences with defaults
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Preferences with defaults">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remapping-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remapping keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-dock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Dock
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#apps-on-their-own-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apps on their own desktop
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#waiting-for-the-human" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Waiting for the human
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dotfiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dotfiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#switching-apps-with-skhd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Switching apps with skhd
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to Articles
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://avatars.githubusercontent.com/u/11665420?v=4" alt="Richard van der Oost">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>
+                        
+                      </strong>
+                      <br>
+                      Tech founder
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-11-13 12:00:00+00:00" class="md-ellipsis">November 13, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/automation/">Automation</a>, 
+                              <a href="../../../../category/tutorials/">Tutorials</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              14 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+              <ul class="md-post__meta md-nav__list">
+                <li class="md-nav__item md-nav__item--section">
+                  <div class="md-post__title">
+                    <span class="md-ellipsis">
+                      Related links
+                    </span>
+                  </div>
+                  <nav class="md-nav">
+                    <ul class="md-nav__list">
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/vanderoost/bootstrap" class="md-nav__link" target="_blank" rel="noopener">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    bootstrap on GitHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/vanderoost/dotfiles" class="md-nav__link" target="_blank" rel="noopener">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    dotfiles on GitHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                    </ul>
+                  </nav>
+                </li>
+              </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:bash" class="md-tag">Bash</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:macos" class="md-tag">macOS</a>
+      
+    
+  </nav>
+
+
+
+<h1 id="setting-up-macos-with-a-bash-one-liner">Setting up macOS with a bash one-liner</h1>
+<div class="rvo-video"><iframe src="https://www.youtube-nocookie.com/embed/tf2lXmezrBA" title="Automated macOS setup with a bash script" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+
+<p>In this article we're automating the entire setup of macOS with a bash bootstrap script.</p>
+<!-- more -->
+
+<p>I'm not a big fan of upgrading my macOS the moment a new version drops. It feels like a
+one-way door, and if something breaks it's kind of a pain in the neck. I'd rather keep
+an old, stable setup and wait for the teething problems to be ironed out.</p>
+<p>So up until last week I had been rolling a 3-year-old macOS 14 (Sonoma). But at last,
+apps started complaining that my macOS was too old for the next update. So I figured
+this is the moment I have to finally get with the times.</p>
+<p>The most recent macOS as of writing this is macOS 27 (Golden Gate). That means I'm
+skipping two versions: macOS 15 (Sequoia) and 26 (Tahoe).</p>
+<p>With such a big leap, I thought it would be good to start fresh. So besides upgrading, I
+also did a factory reset to set it up like it came straight out of the Apple Store.</p>
+<p>To streamline this process, I've been using a bootstrap script that attempts to automate
+as much as possible.</p>
+<p>The script starts with a bash one-liner from my
+<a href="https://github.com/vanderoost/bootstrap" target="_blank" rel="noopener">bootstrap repo</a>. It:</p>
+<ul>
+<li>Installs all my command line tools and apps with Homebrew</li>
+<li>Creates an SSH key and connects it to GitHub</li>
+<li>Sets all my macOS preferences, down to the apps in my Dock</li>
+<li>Links my dotfiles, so Ghostty, Neovim and tmux look and behave like I'm used to</li>
+</ul>
+<p>It doesn't only save me time. It also makes every Mac I set up exactly the same, which
+is nice.</p>
+<p>There are a few moments during the bootstrap script run where I have to step in:
+clicking "Allow" on some permission popups, or logging in to something like Dropbox. But
+for most of the run I can just go make a coffee.</p>
+<p>Let's walk through the script and see what happens when you run it on a fresh Mac.</p>
+<h2 id="the-one-liner">The one-liner</h2>
+<p>After the factory reset, you do the usual stuff: Create an account, setup the
+fingerprints etc. Then you land on a brand new desktop with all the default settings.</p>
+<p>Now the bash one-liner: The script lives on GitHub, but this Mac has nothing on it. No
+git repos, no SSH keys, no Homebrew. So the one-liner has to work with whatever a fresh
+macOS comes with out of the box: <code>bash</code> and <code>curl</code>:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/vanderoost/bootstrap/main/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p><code>curl</code> downloads <code>install.sh</code>, and <code>bash -c</code> runs it. That's it. The Homebrew installer
+for example does the same trick.</p>
+<p>Only that one file is downloaded at this point. Later on, the script pulls in all files
+of the bootstrap repo.</p>
+<p>The first thing it does is ask for a hostname, with the current one as the default:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">==&gt; STARTING MAC BOOTSTRAP SCRIPT</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="go">This script will set up command line tools, ssh, git, install all Homebrew</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="go">packages from the Brewfile, set up the Mac preferences and App preferences.</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="go">Enter this Mac&#39;s hostname [Richard’s MacBook Pro]: mb-pro</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="go">Your password is required for some admin work</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="go">Password:</span>
+</span></code></pre></div>
+<p>And then it asks for my password. That should be the last time.</p>
+<h2 id="asking-for-the-password-only-once">Asking for the password only once</h2>
+<p>A lot of steps need <code>sudo</code>: installing updates, setting the hostname, and Homebrew asks
+for your password all the time when it installs apps. This can get quite annoying, so I
+wanted the script to ask for my password once, at the start, and then never bother me
+again.</p>
+<p><code>sudo -v</code> refreshes your sudo timestamp, but that expires after a few minutes. And some
+installers reset it. The only robust way I found was using a <strong>sudoers file</strong>.</p>
+<p>Files in <code>/etc/sudoers.d</code> get read by <code>sudo</code> as extra rules. So the script writes a
+temporary one that says "this user doesn't need a password":</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">SUDOERS_FILE</span><span class="o">=</span><span class="s2">&quot;/etc/sudoers.d/bootstrap-nopasswd&quot;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>install_passwordless_sudo<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nb">local</span><span class="w"> </span>tmp
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nv">tmp</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>mktemp<span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nb">printf</span><span class="w"> </span><span class="s1">&#39;%s ALL=(ALL) NOPASSWD: ALL\n&#39;</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-un<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$tmp</span><span class="s2">&quot;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span>!<span class="w"> </span>visudo<span class="w"> </span>-c<span class="w"> </span>-q<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$tmp</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span>rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$tmp</span><span class="s2">&quot;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span>abort<span class="w"> </span><span class="s2">&quot;Refusing to install an unparseable sudoers rule&quot;</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="k">fi</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="nv">SUDOERS_INSTALLED</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span>sudo<span class="w"> </span>install<span class="w"> </span>-m<span class="w"> </span><span class="m">0440</span><span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>wheel<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$tmp</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SUDOERS_FILE</span><span class="s2">&quot;</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span>rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$tmp</span><span class="s2">&quot;</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="o">}</span>
+</span></code></pre></div>
+<p>I named it <code>bootstrap-nopasswd</code>, so if you ever find it lying around, you know where it
+came from.</p>
+<p>The rule is written to a temp file first, and checked with <code>visudo -c</code> before it's
+installed. A broken sudoers file can lock you out of <code>sudo</code> entirely, so we'll proceed
+with caution here!</p>
+<p>Of course, the YOLO approach of "never ask for a password" is not a rule you want to
+keep. So it has to be removed when the script is done (or exits for any reason).</p>
+<p>That's what <code>trap</code> is doing here:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>release_privileges<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SUDOERS_INSTALLED</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nv">SUDOERS_INSTALLED</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span>sudo<span class="w"> </span>-n<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SUDOERS_FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">            </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;WARNING: please remove </span><span class="nv">$SUDOERS_FILE</span><span class="s2"> by hand&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="k">fi</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SUDO_KEEPALIVE_PID</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">kill</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SUDO_KEEPALIVE_PID</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CAFFEINATE_PID</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">kill</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CAFFEINATE_PID</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="m">0</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="o">}</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="hll"><span class="nb">trap</span><span class="w"> </span>release_privileges<span class="w"> </span>EXIT
+</span></span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="hll"><span class="nb">trap</span><span class="w"> </span><span class="s1">&#39;exit 1&#39;</span><span class="w"> </span>INT<span class="w"> </span>TERM
+</span></span></code></pre></div>
+<p><code>trap release_privileges EXIT</code> runs the function whenever the script exits, for any
+reason. The second trap turns Ctrl+C (<code>INT</code>) into a normal <code>exit</code>, so the <code>EXIT</code> trap
+fires there too.</p>
+<p>Right after installing the rule, the script checks that it actually works. <code>sudo -k</code>
+throws away the cached password, and <code>sudo -n</code> never prompts. It fails if a password
+would be needed:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo<span class="w"> </span>-k
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">if</span><span class="w"> </span>!<span class="w"> </span>sudo<span class="w"> </span>-n<span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;WARNING: /etc/sudoers.d is not read, expect password prompts&quot;</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>sudo<span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SUDOERS_FILE</span><span class="s2">&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="nv">SUDOERS_INSTALLED</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span>sudo<span class="w"> </span>-v
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">fi</span>
+</span></code></pre></div>
+<p>If <code>sudo -n true</code> fails, the rule isn't being picked up, and we fall back to the regular
+password prompts.</p>
+<p>As a backup, a small loop runs in the background and refreshes the sudo timestamp every
+30 seconds, for as long as the script is running:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="o">(</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nb">trap</span><span class="w"> </span>-<span class="w"> </span>EXIT<span class="w"> </span>INT<span class="w"> </span>TERM
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nb">set</span><span class="w"> </span>+e
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-0<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$$</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span>sudo<span class="w"> </span>-n<span class="w"> </span>-v<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">        </span>sleep<span class="w"> </span><span class="m">30</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="k">done</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="o">)</span><span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nv">SUDO_KEEPALIVE_PID</span><span class="o">=</span><span class="nv">$!</span>
+</span></code></pre></div>
+<p><code>kill -0</code> doesn't actually kill anything. It only checks if the process still exists. So
+once the script exits, the loop stops by itself. That's the <code>SUDO_KEEPALIVE_PID</code> the
+cleanup function kills, just in case.</p>
+<h2 id="staying-awake">Staying awake</h2>
+<p>The whole run takes a while. I don't want the Mac to fall asleep halfway through because
+I went to get coffee.</p>
+<p>macOS comes with a command line tool for exactly this, and it has the best name:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>caffeinate<span class="w"> </span>-dims<span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$$</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">&amp;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nv">CAFFEINATE_PID</span><span class="o">=</span><span class="nv">$!</span>
+</span></code></pre></div>
+<p>The flags prevent the display (<code>d</code>), the system when idle (<code>i</code>), the disk (<code>m</code>) and the
+system on AC power (<code>s</code>) from sleeping. <code>-w "$$"</code> makes it wait for our script's process
+ID (<code>$$</code>), and stop by itself once the script is done. It stays caffeinated :)</p>
+<p>The <code>&amp;</code> runs it in the background, and <code>$!</code> gives us its process ID, so the cleanup
+function can kill it as well.</p>
+<h2 id="all-good">All good</h2>
+<p>From here, most of the script follows the same pattern. Check if something is already
+done. If it isn't, do it. If it is, say "All good" and move on:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>green_echo<span class="w"> </span><span class="s2">&quot;CHECK HOMEBREW STATUS&quot;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-x<span class="w"> </span>/opt/homebrew/bin/brew<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Installing Homebrew...&quot;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="nv">NONINTERACTIVE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">        </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">else</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;All good&quot;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">fi</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>/opt/homebrew/bin/brew<span class="w"> </span>shellenv<span class="k">)</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p><code>green_echo</code> is a small helper function that prints a header in green, so it's easy to
+see where we are in the output:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">GREEN</span><span class="o">=</span><span class="s1">&#39;\033[0;32m&#39;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nv">NC</span><span class="o">=</span><span class="s1">&#39;\033[0m&#39;</span><span class="w"> </span><span class="c1"># No Color</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>green_echo<span class="o">()(</span>echo<span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;==&gt; </span><span class="si">${</span><span class="nv">GREEN</span><span class="si">}</span><span class="nv">$1</span><span class="si">${</span><span class="nv">NC</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">)</span>
+</span></code></pre></div>
+<p>The same goes for the GitHub CLI (<code>command -v gh</code> tells us if it exists), the SSH key,
+the repos, and so on. We don't create a new SSH key pair every time the script runs. If
+it's there, we just move on.</p>
+<p>This makes the script <em>idempotent</em>: you can run it as often as you want, and it only
+does what still needs doing. That turns out to be really useful. If something fails
+halfway, I fix it and run the whole thing again. And when I add a new app to the
+Brewfile, I can just re-run the script and it stays up to date.</p>
+<h2 id="ssh-keys-without-copy-pasting">SSH keys without copy-pasting</h2>
+<p>To clone my private repos, this Mac needs an SSH key that GitHub knows about. Creating
+the key is just an <code>ssh-keygen</code> one-liner:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SSH_KEY_FILE</span><span class="s2">&quot;</span><span class="w"> </span>-q<span class="w"> </span>-N<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$USER</span><span class="s2">@</span><span class="nv">$HOSTNAME</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p><code>-N ""</code> skips the passphrase, so the script doesn't have to stop and ask for one.</p>
+<p>The next step is usually opening <code>~/.ssh/id_ed25519.pub</code>, copying it, going to GitHub
+settings and pasting it in there.</p>
+<p>The best way I found to automate this is the <a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI</a>,
+which can upload keys for us. But it has to be logged in first, and that's one of the
+few manual steps:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>login<span class="w"> </span>--hostname<span class="w"> </span>github.com<span class="w"> </span>--git-protocol<span class="w"> </span>ssh<span class="w"> </span>--web<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span>--skip-ssh-key<span class="w"> </span>--scopes<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$GH_KEY_SCOPES</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p><code>--web</code> gives you a one-time code, copies it to your clipboard, and opens the browser.
+You log in, paste the code, click "Authorize", and the script moves on.</p>
+<p>The <code>--scopes</code> are <code>admin:public_key</code> and <code>admin:ssh_signing_key</code>. Those are the
+permissions <code>gh</code> needs to manage SSH keys. By asking for them at login, a fresh Mac only
+needs one login to add the keys.</p>
+<p>Then we upload the public key, twice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>add_github_key<span class="w"> </span>authentication
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>add_github_key<span class="w"> </span>signing
+</span></code></pre></div>
+<p>Once to authenticate (for <code>git clone</code> and <code>git push</code>), and once as a signing key. The
+key title is the hostname I picked at the start, so on GitHub I can see which key
+belongs to which Mac.</p>
+<p>For the signing key to be useful, git has to actually sign with it. So the script also
+configures that:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>gpg.format<span class="w"> </span>ssh
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.signingkey<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SSH_KEY_FILE</span><span class="s2">.pub&quot;</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>commit.gpgsign<span class="w"> </span><span class="nb">true</span>
+</span></code></pre></div>
+<p>Now every commit is signed with the same SSH key, and shows up as "Verified" on GitHub.</p>
+<p>Being able to add SSH keys to my account is a big boy privilege. I don't need my
+everyday <code>gh</code> token to have this kind of clearance. So once the keys are uploaded, the
+script hands those scopes back:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Key management is a privilege escalation, keep it off the daily token</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Dropping the key-management scopes again&quot;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>gh<span class="w"> </span>auth<span class="w"> </span>refresh<span class="w"> </span>--hostname<span class="w"> </span>github.com<span class="w"> </span>--remove-scopes<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$GH_KEY_SCOPES</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>That's a second trip through the browser, but I'd rather click "Authorize" one more time
+than keep an over-powered token around.</p>
+<p>Finally, it checks that SSH access works by connecting to <code>git@github.com</code>. GitHub
+doesn't give you a shell there, but it does reply with a "successfully authenticated"
+message. It's the standard way to test your SSH setup.</p>
+<h2 id="the-script-downloads-itself">The script downloads itself</h2>
+<p>The one-liner we kicked off with only downloaded <code>install.sh</code>. Now that we have GitHub
+SSH access, the script can clone its own repo:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>git<span class="w"> </span>clone<span class="w"> </span><span class="s2">&quot;git@github.com:</span><span class="nv">$GITHUB_USERNAME</span><span class="s2">/</span><span class="nv">$BOOTSTRAP_REPO_NAME</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>That gives us all the other files the script needs: the Brewfile, the preferences
+script, the Dock items, and so on. And on a re-run, the repo is already there, so it
+just does a <code>git pull</code>.</p>
+<h2 id="the-brewfile">The Brewfile</h2>
+<p>Every app and command line tool I use is listed in a single Brewfile:</p>
+<div class="language-ruby highlight"><span class="filename">Brewfile</span><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;entr&quot;</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;fzf&quot;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;gh&quot;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;jq&quot;</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;neovim&quot;</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;rg&quot;</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">brew</span><span class="w"> </span><span class="s2">&quot;tmux&quot;</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="o">...</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="n">cask</span><span class="w"> </span><span class="s2">&quot;blender&quot;</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="n">cask</span><span class="w"> </span><span class="s2">&quot;dropbox&quot;</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">cask</span><span class="w"> </span><span class="s2">&quot;firefox&quot;</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="n">cask</span><span class="w"> </span><span class="s2">&quot;ghostty&quot;</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="n">cask</span><span class="w"> </span><span class="s2">&quot;rectangle&quot;</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="o">...</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="n">mas</span><span class="w"> </span><span class="s2">&quot;Bitwarden&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">id</span><span class="p">:</span><span class="w"> </span><span class="mi">1352778147</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="n">mas</span><span class="w"> </span><span class="s2">&quot;Xcode&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">id</span><span class="p">:</span><span class="w"> </span><span class="mi">497799835</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="o">...</span>
+</span></code></pre></div>
+<p><code>brew</code> is for command line tools, <code>cask</code> for regular Mac apps, and <code>mas</code> for apps from
+the App Store. Installing all of it is done in one line:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>brew<span class="w"> </span>bundle<span class="w"> </span>--no-upgrade<span class="w"> </span>--file<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BOOTSTRAP_DIR</span><span class="s2">/Brewfile&quot;</span>
+</span></code></pre></div>
+<p>This is the part that takes the longest. Every new app that needs special permissions
+pops up a dialog, so you have to click "Allow" a bunch of times.</p>
+<p>A few details around it:</p>
+<ul>
+<li><code>mas</code> can't sign in to the App Store by itself anymore. So if there are App Store
+    apps left to install, the script opens the App Store and waits for me to sign in.</li>
+<li>If one entry fails to install, I don't want the whole bootstrap to stop. The script
+    remembers the failure and prints a warning at the very end instead.</li>
+<li><code>brew pin neovim</code> stops Neovim from being upgraded along with everything else. A new
+    Neovim version breaking my config in the middle of the week is not my idea of fun.</li>
+</ul>
+<h2 id="preferences-with-defaults">Preferences with <code>defaults</code></h2>
+<p>The other big part is setting all my preferences. This is done with a second script that
+is called by <code>install.sh</code>: <code>preferences.sh</code>.</p>
+<p>Almost all of it uses the <code>defaults</code> command. The best way to think of it is as a
+settings database for macOS. You can write to it, and you can also read from it.</p>
+<p>For example the trackpad speed. On a fresh Mac, nothing has been set yet:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="gp">$ </span>defaults<span class="w"> </span><span class="nb">read</span><span class="w"> </span>-g<span class="w"> </span>com.apple.trackpad.scaling
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="go">The domain/default pair of (kCFPreferencesAnyApplication, com.apple.trackpad.scaling) does not exist</span>
+</span></code></pre></div>
+<p>When a value isn't in the database, macOS falls back to the default. But if we drag the
+"Tracking speed" slider in System Settings all the way to the fastest setting, we can
+read the value:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="gp">$ </span>defaults<span class="w"> </span><span class="nb">read</span><span class="w"> </span>-g<span class="w"> </span>com.apple.trackpad.scaling
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="go">3</span>
+</span></code></pre></div>
+<p>So 3 is the highest value the UI lets you pick. But nobody is stopping us from writing a
+higher one ourselves:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Increase trackpad speed (0.0 - 3.0 is the normal range)</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>defaults<span class="w"> </span>write<span class="w"> </span>-globalDomain<span class="w"> </span>com.apple.trackpad.scaling<span class="w"> </span>-float<span class="w"> </span><span class="m">5</span>.0
+</span></code></pre></div>
+<p>That's another benefit of setting up preferences from the terminal: you can go beyond
+the standard scale.</p>
+<p><code>-g</code>, <code>-globalDomain</code> and <code>NSGlobalDomain</code> all mean the same thing: the global domain
+with settings that apply to every app. You'll come across all three flavours in the wild.</p>
+<p>The rest of <code>preferences.sh</code> is a long list of things like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Set a blazingly fast keyboard repeat rate</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>defaults<span class="w"> </span>write<span class="w"> </span>NSGlobalDomain<span class="w"> </span>InitialKeyRepeat<span class="w"> </span>-int<span class="w"> </span><span class="m">10</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>defaults<span class="w"> </span>write<span class="w"> </span>NSGlobalDomain<span class="w"> </span>KeyRepeat<span class="w"> </span>-int<span class="w"> </span><span class="m">1</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="c1"># Don&#39;t use smart quotes</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>defaults<span class="w"> </span>write<span class="w"> </span>NSGlobalDomain<span class="w"> </span>NSAutomaticQuoteSubstitutionEnabled<span class="w"> </span>-bool<span class="w"> </span><span class="nb">false</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="c1"># Disable auto-correct</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>defaults<span class="w"> </span>write<span class="w"> </span>NSGlobalDomain<span class="w"> </span>NSAutomaticSpellingCorrectionEnabled<span class="w"> </span>-bool<span class="w"> </span><span class="nb">false</span>
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="c1"># Show all file extensions</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>defaults<span class="w"> </span>write<span class="w"> </span>NSGlobalDomain<span class="w"> </span>AppleShowAllExtensions<span class="w"> </span>-bool<span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
+</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="c1"># Save screenshots to Downloads to keep the Desktop clean</span>
+</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>defaults<span class="w"> </span>write<span class="w"> </span>com.apple.screencapture<span class="w"> </span>location<span class="w"> </span>-string<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/Downloads&quot;</span>
+</span></code></pre></div>
+<p>Finding the right key for a setting can be a bit of a pain. A trick that works well:
+<code>defaults read</code> a domain, change the setting in System Settings, read it again, and see
+what changed. I've used <code>diff</code> for this which worked quite nicely. Or just ask an LLM,
+it's easy enough to verify.</p>
+<p>Some changes only show up after the app restarts, so the script ends with:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">for</span><span class="w"> </span>app<span class="w"> </span><span class="k">in</span><span class="w"> </span>Finder<span class="w"> </span>SystemUIServer<span class="w"> </span>WindowManager<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span>killall<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$app</span><span class="s2">&quot;</span><span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="k">done</span>
+</span></code></pre></div>
+<h3 id="remapping-keys">Remapping keys</h3>
+<p>One thing <code>defaults</code> can't do is remap keys. For that, macOS has <code>hidutil</code>. I swap a
+couple of keys around:</p>
+<ul>
+<li>Caps Lock becomes Control</li>
+<li>Left Control becomes Escape</li>
+</ul>
+<p>The catch is that a <code>hidutil</code> mapping is gone after a restart. So the script installs it
+as a launch agent, a little plist in <code>~/Library/LaunchAgents</code> that macOS runs at every
+login:</p>
+<div class="language-xml highlight"><span class="filename">com.local.KeyRemapping.plist</span><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nt">&lt;key&gt;</span>ProgramArguments<span class="nt">&lt;/key&gt;</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="nt">&lt;array&gt;</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="nt">&lt;string&gt;</span>/usr/bin/hidutil<span class="nt">&lt;/string&gt;</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="nt">&lt;string&gt;</span>property<span class="nt">&lt;/string&gt;</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="nt">&lt;string&gt;</span>--set<span class="nt">&lt;/string&gt;</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">    </span><span class="nt">&lt;string&gt;</span>{&quot;UserKeyMapping&quot;:[
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">        </span>{
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">          </span>&quot;HIDKeyboardModifierMappingSrc&quot;:<span class="w"> </span>0x700000039,
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">          </span>&quot;HIDKeyboardModifierMappingDst&quot;:<span class="w"> </span>0x7000000E0
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">        </span>},
+</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">        </span>{
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">          </span>&quot;HIDKeyboardModifierMappingSrc&quot;:<span class="w"> </span>0x7000000E0,
+</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">          </span>&quot;HIDKeyboardModifierMappingDst&quot;:<span class="w"> </span>0x700000029
+</span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">        </span>}
+</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">    </span>]}<span class="nt">&lt;/string&gt;</span>
+</span><span id="__span-22-16"><a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="nt">&lt;/array&gt;</span>
+</span><span id="__span-22-17"><a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="nt">&lt;key&gt;</span>RunAtLoad<span class="nt">&lt;/key&gt;</span>
+</span><span id="__span-22-18"><a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="nt">&lt;true/&gt;</span>
+</span></code></pre></div>
+<p>The hex values are so called <em>USB HID usage IDs</em>. The <code>0x7000000</code> prefix is the keyboard
+page, and the last two digits are the key: <code>0x39</code> is Caps Lock, <code>0xE0</code> is Left Control
+and <code>0x29</code> is Escape.</p>
+<p>I've been using this for a couple of years now and it's pretty robust. It also applies
+to external keyboards so you don't have to worry about doing this for every keyboard you
+want to use.</p>
+<h2 id="the-dock">The Dock</h2>
+<p>This is a cool party trick. When this part runs, you can see the Dock icons changing live.</p>
+<p>The apps I want in the Dock are listed in a plain text file, in order:</p>
+<div class="language-text highlight"><span class="filename">dock-items.txt</span><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>/Applications/Ghostty.app
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>/Applications/Firefox.app
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>/System/Applications/Messages.app
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>/System/Applications/Mail.app
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>/System/Applications/Calendar.app
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>/System/Applications/Reminders.app
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>/System/Applications/Notes.app
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>/System/Applications/Podcasts.app
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>/Applications/Blender.app
+</span></code></pre></div>
+<p>And <code>dock-setup.sh</code> turns that into Dock tiles. It starts with a full reset (deleting
+everything):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>defaults<span class="w"> </span>delete<span class="w"> </span>com.apple.dock
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>killall<span class="w"> </span>Dock
+</span></code></pre></div>
+<p>(This doesn't break the Dock, it just makes it fall back to the default Dock settings
+and icons.)</p>
+<p>Then it builds one <code>&lt;dict&gt;</code> per app, and writes them all at once:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nv">tiles</span><span class="o">=()</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">while</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>dock_item<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">    </span><span class="nv">tiles</span><span class="o">+=(</span><span class="s2">&quot;&lt;dict&gt;&lt;key&gt;tile-data&lt;/key&gt;&lt;dict&gt;&lt;key&gt;file-data&lt;/key&gt;&lt;dict&gt;&lt;key&gt;_CFURLString&lt;/key&gt;&lt;string&gt;</span><span class="nv">$dock_item</span><span class="s2">&lt;/string&gt;&lt;key&gt;_CFURLStringType&lt;/key&gt;&lt;integer&gt;0&lt;/integer&gt;&lt;/dict&gt;&lt;/dict&gt;&lt;/dict&gt;&quot;</span><span class="o">)</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="k">done</span><span class="w"> </span>&lt;<span class="w"> </span>dock-items.txt
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>defaults<span class="w"> </span>write<span class="w"> </span>com.apple.dock<span class="w"> </span><span class="s2">&quot;persistent-apps&quot;</span><span class="w"> </span>-array<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">tiles</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></div>
+<p>Those XML snippets are what the Dock stores for each tile. The array keeps app names
+with spaces in one piece.</p>
+<p>After that come a few Dock preferences: auto-hide, a shorter animation, and no
+rearranging my desktops based on recent use.</p>
+<h2 id="apps-on-their-own-desktop">Apps on their own desktop</h2>
+<p>I like some apps to always go on the same desktop. That's configured in another text
+file:</p>
+<div class="language-text highlight"><span class="filename">spaces-items.txt</span><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>1 com.mitchellh.ghostty
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>2 org.mozilla.firefox
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>3 com.apple.mail
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>3 com.apple.Notes
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>4 org.blenderfoundation.blender
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>4 com.figma.Desktop
+</span></code></pre></div>
+<p>The script can bind apps to desktops, but I haven't found a good way to <em>create</em>
+desktops from a script. So when there aren't enough, it prints this and waits:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="go">==&gt; ASSIGN APPS TO DESKTOPS</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="go">Found 1 Desktops, but 4 are needed</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="go">Make sure you have enough Desktops, then press enter...</span>
+</span></code></pre></div>
+<p>I open Mission Control, click the <code>+</code> three times, press enter, and it continues.</p>
+<h2 id="waiting-for-the-human">Waiting for the human</h2>
+<p>Some steps can only be done by me: logging in to Dropbox, giving an app permission. For
+those, the script opens the right window and waits.</p>
+<p>Dropbox is the longest one. I keep a lot of my documents in Dropbox, and for example
+link subfolders of <code>~/Documents</code> to it with symbolic links. Those links only make sense
+once Dropbox is signed in and the folders exist. So the script checks for that every 5
+seconds:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>open<span class="w"> </span>-a<span class="w"> </span>Dropbox
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Waiting for the Dropbox sign-in (press enter to skip)&quot;</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="k">until</span><span class="w"> </span>dropbox_ready<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nb">read</span><span class="w"> </span>-r<span class="w"> </span>-t<span class="w"> </span><span class="m">5</span><span class="w"> </span>_<span class="w"> </span>&lt;<span class="w"> </span>/dev/tty<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Skipping, Dropbox folders won&#39;t be linked&quot;</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">        </span><span class="k">break</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">    </span><span class="k">fi</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="k">done</span>
+</span></code></pre></div>
+<p><code>read -t 5</code> waits up to 5 seconds for me to press enter. If I don't, it times out, and
+the loop checks <code>dropbox_ready</code> again. So it's a polling loop, but I can skip it if I want.</p>
+<p>On this Mac, Dropbox took ages to index before it synced the first folder. But I didn't
+have to do anything. I went and did some work on my other laptop, and the script just
+picked up where it left off as soon as the folders showed up.</p>
+<p>The same idea sets up my Mail accounts. The bootstrap repo is public, so the email
+addresses and passwords can't be in there. Instead, <code>mail-setup.sh</code> reads them from a
+folder in my Bitwarden vault and generates a configuration profile. macOS doesn't let
+scripts install profiles anymore, so it opens System Settings and waits for me to
+approve it.</p>
+<h2 id="dotfiles">Dotfiles</h2>
+<p>Then the dotfiles. The script clones my <code>home</code> and
+<a href="https://github.com/vanderoost/dotfiles" target="_blank" rel="noopener"><code>dotfiles</code></a> repos into <code>~/git</code>, and runs the
+installer in <code>home</code>, which symlinks everything into place. The <code>home</code> repo has some
+private settings, so I keep that one private.</p>
+<p>This is the moment the Mac starts to feel like home. I open Ghostty, and it looks like
+my terminal. No title bar, my font, my colours. Neovim and tmux are configured too.</p>
+<h2 id="switching-apps-with-skhd">Switching apps with skhd</h2>
+<p>One last thing the script sets up: <a href="https://github.com/asmvik/skhd" target="_blank" rel="noopener">skhd</a>, a hotkey
+daemon. I use it to jump between apps without Cmd+Tab:</p>
+<div class="language-text highlight"><span class="filename">skhdrc</span><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>rcmd - t : open /Applications/Ghostty.app
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>rcmd - w : open /Applications/Firefox.app
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>rcmd - e : open /System/Applications/Mail.app
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>rcmd - n : open /System/Applications/Notes.app
+</span></code></pre></div>
+<p>Right Cmd+T for the terminal, Right Cmd+W for the browser. I almost never use the right
+Cmd key for anything else, so it's a free modifier.</p>
+<hr />
+<p>That's how I automate my Mac setup. One command, and then mostly waiting. Sometimes I
+have to jump in and click "Allow" or log in to something, but the rest of the time I can
+do something else.</p>
+<p>If you want to do this for your own Mac, don't run my script as is. You'd end up with my
+apps, my Dock and my name in your git config. Instead, fork the
+<a href="https://github.com/vanderoost/bootstrap" target="_blank" rel="noopener">bootstrap repo</a> (or just steal ideas from it),
+and change:</p>
+<ul>
+<li>The settings at the top of <code>install.sh</code> (your GitHub username, name and email)</li>
+<li>The Brewfile</li>
+<li><code>dock-items.txt</code> and <code>spaces-items.txt</code></li>
+<li>Whatever you like in <code>preferences.sh</code></li>
+</ul>
+<p>This was a necessary detour. Next week we're back to C, writing a neural network :)</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+  
+<aside class="rvo-subscribe">
+  <div class="rvo-subscribe__cta">
+    <h2 class="rvo-subscribe__title">Stay in the loop</h2>
+    <p class="rvo-subscribe__pitch">
+      Get new articles in your inbox. No spam, unsubscribe any time.
+    </p>
+  </div>
+  <form
+    class="rvo-subscribe__form"
+    action="https://app.kit.com/forms/9960727/subscriptions"
+    method="post"
+  >
+    <label class="rvo-subscribe__label" for="rvo-subscribe-email">
+      Email address
+    </label>
+    <input
+      class="rvo-subscribe__input"
+      id="rvo-subscribe-email"
+      type="email"
+      name="email_address"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
+    /><input type="hidden" name="fields[source]" value="https://vanderoost.com/articles/2026/11/13/automated-macos-setup-bash-script/" />
+    <button class="rvo-subscribe__button md-button md-button--primary" type="submit">
+      Subscribe
+    </button>
+  </form>
+  <p class="rvo-subscribe__status" aria-live="polite"></p>
+</aside>
+      
+    </article>
+  </div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../06/c-unit-testing-without-a-framework/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Writing C unit tests without a framework">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Writing C unit tests without a framework
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://blendergrid.com" target="_blank" rel="noopener" title="blendergrid.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm112 352h32c17.7 0 32 14.3 32 32v80h-96v-80c0-17.7 14.3-32 32-32M96 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16M96 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/vanderoost" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/@richardvdoost" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M549.7 124.1c-6.2-23.7-24.8-42.3-48.3-48.6C458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5c-23.5 6.3-42 24.9-48.3 48.6C15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8C117.3 448 288.1 448 288.1 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6V175.2l142.7 81.2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.indexes", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.sections", "navigation.top", "content.tooltips", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+      
+        <script src="../../../../../javascripts/subscribe.js"></script>
+      
+        <script src="../../../../../javascripts/katex.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>
