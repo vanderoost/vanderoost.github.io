@@ -1,0 +1,2447 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Unit testing in C without a framework. Plain C files, assert, a Makefile target and a 20-line bash script.">
+      
+      
+        <meta name="author" content="Richard van der Oost">
+      
+      
+        <link rel="canonical" href="https://vanderoost.com/articles/2026/11/06/c-unit-testing-without-a-framework/">
+      
+      
+        <link rel="prev" href="../../../10/30/c-matrix-library-from-scratch/">
+      
+      
+        <link rel="next" href="../../13/automated-macos-setup-bash-script/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Writing C unit tests without a framework - vanderoost</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Ubuntu";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/hero.css">
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/subscribe.css">
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <meta property="article:author" content="https://www.linkedin.com/in/richardvdoost/" />
+  <meta property="article:published_time" content="2026-11-06 12:00:00" />
+
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Writing C unit tests without a framework - vanderoost" />
+<meta property="og:description" content="Unit testing in C without a framework. Plain C files, assert, a Makefile target and a 20-line bash script." />
+<meta property="og:image" content="https://vanderoost.com/assets/images/social/articles/2026/11/06/c-unit-testing-without-a-framework/index.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://vanderoost.com/articles/2026/11/06/c-unit-testing-without-a-framework/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="Writing C unit tests without a framework - vanderoost" />
+<meta property="twitter:description" content="Unit testing in C without a framework. Plain C files, assert, a Makefile target and a 20-line bash script." />
+<meta property="twitter:image" content="https://vanderoost.com/assets/images/social/articles/2026/11/06/c-unit-testing-without-a-framework/index.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#writing-c-unit-tests-without-a-framework" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header"><nav class="md-header__inner md-grid" aria-label="Header">
+    <div class="md-header__zone md-header__zone--start">
+      <a href="../../../../.." title="vanderoost" class="md-header__button md-logo" aria-label="vanderoost" data-md-component="logo">
+        
+  
+  <svg width="196" height="196" viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+<path d="M118 98.0001C118 109.046 109.046 118 98 118C86.9543 118 78.0001 109.046 78.0001 98.0001C78.0001 86.9544 86.9543 78.0001 98 78.0001C109.046 78.0001 118 86.9544 118 98.0001Z" style="fill:var(--md-primary-fg-color);fill-opacity:1;"/>
+<path d="M86.6864 154.569C92.9348 160.817 103.066 160.817 109.314 154.569L117.799 146.083C119.361 144.521 121.894 144.521 123.456 146.083L140.427 163.054C141.989 164.616 141.989 167.149 140.427 168.711L131.941 177.196C113.196 195.941 82.8042 195.941 64.059 177.196L55.5737 168.711C54.0116 167.149 54.0116 164.616 55.5737 163.054L72.5443 146.083C74.1064 144.521 76.6391 144.521 78.2012 146.083L86.6864 154.569Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M177.196 64.0589C195.941 82.8041 195.941 113.196 177.196 131.941L168.711 140.426C167.149 141.989 164.616 141.989 163.054 140.426L146.083 123.456C144.521 121.894 144.521 119.361 146.083 117.799L154.569 109.314C160.817 103.065 160.817 92.9347 154.569 86.6863L146.083 78.2011C144.521 76.639 144.521 74.1063 146.083 72.5442L163.054 55.5736C164.616 54.0115 167.149 54.0116 168.711 55.5736L177.196 64.0589Z" style="fill:var(--md-primary-fg-color);"/>
+<path d="M49.9169 72.5442C51.479 74.1063 51.479 76.639 49.9169 78.2011L41.4316 86.6863C35.1832 92.9347 35.1832 103.065 41.4316 109.314L49.9169 117.799C51.479 119.361 51.479 121.894 49.9169 123.456L32.9463 140.426C31.3842 141.989 28.8516 141.989 27.2895 140.426L18.8042 131.941C0.0590258 113.196 0.0590258 82.8041 18.8042 64.0589L27.2895 55.5736C28.8516 54.0115 31.3842 54.0115 32.9463 55.5736L49.9169 72.5442Z" style="fill:var(--md-default-fg-color);"/>
+<path d="M64.059 18.8041C82.8042 0.0589638 113.196 0.0589428 131.941 18.8041L140.427 27.2894C141.989 28.8515 141.989 31.3841 140.427 32.9462L123.456 49.9168C121.894 51.4789 119.361 51.4789 117.799 49.9168L109.314 41.4315C103.065 35.1831 92.9348 35.1832 86.6864 41.4315L78.2012 49.9168C76.6391 51.4789 74.1064 51.4789 72.5443 49.9168L55.5737 32.9462C54.0116 31.3841 54.0116 28.8515 55.5737 27.2894L64.059 18.8041Z" style="fill:var(--md-default-fg-color);"/>
+</svg>
+
+      </a>
+      <label class="md-header__button md-icon" for="__drawer">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </label>
+
+      <div class="md-header__title" data-md-component="header-title">
+        <div class="md-header__ellipsis">
+
+          <a href="../../../../.." title="vanderoost" aria-label="vanderoost">
+            <div class="md-header__topic">
+              <span class="md-ellipsis">
+                vanderoost
+              </span>
+            </div>
+            <div class="md-header__topic" data-md-component="header-topic">
+              <span class="md-ellipsis">
+                
+                Writing C unit tests without a framework
+                
+              </span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Articles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../portfolio/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Case Studies
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+
+    <div class="md-header__zone md-header__zone--end">
+      
+        
+          <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+        
+      
+
+      
+        <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      
+
+      
+
+      
+
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    vanderoost
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Articles
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Articles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../portfolio/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Case Studies
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Case Studies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/dentist-appointment-routing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dentist appointment routing workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/3d-printing-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automating a 3D printing pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../portfolio/projects/blendergrid-swarm-engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud computing infrastructure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-starting-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The starting point
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#folder-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Folder structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hello-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hello, test!
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-make-test-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A make test target
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A make test target">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#finding-all-test-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding all test files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-test-sources-to-test-binaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From test sources to test binaries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiling-the-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiling the tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gluing-it-together-with-bash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gluing it together with bash
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gluing it together with bash">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#looping-over-the-arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Looping over the arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#red-gold-and-green" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Red (gold) and green
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capturing-the-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capturing the output
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Capturing the output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fail-fast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fail fast
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-the-real-matc-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing the real mat.c library
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing the real mat.c library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#including-the-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Including the library
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-first-real-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The first real test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-second-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A second test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-duplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removing duplication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Removing duplication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#better-failure-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Better failure messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sharing-helpers-between-test-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sharing helpers between test files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-full-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The full setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to Articles
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://avatars.githubusercontent.com/u/11665420?v=4" alt="Richard van der Oost">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>
+                        
+                      </strong>
+                      <br>
+                      Tech founder
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-11-06 12:00:00+00:00" class="md-ellipsis">November 6, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/tutorials/">Tutorials</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              18 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+              <ul class="md-post__meta md-nav__list">
+                <li class="md-nav__item md-nav__item--section">
+                  <div class="md-post__title">
+                    <span class="md-ellipsis">
+                      Related links
+                    </span>
+                  </div>
+                  <nav class="md-nav">
+                    <ul class="md-nav__list">
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/vanderoost/mat.c" class="md-nav__link" target="_blank" rel="noopener">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    mat.c on GitHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../10/30/c-matrix-library-from-scratch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing a C matrix library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                        
+                        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../08/05/levels-of-effective-makefile-cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The 7 levels of highly effective Makefiles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+                      
+                    </ul>
+                  </nav>
+                </li>
+              </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:c" class="md-tag">C</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:from-scratch" class="md-tag">From scratch</a>
+      
+    
+  </nav>
+
+
+
+<h1 id="writing-c-unit-tests-without-a-framework">Writing C unit tests without a framework</h1>
+<div class="rvo-video"><iframe src="https://www.youtube-nocookie.com/embed/YzV1Y1AhFY8" title="Writing C unit tests without a framework" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+
+<p>Real C programmers write everything from scratch, reinvent wheels. I'm somewhat of a C
+programmer myself :)</p>
+<p>So when I felt the need to add unit tests to my C matrix library, I didn't want to
+immediately reach for the nearest C unit testing framework. I wanted to see what it
+takes to build my own.</p>
+<!-- more -->
+
+<p>C already gives us everything we need for basic unit testing:</p>
+<ul>
+<li><strong>Functions</strong> to wrap every single test in</li>
+<li><strong><code>assert()</code></strong> to make the program crash when a test fails</li>
+</ul>
+<p>That's it. The rest is adding a nice interface to kick off all the tests. The Makefile
+can take care of most of it, and I'll add a little bit of bash for some nice formatting
+and coloring.</p>
+<p>By the end of this article we'll be able to run <code>make test</code> and get this:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">test_mat_fun         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go"><span class="rvo-ansi-green">ALL GOOD</span></span>
+</span></code></pre></div>
+<h2 id="the-starting-point">The starting point</h2>
+<p>Last week we wrote a <a href="../../../10/30/c-matrix-library-from-scratch/">matrix library</a> from
+scratch. That's the code base I want to add tests to.</p>
+<p>This is what the project looks like:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>├── Makefile
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>└── src
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    ├── main.c
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    ├── mat
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    │   ├── mat.c
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    │   └── mat.h
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    └── rng
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        ├── rng.c
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        ├── rng.h
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        └── rng_zig_layers.c
+</span></code></pre></div>
+<p>And this is the interface of the matrix library:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rows</span><span class="p">,</span><span class="w"> </span><span class="n">cols</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span><span class="w"> </span><span class="n">Mat</span><span class="p">;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kt">void</span><span class="w"> </span><span class="nf">mat_fun</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="kt">void</span><span class="p">));</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kt">void</span><span class="w"> </span><span class="nf">mat_mul</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="kt">void</span><span class="w"> </span><span class="nf">mat_print</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Matrix multiplication is a perfect candidate for unit testing. It's easy to mess up an
+index somewhere, and the result still <em>looks</em> like a normal matrix with the right
+dimensions. We even swapped the loop order around last time for performance. That's
+exactly the kind of refactoring where I want to have the confidence that the math is
+still mathing.</p>
+<p>Right now the only "test" we have is <code>main.c</code>, which runs a benchmark and prints the
+time. It doesn't tell us anything about whether the results are correct.</p>
+<h2 id="folder-structure">Folder structure</h2>
+<p>The first question: where do we put the tests?</p>
+<p>I don't want to mix test code into my source files. I have worked on projects where
+testing was added "for the sake of testing" and the source code started to bend itself
+around the fact that it's being tested.</p>
+<p>I don't like that.</p>
+<p>I want the test code to be completely separate. A test can reach into the source code,
+but the source code doesn't need to know it's being tested.</p>
+<p>So all tests go into a <code>test</code> directory in the root of the project:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>├── Makefile
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>├── src
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│   └── ...
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="hll">└── test
+</span></span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="hll">    └── test_mat_mul.c
+</span></span></code></pre></div>
+<p>Each test file is a plain C file with its own <code>main()</code>, so it compiles into its own
+little executable. And inside each file, every unit test is just a function.</p>
+<h2 id="hello-test">Hello, test!</h2>
+<p>Let's start with our first test as simple as possible. One test file, one test function:</p>
+<div class="language-c highlight"><span class="filename">test/test_mat_mul.c</span><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;assert.h&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_mat_mul_square</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="n">test_mat_mul_square</span><span class="p">();</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>A test function takes nothing and returns nothing. Inside it, I follow a simple pattern:</p>
+<ol>
+<li>Set up the data (create some matrices)</li>
+<li>Run the thing we're testing</li>
+<li>Assert that the result is what we expect</li>
+</ol>
+<p>For now we just <code>assert(1)</code>, which passes.</p>
+<p><code>assert()</code> comes from <code>assert.h</code>. Officially it's a macro, not a function. If the
+condition is false, it prints an error message to stderr and aborts the program. That's
+exactly the behaviour we want from a failing test.</p>
+<p>Let's compile and run it manually:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="gp">$ </span>cc<span class="w"> </span>test/test_mat_mul.c
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="gp">$ </span>./a.out
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$?</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="go">0</span>
+</span></code></pre></div>
+<p>No output, exit code 0. The test passed.</p>
+<p>If we change it to <code>assert(0)</code>:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>cc<span class="w"> </span>test/test_mat_mul.c
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="gp">$ </span>./a.out
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="go">Assertion failed: (0), function test_mat_mul_square, file test_mat_mul.c, line 4.</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">zsh: abort      ./a.out</span>
+</span></code></pre></div>
+<p>We get the function name, the file and the line number for free. That's honestly most of
+what a testing framework would give us.</p>
+<p>This is the whole foundation. Everything that follows is just automating this: compile
+every test file, run every binary, and report which ones passed.</p>
+<h2 id="a-make-test-target">A <code>make test</code> target</h2>
+<p>Calling <code>cc</code> and <code>./a.out</code> by hand is not how I want to run my tests. I want to type:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span></code></pre></div>
+<p>If you try that now, something funny happens:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">make: `test&#39; is up to date.</span>
+</span></code></pre></div>
+<p>Make sees the <code>test</code> directory, thinks that's the target we want, and concludes it
+already exists. Nothing to do. That's why <code>test</code> needs to go into <code>.PHONY</code>. It's not a
+file we want to create, it's a command we want to run:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nf">.PHONY</span><span class="o">:</span><span class="w"> </span><span class="n">all</span> <span class="n">run</span> <span class="n">test</span> <span class="n">clean</span>
+</span></code></pre></div>
+<p>Now we get the error we expect:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="go">make: *** No rule to make target `test&#39;.  Stop.</span>
+</span></code></pre></div>
+<p>So what should the <code>test</code> target depend on? On the test binaries. Before we can run the
+tests, they have to be compiled. But we don't have a list of test binaries yet. We do
+have a list of test C files though, and we can derive one from the other.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the Makefile syntax below looks like some form of Elvish, I wrote an
+<a href="../../../08/05/levels-of-effective-makefile-cheatsheet/">entire article</a>
+that builds this Makefile up line by line.</p>
+</div>
+<h3 id="finding-all-test-files">Finding all test files</h3>
+<p>I don't want to manually list every test file. Make should find them for me based on a
+pattern, the same way it already finds all the source files:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nv">TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nv">TEST_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span>/*.c<span class="k">)</span>
+</span></code></pre></div>
+<p>Every <code>.c</code> file in the <code>test</code> directory is a test source. To make this a bit more
+interesting, let's add a second test file <code>test/test_dummy.c</code> with just an empty
+<code>main()</code> that returns 0.</p>
+<p>A trick I like for checking variables is a temporary <code>debug</code> target:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nf">debug</span><span class="o">:</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span>@echo<span class="w"> </span><span class="k">$(</span>TEST_SRCS<span class="k">)</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="gp">$ </span>make<span class="w"> </span>debug
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="go">test/test_dummy.c test/test_mat_mul.c</span>
+</span></code></pre></div>
+<p>And that prints out both test <code>.c</code> files. So far so good.</p>
+<h3 id="from-test-sources-to-test-binaries">From test sources to test binaries</h3>
+<p>Next, every test source becomes a test binary:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">TEST_BINS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span>/%.c,<span class="k">$(</span>BIN<span class="k">)</span>/<span class="k">$(</span>TEST<span class="k">)</span>/%,<span class="k">$(</span>TEST_SRCS<span class="k">))</span>
+</span></code></pre></div>
+<p><code>test/test_mat_mul.c</code> becomes <code>bin/test/test_mat_mul</code>.</p>
+<p>I put them in a <code>bin/test</code> subdirectory on purpose. The <code>bin</code> directory already holds
+our real executable <code>main</code>, and I don't want the test binaries mixed in with it.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="gp">$ </span>make<span class="w"> </span>debug
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="go">bin/test/test_dummy bin/test/test_mat_mul</span>
+</span></code></pre></div>
+<h3 id="compiling-the-tests">Compiling the tests</h3>
+<p>Now we can hook up the <code>test</code> target:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nf">test</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">TEST_BINS</span><span class="k">)</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span>@echo<span class="w"> </span>$^
+</span></code></pre></div>
+<p><code>$^</code> is a special variable that expands to all the prerequisites, so we don't have to
+repeat <code>$(TEST_BINS)</code>.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="go">make: *** No rule to make target `bin/test/test_dummy&#39;, needed by `test&#39;.  Stop.</span>
+</span></code></pre></div>
+<p>Fair enough. We never told make how to build a test binary.</p>
+<p>Our regular binaries are built in two steps: every <code>.c</code> becomes a <code>.o</code>, and then the
+objects get linked together. For the tests I don't need that. I want to go from <code>.c</code> to
+binary in one go, and link in the library objects, because those are what we're testing:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nf">$(BIN)/$(TEST)/%</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">TEST</span><span class="k">)</span>/%.<span class="n">c</span> <span class="k">$(</span><span class="nv">LIB_OBJS</span><span class="k">)</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span>@mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>@D<span class="k">)</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LDFLAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span><span class="k">$(</span>LIB_OBJS<span class="k">)</span><span class="w"> </span>-MMD<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</span></code></pre></div>
+<p>A couple of details here:</p>
+<ul>
+<li><code>mkdir -p $(@D)</code> creates <code>bin/test</code> if it doesn't exist yet.</li>
+<li>There's no <code>-c</code> flag, because we want a binary, not an object file.</li>
+<li><code>$&lt;</code> is only the <em>first</em> prerequisite, the test's <code>.c</code> file. So we have to add
+    <code>$(LIB_OBJS)</code> to the compile command explicitly. (I forgot this in the screencast
+    and got a whole battery of linker errors once the test actually called <code>mat_mul()</code>.)</li>
+<li><code>-MMD</code> writes a <code>.d</code> dependency file next to the binary. If we include those, make
+    knows to recompile a test when a header it includes changes.</li>
+</ul>
+<p>Including the dependency files looks like this:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nv">TEST_DEPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span>/%.c,<span class="k">$(</span>BIN<span class="k">)</span>/<span class="k">$(</span>TEST<span class="k">)</span>/%.d,<span class="k">$(</span>TEST_SRCS<span class="k">))</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="cp">-include $(DEPS) $(TEST_DEPS)</span>
+</span></code></pre></div>
+<p>And now:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="go">cc -Wall -Wextra -O3 test/test_dummy.c obj/mat/mat.o ... -MMD -o bin/test/test_dummy</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="go">cc -Wall -Wextra -O3 test/test_mat_mul.c obj/mat/mat.o ... -MMD -o bin/test/test_mat_mul</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="go">bin/test/test_dummy bin/test/test_mat_mul</span>
+</span></code></pre></div>
+<p>The tests compile, and we print their names.</p>
+<p>A nice side effect: a plain <code>make</code> only builds the <code>all</code> target, which doesn't depend on
+the tests. The test code only gets compiled when we ask for it with <code>make test</code>.</p>
+<h2 id="gluing-it-together-with-bash">Gluing it together with bash</h2>
+<p>Instead of printing the binaries, we should run them. And for each one, check whether
+it passed, and print it in green or red.</p>
+<p>You could probably code all of that up in the Makefile. But it would turn into a
+monstrosity, and the Makefile is already big enough. Bash isn't my favourite place to
+be, but it's a good tool for this job: a little glue between the Makefile and the test
+binaries.</p>
+<p>So the <code>test</code> target passes all the test binaries to a script:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nf">test</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">TEST_BINS</span><span class="k">)</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span>@<span class="k">$(</span>TEST<span class="k">)</span>/run_tests.sh<span class="w"> </span>$^
+</span></code></pre></div>
+<p>Let's create <code>test/run_tests.sh</code>:</p>
+<div class="language-bash highlight"><span class="filename">test/run_tests.sh</span><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="ch">#!/usr/bin/env bash</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Running the tests&quot;</span>
+</span></code></pre></div>
+<p>And make it executable if you haven't already: <code>chmod +x test/run_tests.sh</code></p>
+<p>Now the bash script is called on <code>make test</code>:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="go">Running the tests</span>
+</span></code></pre></div>
+<h3 id="looping-over-the-arguments">Looping over the arguments</h3>
+<p>The script receives the test binaries as arguments. In bash, <code>$1</code> is the first argument,
+<code>$2</code> the second, and so on (<code>$0</code> is the name of the script itself). But the magic <code>$@</code>
+variable gives us all of them at once.</p>
+<p>So we can loop over every test binary like this:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">for</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="k">do</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Testing </span><span class="nv">$test</span><span class="s2">&quot;</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="k">done</span>
+</span></code></pre></div>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="go">Testing bin/test/test_dummy</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="go">Testing bin/test/test_mat_mul</span>
+</span></code></pre></div>
+<p>This is only printing the file names of the test binaries, not running them yet. To run
+a test, we simply use the variable as a command: <code>$test</code>. And to know if it passed, we
+put it in an <code>if</code>. Bash considers an exit code of 0 as true, and anything else as false:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">for</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">do</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$test</span><span class="s2"> &quot;</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="nv">$test</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">  </span><span class="k">then</span>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;-&gt; PASS&quot;</span>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="w">  </span><span class="k">else</span>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;-&gt; FAIL&quot;</span>
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="w">  </span><span class="k">fi</span>
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="k">done</span>
+</span></code></pre></div>
+<p><code>fi</code> is bash's way of closing an <code>if</code>. I'm using <code>printf</code> instead of <code>echo</code> for the
+test name, because <code>echo</code> always adds a newline and I want the name and the result on
+the same line. <code>printf</code> works just like it does in C.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="go">bin/test/test_dummy -&gt; PASS</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="go">bin/test/test_mat_mul -&gt; PASS</span>
+</span></code></pre></div>
+<p>The tests are passing!</p>
+<h2 id="red-gold-and-green">Red (gold) and green</h2>
+<p>Adding colour is very easy in a bash script, and it improves the dev experience a lot.
+Green for pass, red for fail. For that we'll use ANSI escape codes. Here's the cheat
+sheet:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\033[31m</code></td>
+<td>Red</td>
+</tr>
+<tr>
+<td><code>\033[32m</code></td>
+<td>Green</td>
+</tr>
+<tr>
+<td><code>\033[0m</code></td>
+<td>Reset</td>
+</tr>
+</tbody>
+</table>
+<p><code>\033</code> is the escape character. You start a colour with one of these codes, print your
+text, and reset it afterwards.</p>
+<p>We can wrap this in two small functions:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>print_red<span class="o">()</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;\033[31m</span><span class="nv">$1</span><span class="s2">\033[0m&quot;</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>print_grn<span class="o">()</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;\033[32m</span><span class="nv">$1</span><span class="s2">\033[0m&quot;</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+</span></code></pre></div>
+<p>Bash functions look a lot like C functions, except you don't declare any parameters.
+Whatever you pass in is available as <code>$1</code>, <code>$2</code>, etc. inside the function.</p>
+<p>While we're at it, let's clean up the test names. I don't care about the <code>bin/test/</code>
+prefix, just the name of the test. <code>basename</code> takes care of that. And since we're using
+<code>printf</code> anyway, we print the name with a fixed width, so all the results line up:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">for</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="k">do</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;%-20s &quot;</span><span class="w"> </span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$test</span><span class="s2">&quot;</span><span class="k">)</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="nv">$test</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">  </span><span class="k">then</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">    </span>print_grn<span class="w"> </span><span class="s2">&quot;-&gt; PASS\n&quot;</span>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">  </span><span class="k">else</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">    </span>print_red<span class="w"> </span><span class="s2">&quot;-&gt; FAIL\n&quot;</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="w">  </span><span class="k">fi</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="k">done</span>
+</span></code></pre></div>
+<p><code>%20s</code> pads the name to 20 characters, aligned to the right. The <code>-</code> in <code>%-20s</code> aligns it
+to the left.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="go">test_dummy           <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span></code></pre></div>
+<h2 id="capturing-the-output">Capturing the output</h2>
+<p>But what happens when a test fails? We can make <code>test_dummy.c</code> fail and see. While we're
+at it we can also print some debug info like a real world test might do:</p>
+<div class="language-c highlight"><span class="filename">test/test_dummy.c</span><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;assert.h&gt;</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_that_fails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="hll"><span class="w">  </span><span class="n">puts</span><span class="p">(</span><span class="s">&quot;Some debug info&quot;</span><span class="p">);</span>
+</span></span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="hll"><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="p">}</span>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="w">  </span><span class="n">test_that_fails</span><span class="p">();</span>
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>
+</span><span id="__span-31-12"><a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-31-13"><a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>When we run it, we get this mess:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="go">test_dummy           Some debug info</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="go">Assertion failed: (0), function test_that_fails, file test_dummy.c, line 6.</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="go">test/run_tests.sh: line 6: 23556 Abort trap: 6           $test</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="go"><span class="rvo-ansi-red">-&gt; FAIL</span></span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span></code></pre></div>
+<p>The test is vomiting all its output straight into the terminal, before we get a chance
+to print the red "FAIL".</p>
+<p>What we actually want:</p>
+<ul>
+<li>When a test <strong>passes</strong>, hide the output, just say <code>PASS</code> in green.</li>
+<li>When a test <strong>fails</strong>, show all the output and error messages, for debugging.</li>
+</ul>
+<p>So we have to capture the output. In bash, <code>$(...)</code> runs a command and gives back
+whatever it printed:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">if</span><span class="w"> </span><span class="nv">output</span><span class="o">=</span><span class="k">$(</span><span class="nv">$test</span><span class="k">)</span>
+</span></code></pre></div>
+<p>This is a way to "catch" everything that <code>$test</code> spits out, and store it into <code>output</code>.</p>
+<p>The <code>if</code> still looks at the exit code of the test, so that logic still works.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="go">test_dummy           Assertion failed: (0), function test_that_fails, file test_dummy.c, line 6.</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="go"><span class="rvo-ansi-red">-&gt; FAIL</span></span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span></code></pre></div>
+<p>The debug info from <code>puts()</code> is gone, but the assert error message still weasels its way
+through. That's because <code>$(...)</code> only captures <code>stdout</code> (standard output), and
+<code>assert()</code> writes to <code>stderr</code> (standard error).</p>
+<p>Every process has three streams, each with a number (a file descriptor):</p>
+<table>
+<thead>
+<tr>
+<th>Stream</th>
+<th style="text-align: right;">File descriptor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stdin</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>stdout</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>stderr</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<p>With <code>$(...)</code> we're catching only <code>stdout</code>. But we want to catch both <code>stdout</code> and
+<code>stderr</code>. To achieve this, we can redirect <code>stderr</code> into <code>stdout</code> first, and then catch
+everything that ended up in <code>stdout</code>.</p>
+<p>So we want to redirect stream 2 into stream 1. A first humble attempt at this might look
+like <code>2&gt;1</code> (redirect stream 2 into stream 1). But this redirects stderr into a <em>file</em>
+called <code>1</code>. To redirect into a file descriptor, you need an <code>&amp;</code>. So we use <code>2&gt;&amp;1</code>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="k">if</span><span class="w"> </span><span class="nv">output</span><span class="o">=</span><span class="k">$(</span><span class="nv">$test</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="k">)</span>
+</span></code></pre></div>
+<p>Now both stdout and stderr are captured. All that's left is printing the output when the
+test fails:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="nv">output</span><span class="o">=</span><span class="k">$(</span><span class="nv">$test</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="k">)</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="w">  </span><span class="k">then</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="w">    </span>print_grn<span class="w"> </span><span class="s2">&quot;-&gt; PASS\n&quot;</span>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="w">  </span><span class="k">else</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="w">    </span>print_red<span class="w"> </span><span class="s2">&quot;-&gt; FAIL\n&quot;</span>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="hll"><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$output</span><span class="s2">&quot;</span>
+</span></span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="w">  </span><span class="k">fi</span>
+</span></code></pre></div>
+<p>And that fixes our formatting:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="go">test_dummy           <span class="rvo-ansi-red">-&gt; FAIL</span></span>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="go">Assertion failed: (0), function test_that_fails, file test_dummy.c, line 6.</span>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="go">Some debug info</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span></code></pre></div>
+<p>And when everything passes, all output is hidden:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="go">test_dummy           <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span></code></pre></div>
+<h3 id="fail-fast">Fail fast</h3>
+<p>One more thing. When a test fails, I don't want to see the rest of the results. I want
+to fix that one test first. So after printing the output of a failing test, we bail out
+with <code>exit</code>.</p>
+<p>If we make it to the end of the loop, every test passed, and we deserve some
+encouragement.</p>
+<p>Here's the full script:</p>
+<div class="language-bash highlight"><span class="filename">test/run_tests.sh</span><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="ch">#!/usr/bin/env bash</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>print_red<span class="o">()</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;\033[31m</span><span class="nv">$1</span><span class="s2">\033[0m&quot;</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>print_grn<span class="o">()</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;\033[32m</span><span class="nv">$1</span><span class="s2">\033[0m&quot;</span><span class="p">;</span><span class="w"> </span><span class="o">}</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a>
+</span><span id="__span-39-6"><a id="__codelineno-39-6" name="__codelineno-39-6" href="#__codelineno-39-6"></a><span class="k">for</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-39-7"><a id="__codelineno-39-7" name="__codelineno-39-7" href="#__codelineno-39-7"></a><span class="k">do</span>
+</span><span id="__span-39-8"><a id="__codelineno-39-8" name="__codelineno-39-8" href="#__codelineno-39-8"></a><span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;%-20s &quot;</span><span class="w"> </span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$test</span><span class="s2">&quot;</span><span class="k">)</span>
+</span><span id="__span-39-9"><a id="__codelineno-39-9" name="__codelineno-39-9" href="#__codelineno-39-9"></a>
+</span><span id="__span-39-10"><a id="__codelineno-39-10" name="__codelineno-39-10" href="#__codelineno-39-10"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="nv">output</span><span class="o">=</span><span class="k">$(</span><span class="nv">$test</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="k">)</span>
+</span><span id="__span-39-11"><a id="__codelineno-39-11" name="__codelineno-39-11" href="#__codelineno-39-11"></a><span class="w">  </span><span class="k">then</span>
+</span><span id="__span-39-12"><a id="__codelineno-39-12" name="__codelineno-39-12" href="#__codelineno-39-12"></a><span class="w">    </span>print_grn<span class="w"> </span><span class="s2">&quot;-&gt; PASS\n&quot;</span>
+</span><span id="__span-39-13"><a id="__codelineno-39-13" name="__codelineno-39-13" href="#__codelineno-39-13"></a><span class="w">  </span><span class="k">else</span>
+</span><span id="__span-39-14"><a id="__codelineno-39-14" name="__codelineno-39-14" href="#__codelineno-39-14"></a><span class="w">    </span>print_red<span class="w"> </span><span class="s2">&quot;-&gt; FAIL\n&quot;</span>
+</span><span id="__span-39-15"><a id="__codelineno-39-15" name="__codelineno-39-15" href="#__codelineno-39-15"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$output</span><span class="s2">&quot;</span>
+</span><span id="__span-39-16"><a id="__codelineno-39-16" name="__codelineno-39-16" href="#__codelineno-39-16"></a><span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+</span><span id="__span-39-17"><a id="__codelineno-39-17" name="__codelineno-39-17" href="#__codelineno-39-17"></a><span class="w">  </span><span class="k">fi</span>
+</span><span id="__span-39-18"><a id="__codelineno-39-18" name="__codelineno-39-18" href="#__codelineno-39-18"></a><span class="k">done</span>
+</span><span id="__span-39-19"><a id="__codelineno-39-19" name="__codelineno-39-19" href="#__codelineno-39-19"></a>
+</span><span id="__span-39-20"><a id="__codelineno-39-20" name="__codelineno-39-20" href="#__codelineno-39-20"></a>print_grn<span class="w"> </span><span class="s2">&quot;\nALL GOOD\n&quot;</span>
+</span></code></pre></div>
+<p>20 lines, including blank lines. That's our entire "test framework".</p>
+<p>Note that I <code>exit 0</code>, even on failure. The script handles and reports the failure
+itself, so I don't want make to add its own error message on top. If you run your tests
+in CI, you'll want <code>exit 1</code> here so the pipeline actually stops and doesn't deploy any
+garbage into production.</p>
+<h2 id="testing-the-real-matc-library">Testing the real mat.c library</h2>
+<p>Time to put it to the test (no pun intended). Let's write a real unit test for
+<code>mat_mul()</code>.</p>
+<h3 id="including-the-library">Including the library</h3>
+<p>First problem: how do we include <code>mat.h</code> from a test file? In <code>main.c</code>, we write:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mat/mat.h&quot;</span>
+</span></code></pre></div>
+<p>But from inside the <code>test</code> directory, that path doesn't exist. The path inside double
+quotes is relative to the file doing the including. So we need this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../src/mat/mat.h&quot;</span>
+</span></code></pre></div>
+<p>That works, but it's ugly. Instead, let's tell the compiler to also look in <code>src</code> for
+includes, with the <code>-I</code> flag:</p>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="nv">CFLAGS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>-Wall<span class="w"> </span>-Wextra<span class="w"> </span>-O3<span class="w"> </span>-I<span class="k">$(</span>SRC<span class="k">)</span>
+</span></code></pre></div>
+<p>(This line needs to come after <code>SRC</code> is defined.)</p>
+<p>Now <code>#include "mat/mat.h"</code> works the same in tests as it does in <code>main.c</code>.</p>
+<p>If your editor uses <code>clangd</code> like mine, it doesn't know about the Makefile, so it will
+still complain. Add the same flag to <code>compile_flags.txt</code> in the project root:</p>
+<div class="language-text highlight"><span class="filename">compile_flags.txt</span><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>-Wall
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>-Wextra
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>-Isrc
+</span></code></pre></div>
+<h3 id="the-first-real-test">The first real test</h3>
+<p>Let's multiply the same two 2x2 matrices as in the previous article:</p>
+<div class="arithmatex">\[
+\begin{bmatrix} 1 &amp; 2 \\ 3 &amp; 4 \end{bmatrix}
+\begin{bmatrix} 4 &amp; 3 \\ 2 &amp; 1 \end{bmatrix}
+=
+\begin{bmatrix} 8 &amp; 5 \\ 20 &amp; 13 \end{bmatrix}
+\]</div>
+<p>In C that looks like:</p>
+<div class="language-c highlight"><span class="filename">test/test_mat_mul.c</span><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mat/mat.h&quot;</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;assert.h&gt;</span>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stddef.h&gt;</span>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a>
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_mat_mul_square</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a><span class="w">  </span><span class="c1">// clang-format off</span>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-44-8"><a id="__codelineno-44-8" name="__codelineno-44-8" href="#__codelineno-44-8"></a><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-44-9"><a id="__codelineno-44-9" name="__codelineno-44-9" href="#__codelineno-44-9"></a><span class="w">    </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-44-10"><a id="__codelineno-44-10" name="__codelineno-44-10" href="#__codelineno-44-10"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-44-11"><a id="__codelineno-44-11" name="__codelineno-44-11" href="#__codelineno-44-11"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-44-12"><a id="__codelineno-44-12" name="__codelineno-44-12" href="#__codelineno-44-12"></a><span class="w">    </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-44-13"><a id="__codelineno-44-13" name="__codelineno-44-13" href="#__codelineno-44-13"></a><span class="w">    </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-44-14"><a id="__codelineno-44-14" name="__codelineno-44-14" href="#__codelineno-44-14"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-44-15"><a id="__codelineno-44-15" name="__codelineno-44-15" href="#__codelineno-44-15"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
+</span><span id="__span-44-16"><a id="__codelineno-44-16" name="__codelineno-44-16" href="#__codelineno-44-16"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-44-17"><a id="__codelineno-44-17" name="__codelineno-44-17" href="#__codelineno-44-17"></a><span class="w">    </span><span class="mi">8</span><span class="p">,</span><span class="w">    </span><span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-44-18"><a id="__codelineno-44-18" name="__codelineno-44-18" href="#__codelineno-44-18"></a><span class="w">    </span><span class="mi">20</span><span class="p">,</span><span class="w">   </span><span class="mi">13</span><span class="p">,</span>
+</span><span id="__span-44-19"><a id="__codelineno-44-19" name="__codelineno-44-19" href="#__codelineno-44-19"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-44-20"><a id="__codelineno-44-20" name="__codelineno-44-20" href="#__codelineno-44-20"></a><span class="w">  </span><span class="c1">// clang-format on</span>
+</span><span id="__span-44-21"><a id="__codelineno-44-21" name="__codelineno-44-21" href="#__codelineno-44-21"></a>
+</span><span id="__span-44-22"><a id="__codelineno-44-22" name="__codelineno-44-22" href="#__codelineno-44-22"></a><span class="w">  </span><span class="n">mat_mul</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-44-23"><a id="__codelineno-44-23" name="__codelineno-44-23" href="#__codelineno-44-23"></a>
+</span><span id="__span-44-24"><a id="__codelineno-44-24" name="__codelineno-44-24" href="#__codelineno-44-24"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">dst</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">rows</span><span class="p">);</span>
+</span><span id="__span-44-25"><a id="__codelineno-44-25" name="__codelineno-44-25" href="#__codelineno-44-25"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">dst</span><span class="p">.</span><span class="n">cols</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span>
+</span><span id="__span-44-26"><a id="__codelineno-44-26" name="__codelineno-44-26" href="#__codelineno-44-26"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">cols</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-44-27"><a id="__codelineno-44-27" name="__codelineno-44-27" href="#__codelineno-44-27"></a><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">dst</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-44-28"><a id="__codelineno-44-28" name="__codelineno-44-28" href="#__codelineno-44-28"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-44-29"><a id="__codelineno-44-29" name="__codelineno-44-29" href="#__codelineno-44-29"></a><span class="p">}</span>
+</span><span id="__span-44-30"><a id="__codelineno-44-30" name="__codelineno-44-30" href="#__codelineno-44-30"></a>
+</span><span id="__span-44-31"><a id="__codelineno-44-31" name="__codelineno-44-31" href="#__codelineno-44-31"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-44-32"><a id="__codelineno-44-32" name="__codelineno-44-32" href="#__codelineno-44-32"></a><span class="w">  </span><span class="n">test_mat_mul_square</span><span class="p">();</span>
+</span><span id="__span-44-33"><a id="__codelineno-44-33" name="__codelineno-44-33" href="#__codelineno-44-33"></a>
+</span><span id="__span-44-34"><a id="__codelineno-44-34" name="__codelineno-44-34" href="#__codelineno-44-34"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-44-35"><a id="__codelineno-44-35" name="__codelineno-44-35" href="#__codelineno-44-35"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Same pattern as before: set up, run, assert.</p>
+<p>The <code>// clang-format off</code> comments stop my formatter from flattening the matrices into a
+single line. I like being able to see the 2D shape of the data.</p>
+<p>The destination matrix is initialised with zeros. All matrices sit on the stack which is
+fine because they're so small. Without the <code>{0}</code>, it would be filled with whatever
+garbage was in memory, and I want the test to be completely deterministic.</p>
+<p>You might have noticed I compare floats with <code>==</code>. Normally that's a bad idea. But all
+these values are small whole numbers, which floats represent
+<a href="../../../10/02/how-floats-work/">exactly</a>, and there's no rounding happening in
+the multiplication. If that ever becomes a problem, I'll add an epsilon.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a><span class="go">test_dummy           <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-45-4"><a id="__codelineno-45-4" name="__codelineno-45-4" href="#__codelineno-45-4"></a>
+</span><span id="__span-45-5"><a id="__codelineno-45-5" name="__codelineno-45-5" href="#__codelineno-45-5"></a><span class="go"><span class="rvo-ansi-green">ALL GOOD</span></span>
+</span></code></pre></div>
+<p>Does it actually test anything? Let's change the expected <code>13</code> to <code>13.1</code>:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a><span class="go">test_dummy           <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-red">-&gt; FAIL</span></span>
+</span><span id="__span-46-4"><a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a><span class="go">Assertion failed: (dst.data[i] == exp.data[i]), function test_mat_mul_square, file test_mat_mul.c, line 27.</span>
+</span></code></pre></div>
+<p>It does. I always like to break a test on purpose once, just to make sure it can fail.</p>
+<h3 id="a-second-test">A second test</h3>
+<p>Let's add another test case: multiplying a column vector with a row vector.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_mat_mul_vec</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-47-2"><a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a><span class="w">  </span><span class="c1">// clang-format off</span>
+</span><span id="__span-47-3"><a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-47-4"><a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a><span class="w">    </span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-47-5"><a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a><span class="w">    </span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-47-6"><a id="__codelineno-47-6" name="__codelineno-47-6" href="#__codelineno-47-6"></a><span class="w">    </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-47-7"><a id="__codelineno-47-7" name="__codelineno-47-7" href="#__codelineno-47-7"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-47-8"><a id="__codelineno-47-8" name="__codelineno-47-8" href="#__codelineno-47-8"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-47-9"><a id="__codelineno-47-9" name="__codelineno-47-9" href="#__codelineno-47-9"></a><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-47-10"><a id="__codelineno-47-10" name="__codelineno-47-10" href="#__codelineno-47-10"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-47-11"><a id="__codelineno-47-11" name="__codelineno-47-11" href="#__codelineno-47-11"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[</span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
+</span><span id="__span-47-12"><a id="__codelineno-47-12" name="__codelineno-47-12" href="#__codelineno-47-12"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-47-13"><a id="__codelineno-47-13" name="__codelineno-47-13" href="#__codelineno-47-13"></a><span class="w">    </span><span class="mi">3</span><span class="p">,</span><span class="w">    </span><span class="mi">6</span><span class="p">,</span><span class="w">    </span><span class="mi">9</span><span class="p">,</span><span class="w">   </span><span class="mi">12</span><span class="p">,</span>
+</span><span id="__span-47-14"><a id="__codelineno-47-14" name="__codelineno-47-14" href="#__codelineno-47-14"></a><span class="w">    </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="mi">4</span><span class="p">,</span><span class="w">    </span><span class="mi">6</span><span class="p">,</span><span class="w">    </span><span class="mi">8</span><span class="p">,</span>
+</span><span id="__span-47-15"><a id="__codelineno-47-15" name="__codelineno-47-15" href="#__codelineno-47-15"></a><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w">    </span><span class="mi">2</span><span class="p">,</span><span class="w">    </span><span class="mi">3</span><span class="p">,</span><span class="w">    </span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-47-16"><a id="__codelineno-47-16" name="__codelineno-47-16" href="#__codelineno-47-16"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-47-17"><a id="__codelineno-47-17" name="__codelineno-47-17" href="#__codelineno-47-17"></a><span class="w">  </span><span class="c1">// clang-format on</span>
+</span><span id="__span-47-18"><a id="__codelineno-47-18" name="__codelineno-47-18" href="#__codelineno-47-18"></a>
+</span><span id="__span-47-19"><a id="__codelineno-47-19" name="__codelineno-47-19" href="#__codelineno-47-19"></a><span class="w">  </span><span class="n">mat_mul</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-47-20"><a id="__codelineno-47-20" name="__codelineno-47-20" href="#__codelineno-47-20"></a>
+</span><span id="__span-47-21"><a id="__codelineno-47-21" name="__codelineno-47-21" href="#__codelineno-47-21"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">dst</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">rows</span><span class="p">);</span>
+</span><span id="__span-47-22"><a id="__codelineno-47-22" name="__codelineno-47-22" href="#__codelineno-47-22"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">dst</span><span class="p">.</span><span class="n">cols</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span>
+</span><span id="__span-47-23"><a id="__codelineno-47-23" name="__codelineno-47-23" href="#__codelineno-47-23"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">cols</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-47-24"><a id="__codelineno-47-24" name="__codelineno-47-24" href="#__codelineno-47-24"></a><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">dst</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">exp</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-47-25"><a id="__codelineno-47-25" name="__codelineno-47-25" href="#__codelineno-47-25"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-47-26"><a id="__codelineno-47-26" name="__codelineno-47-26" href="#__codelineno-47-26"></a><span class="p">}</span>
+</span><span id="__span-47-27"><a id="__codelineno-47-27" name="__codelineno-47-27" href="#__codelineno-47-27"></a>
+</span><span id="__span-47-28"><a id="__codelineno-47-28" name="__codelineno-47-28" href="#__codelineno-47-28"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-47-29"><a id="__codelineno-47-29" name="__codelineno-47-29" href="#__codelineno-47-29"></a><span class="w">  </span><span class="n">test_mat_mul_square</span><span class="p">();</span>
+</span><span id="__span-47-30"><a id="__codelineno-47-30" name="__codelineno-47-30" href="#__codelineno-47-30"></a><span class="w">  </span><span class="n">test_mat_mul_vec</span><span class="p">();</span>
+</span><span id="__span-47-31"><a id="__codelineno-47-31" name="__codelineno-47-31" href="#__codelineno-47-31"></a>
+</span><span id="__span-47-32"><a id="__codelineno-47-32" name="__codelineno-47-32" href="#__codelineno-47-32"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-47-33"><a id="__codelineno-47-33" name="__codelineno-47-33" href="#__codelineno-47-33"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>I like how <code>main()</code> turns into a little table of contents of the test file. And turning
+off a single test is as easy as commenting out one line.</p>
+<p>But those assertions at the bottom are now copy-pasted. Time to DRY this up.</p>
+<h2 id="removing-duplication">Removing duplication</h2>
+<p>It's just C, so the obvious fix is a function:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">assert_mat_eq</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">rows</span><span class="p">);</span>
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span>
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a><span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Works fine, until a test fails:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a><span class="go">Assertion failed: (a.data[i] == b.data[i]), function assert_mat_eq, file test_mat_mul.c, line 9.</span>
+</span></code></pre></div>
+<p>The assertion now reports <code>assert_mat_eq</code> as the failing function. But which test called
+it? <code>test_mat_mul_square</code> or <code>test_mat_mul_vec</code>? The useful error output from <code>assert()</code>
+is gone.</p>
+<p>You could solve this by turning the helper into a macro, since <code>assert()</code> itself is a
+macro. But there's a simpler way: let the helper <em>check</em>, and let the test <em>assert</em>:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="n">assert</span><span class="p">(</span><span class="n">mat_eq</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">));</span>
+</span></code></pre></div>
+<p>So <code>mat_eq()</code> returns whether two matrices are equal. I could return an <code>int</code>, but
+then 1 means success and 0 means failure, which is the opposite of what an exit code
+means. A <code>bool</code> (from <code>stdbool.h</code>) makes the intent clear:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">mat_eq</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">rows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-51-3"><a id="__codelineno-51-3" name="__codelineno-51-3" href="#__codelineno-51-3"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-51-4"><a id="__codelineno-51-4" name="__codelineno-51-4" href="#__codelineno-51-4"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-51-5"><a id="__codelineno-51-5" name="__codelineno-51-5" href="#__codelineno-51-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">cols</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-51-6"><a id="__codelineno-51-6" name="__codelineno-51-6" href="#__codelineno-51-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-51-7"><a id="__codelineno-51-7" name="__codelineno-51-7" href="#__codelineno-51-7"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-51-8"><a id="__codelineno-51-8" name="__codelineno-51-8" href="#__codelineno-51-8"></a>
+</span><span id="__span-51-9"><a id="__codelineno-51-9" name="__codelineno-51-9" href="#__codelineno-51-9"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-51-10"><a id="__codelineno-51-10" name="__codelineno-51-10" href="#__codelineno-51-10"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-51-11"><a id="__codelineno-51-11" name="__codelineno-51-11" href="#__codelineno-51-11"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-51-12"><a id="__codelineno-51-12" name="__codelineno-51-12" href="#__codelineno-51-12"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-51-13"><a id="__codelineno-51-13" name="__codelineno-51-13" href="#__codelineno-51-13"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-51-14"><a id="__codelineno-51-14" name="__codelineno-51-14" href="#__codelineno-51-14"></a>
+</span><span id="__span-51-15"><a id="__codelineno-51-15" name="__codelineno-51-15" href="#__codelineno-51-15"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-51-16"><a id="__codelineno-51-16" name="__codelineno-51-16" href="#__codelineno-51-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Now the error message gives us the right failing test function:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="go">Assertion failed: (mat_eq(dst, exp)), function test_mat_mul_square, file test_mat_mul.c, line 42.</span>
+</span></code></pre></div>
+<h3 id="better-failure-messages">Better failure messages</h3>
+<p>Remember that our bash script hides all output unless a test fails? That means we can be
+super verbose with <code>printf()</code> calls without worrying about cluttering up the terminal.
+It's hidden until you need it.</p>
+<p>So let's say <em>why</em> the matrices aren't equal:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="kt">bool</span><span class="w"> </span><span class="nf">mat_eq</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">rows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;rows mismatch (a: %u != b: %u)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">rows</span><span class="p">);</span>
+</span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">cols</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;cols mismatch (a: %u != b: %u)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span>
+</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a>
+</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-53-12"><a id="__codelineno-53-12" name="__codelineno-53-12" href="#__codelineno-53-12"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-53-13"><a id="__codelineno-53-13" name="__codelineno-53-13" href="#__codelineno-53-13"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;a:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-53-14"><a id="__codelineno-53-14" name="__codelineno-53-14" href="#__codelineno-53-14"></a><span class="w">      </span><span class="n">mat_print</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</span><span id="__span-53-15"><a id="__codelineno-53-15" name="__codelineno-53-15" href="#__codelineno-53-15"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;b:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-53-16"><a id="__codelineno-53-16" name="__codelineno-53-16" href="#__codelineno-53-16"></a><span class="w">      </span><span class="n">mat_print</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-53-17"><a id="__codelineno-53-17" name="__codelineno-53-17" href="#__codelineno-53-17"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;data mismatch @%zu (a: %f != b: %f)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-53-18"><a id="__codelineno-53-18" name="__codelineno-53-18" href="#__codelineno-53-18"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-53-19"><a id="__codelineno-53-19" name="__codelineno-53-19" href="#__codelineno-53-19"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-53-20"><a id="__codelineno-53-20" name="__codelineno-53-20" href="#__codelineno-53-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-53-21"><a id="__codelineno-53-21" name="__codelineno-53-21" href="#__codelineno-53-21"></a>
+</span><span id="__span-53-22"><a id="__codelineno-53-22" name="__codelineno-53-22" href="#__codelineno-53-22"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-53-23"><a id="__codelineno-53-23" name="__codelineno-53-23" href="#__codelineno-53-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>We even get to reuse <code>mat_print()</code> from the matrix library. Now a failing test looks like
+this:</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a><span class="go">test_dummy           <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-red">-&gt; FAIL</span></span>
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a><span class="go">Assertion failed: (mat_eq(dst, exp)), function test_mat_mul_square, file test_mat_mul.c, line 49.</span>
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a><span class="go">a:</span>
+</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a><span class="go">   8.00   5.00</span>
+</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a><span class="go">  20.00  13.00</span>
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="go">b:</span>
+</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a><span class="go">   8.00   5.00</span>
+</span><span id="__span-54-10"><a id="__codelineno-54-10" name="__codelineno-54-10" href="#__codelineno-54-10"></a><span class="go">  20.00  13.10</span>
+</span><span id="__span-54-11"><a id="__codelineno-54-11" name="__codelineno-54-11" href="#__codelineno-54-11"></a><span class="go">data mismatch @3 (a: 13.000000 != b: 13.100000)</span>
+</span></code></pre></div>
+<p>We see which test failed, on which line, what both matrices look like, and exactly which
+element is off.</p>
+<h2 id="sharing-helpers-between-test-files">Sharing helpers between test files</h2>
+<p>Let's test another function from the library: <code>mat_fun()</code>. It fills every element of a
+matrix with the result of a function you pass in. In <code>main.c</code> we use it with an RNG
+function to create random matrices.</p>
+<p>If you're gonna rely on random numbers in your unit tests, you're gonna have a bad time.
+So I'll pass in a function that does nothing but return an underwhelming <code>1.0f</code> float:</p>
+<div class="language-c highlight"><span class="filename">test/test_mat_fun.c</span><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mat/mat.h&quot;</span>
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;assert.h&gt;</span>
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="kt">float</span><span class="w"> </span><span class="nf">one</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a>
+</span><span id="__span-55-6"><a id="__codelineno-55-6" name="__codelineno-55-6" href="#__codelineno-55-6"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_mat_fun_ones</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-55-7"><a id="__codelineno-55-7" name="__codelineno-55-7" href="#__codelineno-55-7"></a><span class="w">  </span><span class="c1">// clang-format off</span>
+</span><span id="__span-55-8"><a id="__codelineno-55-8" name="__codelineno-55-8" href="#__codelineno-55-8"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
+</span><span id="__span-55-9"><a id="__codelineno-55-9" name="__codelineno-55-9" href="#__codelineno-55-9"></a><span class="w">  </span><span class="n">Mat</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-55-10"><a id="__codelineno-55-10" name="__codelineno-55-10" href="#__codelineno-55-10"></a><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-55-11"><a id="__codelineno-55-11" name="__codelineno-55-11" href="#__codelineno-55-11"></a><span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-55-12"><a id="__codelineno-55-12" name="__codelineno-55-12" href="#__codelineno-55-12"></a><span class="w">  </span><span class="p">}};</span>
+</span><span id="__span-55-13"><a id="__codelineno-55-13" name="__codelineno-55-13" href="#__codelineno-55-13"></a><span class="w">  </span><span class="c1">// clang-format on</span>
+</span><span id="__span-55-14"><a id="__codelineno-55-14" name="__codelineno-55-14" href="#__codelineno-55-14"></a>
+</span><span id="__span-55-15"><a id="__codelineno-55-15" name="__codelineno-55-15" href="#__codelineno-55-15"></a><span class="w">  </span><span class="n">mat_fun</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-55-16"><a id="__codelineno-55-16" name="__codelineno-55-16" href="#__codelineno-55-16"></a>
+</span><span id="__span-55-17"><a id="__codelineno-55-17" name="__codelineno-55-17" href="#__codelineno-55-17"></a><span class="w">  </span><span class="n">assert</span><span class="p">(</span><span class="n">mat_eq</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="p">));</span>
+</span><span id="__span-55-18"><a id="__codelineno-55-18" name="__codelineno-55-18" href="#__codelineno-55-18"></a><span class="p">}</span>
+</span><span id="__span-55-19"><a id="__codelineno-55-19" name="__codelineno-55-19" href="#__codelineno-55-19"></a>
+</span><span id="__span-55-20"><a id="__codelineno-55-20" name="__codelineno-55-20" href="#__codelineno-55-20"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-55-21"><a id="__codelineno-55-21" name="__codelineno-55-21" href="#__codelineno-55-21"></a><span class="w">  </span><span class="n">test_mat_fun_ones</span><span class="p">();</span>
+</span><span id="__span-55-22"><a id="__codelineno-55-22" name="__codelineno-55-22" href="#__codelineno-55-22"></a>
+</span><span id="__span-55-23"><a id="__codelineno-55-23" name="__codelineno-55-23" href="#__codelineno-55-23"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-55-24"><a id="__codelineno-55-24" name="__codelineno-55-24" href="#__codelineno-55-24"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Except <code>mat_eq()</code> lives in <code>test_mat_mul.c</code>. Copy-pasting it into every test would be
+pretty dumb, so let's fix that.</p>
+<p>One option is to move <code>mat_eq()</code> into the matrix library itself. But I'm only using it
+in tests, and I don't want the library to change just because it's being tested. The
+tests should adapt to the source code, not the other way around.</p>
+<p>So instead, let's give the tests their own little header: <code>test/helpers.h</code>. And let
+<code>mat_eq()</code> live there:</p>
+<div class="language-c highlight"><span class="filename">test/helpers.h</span><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="cp">#ifndef _TEST_HELPERS_H</span>
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a><span class="cp">#define _TEST_HELPERS_H</span>
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mat/mat.h&quot;</span>
+</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdbool.h&gt;</span>
+</span><span id="__span-56-6"><a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+</span><span id="__span-56-7"><a id="__codelineno-56-7" name="__codelineno-56-7" href="#__codelineno-56-7"></a>
+</span><span id="__span-56-8"><a id="__codelineno-56-8" name="__codelineno-56-8" href="#__codelineno-56-8"></a><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">mat_eq</span><span class="p">(</span><span class="n">Mat</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">Mat</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-56-9"><a id="__codelineno-56-9" name="__codelineno-56-9" href="#__codelineno-56-9"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">rows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-56-10"><a id="__codelineno-56-10" name="__codelineno-56-10" href="#__codelineno-56-10"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;rows mismatch (a: %u != b: %u)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">rows</span><span class="p">);</span>
+</span><span id="__span-56-11"><a id="__codelineno-56-11" name="__codelineno-56-11" href="#__codelineno-56-11"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-56-12"><a id="__codelineno-56-12" name="__codelineno-56-12" href="#__codelineno-56-12"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-56-13"><a id="__codelineno-56-13" name="__codelineno-56-13" href="#__codelineno-56-13"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">cols</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-56-14"><a id="__codelineno-56-14" name="__codelineno-56-14" href="#__codelineno-56-14"></a><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;cols mismatch (a: %u != b: %u)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span>
+</span><span id="__span-56-15"><a id="__codelineno-56-15" name="__codelineno-56-15" href="#__codelineno-56-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-56-16"><a id="__codelineno-56-16" name="__codelineno-56-16" href="#__codelineno-56-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-56-17"><a id="__codelineno-56-17" name="__codelineno-56-17" href="#__codelineno-56-17"></a>
+</span><span id="__span-56-18"><a id="__codelineno-56-18" name="__codelineno-56-18" href="#__codelineno-56-18"></a><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">rows</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">cols</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-56-19"><a id="__codelineno-56-19" name="__codelineno-56-19" href="#__codelineno-56-19"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-56-20"><a id="__codelineno-56-20" name="__codelineno-56-20" href="#__codelineno-56-20"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;a:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-56-21"><a id="__codelineno-56-21" name="__codelineno-56-21" href="#__codelineno-56-21"></a><span class="w">      </span><span class="n">mat_print</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</span><span id="__span-56-22"><a id="__codelineno-56-22" name="__codelineno-56-22" href="#__codelineno-56-22"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;b:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span id="__span-56-23"><a id="__codelineno-56-23" name="__codelineno-56-23" href="#__codelineno-56-23"></a><span class="w">      </span><span class="n">mat_print</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</span><span id="__span-56-24"><a id="__codelineno-56-24" name="__codelineno-56-24" href="#__codelineno-56-24"></a><span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;data mismatch @%zu (a: %f != b: %f)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-56-25"><a id="__codelineno-56-25" name="__codelineno-56-25" href="#__codelineno-56-25"></a><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-56-26"><a id="__codelineno-56-26" name="__codelineno-56-26" href="#__codelineno-56-26"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-56-27"><a id="__codelineno-56-27" name="__codelineno-56-27" href="#__codelineno-56-27"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-56-28"><a id="__codelineno-56-28" name="__codelineno-56-28" href="#__codelineno-56-28"></a>
+</span><span id="__span-56-29"><a id="__codelineno-56-29" name="__codelineno-56-29" href="#__codelineno-56-29"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-56-30"><a id="__codelineno-56-30" name="__codelineno-56-30" href="#__codelineno-56-30"></a><span class="p">}</span>
+</span><span id="__span-56-31"><a id="__codelineno-56-31" name="__codelineno-56-31" href="#__codelineno-56-31"></a>
+</span><span id="__span-56-32"><a id="__codelineno-56-32" name="__codelineno-56-32" href="#__codelineno-56-32"></a><span class="cp">#endif </span><span class="c1">// _TEST_HELPERS_H</span>
+</span></code></pre></div>
+<p>A few notes:</p>
+<ul>
+<li>The include guard is prefixed with <code>_TEST_</code>, to make sure it never collides with a
+    header from the real source code called <code>helpers.h</code>.</li>
+<li>It's header-only. It's simple enough that a <code>.c</code> + <code>.h</code> pair would be overkill.</li>
+<li>Implementing functions in a header isn't conventional, but with <code>static inline</code> it's
+    acceptable. <code>static</code> gives every test file its own copy, so there are no duplicate
+    symbol errors at link time. <code>inline</code> keeps the compiler from warning about it when a
+    test file doesn't use it.</li>
+</ul>
+<p>Because the Makefile includes the <code>.d</code> files generated by <code>-MMD</code>, every test that
+includes <code>helpers.h</code> gets recompiled when the helper changes.</p>
+<p>Now both test files start like this:</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;helpers.h&quot;</span>
+</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;mat/mat.h&quot;</span>
+</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;assert.h&gt;</span>
+</span></code></pre></div>
+<p>And the <code>stdbool.h</code>, <code>stddef.h</code> and <code>stdio.h</code> includes can go, because <code>helpers.h</code> brings
+them in.</p>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="go">test_mat_fun         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="go">test_mat_mul         <span class="rvo-ansi-green">-&gt; PASS</span></span>
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="go"><span class="rvo-ansi-green">ALL GOOD</span></span>
+</span></code></pre></div>
+<h2 id="the-full-setup">The full setup</h2>
+<p>This is the final project structure:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>├── Makefile
+</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a>├── compile_flags.txt
+</span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a>├── src
+</span><span id="__span-59-4"><a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a>│   ├── main.c
+</span><span id="__span-59-5"><a id="__codelineno-59-5" name="__codelineno-59-5" href="#__codelineno-59-5"></a>│   ├── mat
+</span><span id="__span-59-6"><a id="__codelineno-59-6" name="__codelineno-59-6" href="#__codelineno-59-6"></a>│   │   ├── mat.c
+</span><span id="__span-59-7"><a id="__codelineno-59-7" name="__codelineno-59-7" href="#__codelineno-59-7"></a>│   │   └── mat.h
+</span><span id="__span-59-8"><a id="__codelineno-59-8" name="__codelineno-59-8" href="#__codelineno-59-8"></a>│   └── rng
+</span><span id="__span-59-9"><a id="__codelineno-59-9" name="__codelineno-59-9" href="#__codelineno-59-9"></a>│       └── ...
+</span><span id="__span-59-10"><a id="__codelineno-59-10" name="__codelineno-59-10" href="#__codelineno-59-10"></a>└── test
+</span><span id="__span-59-11"><a id="__codelineno-59-11" name="__codelineno-59-11" href="#__codelineno-59-11"></a>    ├── helpers.h
+</span><span id="__span-59-12"><a id="__codelineno-59-12" name="__codelineno-59-12" href="#__codelineno-59-12"></a>    ├── run_tests.sh
+</span><span id="__span-59-13"><a id="__codelineno-59-13" name="__codelineno-59-13" href="#__codelineno-59-13"></a>    ├── test_mat_fun.c
+</span><span id="__span-59-14"><a id="__codelineno-59-14" name="__codelineno-59-14" href="#__codelineno-59-14"></a>    └── test_mat_mul.c
+</span></code></pre></div>
+<p>Adding a new test means adding a function and calling it from <code>main()</code>. Adding a new
+test file means dropping a <code>.c</code> file in <code>test</code>. Make picks it up automatically.</p>
+<p>And this is the full Makefile:</p>
+<div class="language-makefile highlight"><span class="filename">Makefile</span><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="nv">NAME</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>main
+</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a><span class="nv">SRC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>src
+</span><span id="__span-60-3"><a id="__codelineno-60-3" name="__codelineno-60-3" href="#__codelineno-60-3"></a><span class="nv">OBJ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>obj
+</span><span id="__span-60-4"><a id="__codelineno-60-4" name="__codelineno-60-4" href="#__codelineno-60-4"></a><span class="nv">BIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>bin
+</span><span id="__span-60-5"><a id="__codelineno-60-5" name="__codelineno-60-5" href="#__codelineno-60-5"></a><span class="nv">TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-60-6"><a id="__codelineno-60-6" name="__codelineno-60-6" href="#__codelineno-60-6"></a>
+</span><span id="__span-60-7"><a id="__codelineno-60-7" name="__codelineno-60-7" href="#__codelineno-60-7"></a><span class="nv">CFLAGS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>-Wall<span class="w"> </span>-Wextra<span class="w"> </span>-O3<span class="w"> </span>-I<span class="k">$(</span>SRC<span class="k">)</span>
+</span><span id="__span-60-8"><a id="__codelineno-60-8" name="__codelineno-60-8" href="#__codelineno-60-8"></a><span class="nv">LDFLAGS</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-60-9"><a id="__codelineno-60-9" name="__codelineno-60-9" href="#__codelineno-60-9"></a><span class="nv">LDLIBS</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-60-10"><a id="__codelineno-60-10" name="__codelineno-60-10" href="#__codelineno-60-10"></a>
+</span><span id="__span-60-11"><a id="__codelineno-60-11" name="__codelineno-60-11" href="#__codelineno-60-11"></a><span class="nv">EXE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>BIN<span class="k">)</span>/<span class="k">$(</span>NAME<span class="k">)</span>
+</span><span id="__span-60-12"><a id="__codelineno-60-12" name="__codelineno-60-12" href="#__codelineno-60-12"></a>
+</span><span id="__span-60-13"><a id="__codelineno-60-13" name="__codelineno-60-13" href="#__codelineno-60-13"></a><span class="nv">BIN_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/*.c<span class="k">)</span>
+</span><span id="__span-60-14"><a id="__codelineno-60-14" name="__codelineno-60-14" href="#__codelineno-60-14"></a><span class="nv">LIB_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/*/*.c<span class="k">)</span>
+</span><span id="__span-60-15"><a id="__codelineno-60-15" name="__codelineno-60-15" href="#__codelineno-60-15"></a><span class="nv">ALL_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>BIN_SRCS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LIB_SRCS<span class="k">)</span>
+</span><span id="__span-60-16"><a id="__codelineno-60-16" name="__codelineno-60-16" href="#__codelineno-60-16"></a>
+</span><span id="__span-60-17"><a id="__codelineno-60-17" name="__codelineno-60-17" href="#__codelineno-60-17"></a><span class="nv">LIB_OBJS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/%.c,<span class="k">$(</span>OBJ<span class="k">)</span>/%.o,<span class="k">$(</span>LIB_SRCS<span class="k">))</span>
+</span><span id="__span-60-18"><a id="__codelineno-60-18" name="__codelineno-60-18" href="#__codelineno-60-18"></a><span class="nv">BIN_OBJS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/%.c,<span class="k">$(</span>OBJ<span class="k">)</span>/%.o,<span class="k">$(</span>BIN_SRCS<span class="k">))</span>
+</span><span id="__span-60-19"><a id="__codelineno-60-19" name="__codelineno-60-19" href="#__codelineno-60-19"></a><span class="nv">BINS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/%.c,<span class="k">$(</span>BIN<span class="k">)</span>/%,<span class="k">$(</span>BIN_SRCS<span class="k">))</span>
+</span><span id="__span-60-20"><a id="__codelineno-60-20" name="__codelineno-60-20" href="#__codelineno-60-20"></a><span class="nv">DEPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span>/%.c,<span class="k">$(</span>OBJ<span class="k">)</span>/%.d,<span class="k">$(</span>ALL_SRCS<span class="k">))</span>
+</span><span id="__span-60-21"><a id="__codelineno-60-21" name="__codelineno-60-21" href="#__codelineno-60-21"></a>
+</span><span id="__span-60-22"><a id="__codelineno-60-22" name="__codelineno-60-22" href="#__codelineno-60-22"></a><span class="nv">TEST_SRCS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span>/*.c<span class="k">)</span>
+</span><span id="__span-60-23"><a id="__codelineno-60-23" name="__codelineno-60-23" href="#__codelineno-60-23"></a><span class="nv">TEST_BINS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span>/%.c,<span class="k">$(</span>BIN<span class="k">)</span>/<span class="k">$(</span>TEST<span class="k">)</span>/%,<span class="k">$(</span>TEST_SRCS<span class="k">))</span>
+</span><span id="__span-60-24"><a id="__codelineno-60-24" name="__codelineno-60-24" href="#__codelineno-60-24"></a><span class="nv">TEST_DEPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">$(</span>patsubst<span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span>/%.c,<span class="k">$(</span>BIN<span class="k">)</span>/<span class="k">$(</span>TEST<span class="k">)</span>/%.d,<span class="k">$(</span>TEST_SRCS<span class="k">))</span>
+</span><span id="__span-60-25"><a id="__codelineno-60-25" name="__codelineno-60-25" href="#__codelineno-60-25"></a>
+</span><span id="__span-60-26"><a id="__codelineno-60-26" name="__codelineno-60-26" href="#__codelineno-60-26"></a><span class="nf">all</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">BINS</span><span class="k">)</span>
+</span><span id="__span-60-27"><a id="__codelineno-60-27" name="__codelineno-60-27" href="#__codelineno-60-27"></a>
+</span><span id="__span-60-28"><a id="__codelineno-60-28" name="__codelineno-60-28" href="#__codelineno-60-28"></a><span class="nf">$(BIN)/%</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">OBJ</span><span class="k">)</span>/%.<span class="n">o</span> <span class="k">$(</span><span class="nv">LIB_OBJS</span><span class="k">)</span>
+</span><span id="__span-60-29"><a id="__codelineno-60-29" name="__codelineno-60-29" href="#__codelineno-60-29"></a><span class="w">    </span>@mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>@D<span class="k">)</span>
+</span><span id="__span-60-30"><a id="__codelineno-60-30" name="__codelineno-60-30" href="#__codelineno-60-30"></a><span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LDFLAGS<span class="k">)</span><span class="w"> </span>$^<span class="w"> </span><span class="k">$(</span>LDLIBS<span class="k">)</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-60-31"><a id="__codelineno-60-31" name="__codelineno-60-31" href="#__codelineno-60-31"></a>
+</span><span id="__span-60-32"><a id="__codelineno-60-32" name="__codelineno-60-32" href="#__codelineno-60-32"></a><span class="nf">$(OBJ)/%.o</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">SRC</span><span class="k">)</span>/%.<span class="n">c</span>
+</span><span id="__span-60-33"><a id="__codelineno-60-33" name="__codelineno-60-33" href="#__codelineno-60-33"></a><span class="w">    </span>@mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>@D<span class="k">)</span>
+</span><span id="__span-60-34"><a id="__codelineno-60-34" name="__codelineno-60-34" href="#__codelineno-60-34"></a><span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span>-c<span class="w"> </span>-MMD<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-60-35"><a id="__codelineno-60-35" name="__codelineno-60-35" href="#__codelineno-60-35"></a>
+</span><span id="__span-60-36"><a id="__codelineno-60-36" name="__codelineno-60-36" href="#__codelineno-60-36"></a><span class="nf">run</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">EXE</span><span class="k">)</span>
+</span><span id="__span-60-37"><a id="__codelineno-60-37" name="__codelineno-60-37" href="#__codelineno-60-37"></a><span class="w">    </span>@<span class="k">$(</span>EXE<span class="k">)</span>
+</span><span id="__span-60-38"><a id="__codelineno-60-38" name="__codelineno-60-38" href="#__codelineno-60-38"></a>
+</span><span id="__span-60-39"><a id="__codelineno-60-39" name="__codelineno-60-39" href="#__codelineno-60-39"></a><span class="nf">test</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">TEST_BINS</span><span class="k">)</span>
+</span><span id="__span-60-40"><a id="__codelineno-60-40" name="__codelineno-60-40" href="#__codelineno-60-40"></a><span class="w">    </span>@<span class="k">$(</span>TEST<span class="k">)</span>/run_tests.sh<span class="w"> </span>$^
+</span><span id="__span-60-41"><a id="__codelineno-60-41" name="__codelineno-60-41" href="#__codelineno-60-41"></a>
+</span><span id="__span-60-42"><a id="__codelineno-60-42" name="__codelineno-60-42" href="#__codelineno-60-42"></a><span class="nf">$(BIN)/$(TEST)/%</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">TEST</span><span class="k">)</span>/%.<span class="n">c</span> <span class="k">$(</span><span class="nv">LIB_OBJS</span><span class="k">)</span>
+</span><span id="__span-60-43"><a id="__codelineno-60-43" name="__codelineno-60-43" href="#__codelineno-60-43"></a><span class="w">    </span>@mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>@D<span class="k">)</span>
+</span><span id="__span-60-44"><a id="__codelineno-60-44" name="__codelineno-60-44" href="#__codelineno-60-44"></a><span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LDFLAGS<span class="k">)</span><span class="w"> </span>$&lt;<span class="w"> </span><span class="k">$(</span>LIB_OBJS<span class="k">)</span><span class="w"> </span>-MMD<span class="w"> </span>-o<span class="w"> </span><span class="nv">$@</span>
+</span><span id="__span-60-45"><a id="__codelineno-60-45" name="__codelineno-60-45" href="#__codelineno-60-45"></a>
+</span><span id="__span-60-46"><a id="__codelineno-60-46" name="__codelineno-60-46" href="#__codelineno-60-46"></a><span class="nf">hot</span><span class="o">:</span>
+</span><span id="__span-60-47"><a id="__codelineno-60-47" name="__codelineno-60-47" href="#__codelineno-60-47"></a><span class="w">    </span>@find<span class="w"> </span><span class="k">$(</span>SRC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>TEST<span class="k">)</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="p">|</span><span class="w"> </span>entr<span class="w"> </span>-c<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
+</span><span id="__span-60-48"><a id="__codelineno-60-48" name="__codelineno-60-48" href="#__codelineno-60-48"></a>
+</span><span id="__span-60-49"><a id="__codelineno-60-49" name="__codelineno-60-49" href="#__codelineno-60-49"></a><span class="nf">clean</span><span class="o">:</span>
+</span><span id="__span-60-50"><a id="__codelineno-60-50" name="__codelineno-60-50" href="#__codelineno-60-50"></a><span class="w">    </span>@rm<span class="w"> </span>-rf<span class="w"> </span><span class="k">$(</span>BIN<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OBJ<span class="k">)</span>
+</span><span id="__span-60-51"><a id="__codelineno-60-51" name="__codelineno-60-51" href="#__codelineno-60-51"></a>
+</span><span id="__span-60-52"><a id="__codelineno-60-52" name="__codelineno-60-52" href="#__codelineno-60-52"></a><span class="cp">-include $(DEPS) $(TEST_DEPS)</span>
+</span><span id="__span-60-53"><a id="__codelineno-60-53" name="__codelineno-60-53" href="#__codelineno-60-53"></a>
+</span><span id="__span-60-54"><a id="__codelineno-60-54" name="__codelineno-60-54" href="#__codelineno-60-54"></a><span class="nf">.PHONY</span><span class="o">:</span><span class="w"> </span><span class="n">all</span> <span class="n">run</span> <span class="n">test</span> <span class="n">hot</span> <span class="n">clean</span>
+</span><span id="__span-60-55"><a id="__codelineno-60-55" name="__codelineno-60-55" href="#__codelineno-60-55"></a><span class="nf">.SECONDARY</span><span class="o">:</span><span class="w"> </span><span class="k">$(</span><span class="nv">LIB_OBJS</span><span class="k">)</span> <span class="k">$(</span><span class="nv">BIN_OBJS</span><span class="k">)</span>
+</span></code></pre></div>
+<p>The <code>.SECONDARY</code> line fixes an unrelated annoyance: on a fresh build, make treated the
+<code>.o</code> files as means-to-an-end files and deleted them, so the next build had to start
+over. Marking them as secondary keeps them around.</p>
+<p>And the <code>hot</code> target re-runs <code>make test</code> (using
+<a href="https://github.com/eradman/entr" target="_blank" rel="noopener">entr</a>) every time a file in <code>src</code> or <code>test</code> changes.
+Save a file, and you immediately see green or red.</p>
+<hr />
+<p>No frameworks, no magic black boxes. Just cozy, pure C functions, <code>assert()</code>, a Makefile
+target and 20 lines of bash.</p>
+<p>Everything in this setup is something you can read and understand in a few minutes, and
+change whenever you want it to behave differently.</p>
+<p>You can grab the code from <a href="https://github.com/vanderoost/mat.c" target="_blank" rel="noopener">GitHub</a>.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+  
+<aside class="rvo-subscribe">
+  <div class="rvo-subscribe__cta">
+    <h2 class="rvo-subscribe__title">Stay in the loop</h2>
+    <p class="rvo-subscribe__pitch">
+      Get new articles in your inbox. No spam, unsubscribe any time.
+    </p>
+  </div>
+  <form
+    class="rvo-subscribe__form"
+    action="https://app.kit.com/forms/9960727/subscriptions"
+    method="post"
+  >
+    <label class="rvo-subscribe__label" for="rvo-subscribe-email">
+      Email address
+    </label>
+    <input
+      class="rvo-subscribe__input"
+      id="rvo-subscribe-email"
+      type="email"
+      name="email_address"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
+    /><input type="hidden" name="fields[source]" value="https://vanderoost.com/articles/2026/11/06/c-unit-testing-without-a-framework/" />
+    <button class="rvo-subscribe__button md-button md-button--primary" type="submit">
+      Subscribe
+    </button>
+  </form>
+  <p class="rvo-subscribe__status" aria-live="polite"></p>
+</aside>
+      
+    </article>
+  </div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../../10/30/c-matrix-library-from-scratch/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Writing a C matrix library">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Writing a C matrix library
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../13/automated-macos-setup-bash-script/" class="md-footer__link md-footer__link--next" aria-label="Next: Setting up macOS with a bash one-liner">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Setting up macOS with a bash one-liner
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener">Richard van der Oost</a>. All rights reserved.
+
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://blendergrid.com" target="_blank" rel="noopener" title="blendergrid.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64v384c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm112 352h32c17.7 0 32 14.3 32 32v80h-96v-80c0-17.7 14.3-32 32-32M96 112c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16M96 240c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16zm144-16h32c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16h-32c-8.8 0-16-7.2-16-16v-32c0-8.8 7.2-16 16-16"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/vanderoost" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/@richardvdoost" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M549.7 124.1c-6.2-23.7-24.8-42.3-48.3-48.6C458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5c-23.5 6.3-42 24.9-48.3 48.6C15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8C117.3 448 288.1 448 288.1 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6V175.2l142.7 81.2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/richardvdoost/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.instant", "navigation.instant.prefetch", "navigation.indexes", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.expand", "navigation.sections", "navigation.top", "content.tooltips", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+      
+        <script src="../../../../../javascripts/subscribe.js"></script>
+      
+        <script src="../../../../../javascripts/katex.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js"></script>
+      
+    
+  </body>
+</html>
