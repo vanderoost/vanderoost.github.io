@@ -134,6 +134,7 @@ plugins:
       categories_allowed:
         - Automation
         - Tutorials
+        - Machine Learning
   - tags
   - optimize
   - rss:

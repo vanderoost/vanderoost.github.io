@@ -409,6 +409,30 @@ footer.md-footer {
   --rvo-draw-light-green-highlight: #00a000;
 }
 
+/* Plot colors, from tools/plot.py. Tokyo Night Day / Night, matching the
+   code highlighting above. The Day values are also the fallbacks plot.py
+   writes into the SVG, and what the cross-post PNG is drawn in. */
+[data-md-color-scheme="default"] {
+  --rvo-plot-fg:      #3760bf;
+  --rvo-plot-grid:    #848cb5;
+  --rvo-plot-blue:    #2e7de9;
+  --rvo-plot-red:     #f52a65;
+  --rvo-plot-green:   #587539;
+  --rvo-plot-orange:  #b15c00;
+  --rvo-plot-magenta: #9854f1;
+  --rvo-plot-cyan:    #007197;
+}
+[data-md-color-scheme="slate"] {
+  --rvo-plot-fg:      #c0caf5;
+  --rvo-plot-grid:    #565f89;
+  --rvo-plot-blue:    #7aa2f7;
+  --rvo-plot-red:     #f7768e;
+  --rvo-plot-green:   #9ece6a;
+  --rvo-plot-orange:  #ff9e64;
+  --rvo-plot-magenta: #bb9af7;
+  --rvo-plot-cyan:    #7dcfff;
+}
+
 /* Inlined tldraw drawings (see hooks/drawings.py). CSS beats the width and
    height attributes tldraw bakes into an export, so the viewBox alone decides
    the aspect ratio and the drawing scales down on a phone. */
@@ -446,3 +470,12 @@ footer.md-footer {
 .md-typeset .rvo-ansi-blue    { color: var(--rvo-ansi-blue); }
 .md-typeset .rvo-ansi-magenta { color: var(--rvo-ansi-magenta); }
 .md-typeset .rvo-ansi-cyan    { color: var(--rvo-ansi-cyan); }
+
+/* Center tables horizontally */
+.md-typeset__scrollwrap {
+  text-align: center;
+}
+
+.md-typeset__scrollwrap table {
+  text-align: start;
+}

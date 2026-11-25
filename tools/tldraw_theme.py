@@ -165,6 +165,8 @@ VIEWBOX = re.compile(
 DIMENSION = re.compile(r'\b(width|height)="([\d.]+)"')
 
 VAR = "var(--rvo-draw-"
+PLOT_VAR = "var(--rvo-plot-"
+PLOT_FALLBACK = re.compile(r"var\(--rvo-plot-[a-z-]+,\s*(#[0-9a-fA-F]{3,8})\s*\)")
 
 # Bumped whenever standalone() starts producing a different picture from the
 # same drawing. The published filename is a hash of the source file, which is
@@ -191,8 +193,13 @@ def published_name(source: Path) -> str:
     Defined here so hooks/drawings.py, which writes the file, and the
     syndication tool, which writes the link, cannot disagree about it.
     """
-    seed = f"{RENDER}".encode() + source.read_bytes()
-    return f"{source.stem}.{hashlib.sha256(seed).hexdigest()[:8]}.png"
+    return fingerprint(source.stem, source.read_bytes())
+
+
+def fingerprint(stem: str, svg: bytes) -> str:
+    """published_name() for an SVG that has no file, like a plot fence's."""
+    seed = f"{RENDER}".encode() + svg
+    return f"{stem}.{hashlib.sha256(seed).hexdigest()[:8]}.png"
 
 
 def _closing(text: str, opening: int) -> int:
@@ -220,12 +227,26 @@ def flatten(svg: str) -> str:
     known = entries()
     out, position = [], 0
     while True:
-        start = svg.find(VAR, position)
+        start = min(
+            (i for i in (svg.find(VAR, position), svg.find(PLOT_VAR, position)) if i >= 0),
+            default=-1,
+        )
         if start < 0:
             out.append(svg[position:])
             return "".join(out)
 
         end = _closing(svg, start + len("var"))
+        # A plot's colors are not tldraw's: tools/plot.py writes the light
+        # (Tokyo Night Day) value as the fallback, always a plain sRGB hex.
+        plot = PLOT_FALLBACK.fullmatch(svg[start:end])
+        if svg.startswith(PLOT_VAR, start):
+            if not plot:
+                raise SystemExit(f"a plot color needs a #hex fallback: {svg[start:end]!r}")
+            out.append(svg[position:start])
+            out.append(plot.group(1))
+            position = end
+            continue
+
         name = re.match(r"var\((--rvo-draw-[a-z0-9-]+)", svg[start:end])
         if not name:
             raise SystemExit(f"cannot read a variable name in {svg[start:end][:60]!r}")

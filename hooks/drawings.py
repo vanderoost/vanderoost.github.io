@@ -1,5 +1,9 @@
 """Inline ![Caption](drawing:file.svg), themed, so the page's CSS colors it.
 
+Plots get the same treatment: a ```plot fence is drawn by tools/plot.py,
+whose SVG uses the same theme variables, and from there on is handled exactly
+like a drawing -- inlined here, published as a PNG for cross-posts below.
+
 An <img src="drawing.svg"> is a separate document: it cannot see the page's
 stylesheet, so the CSS variables that carry the theme would never resolve and
 every drawing would keep the colors it was exported with. Inlining the SVG
@@ -49,15 +53,20 @@ _spec = importlib.util.spec_from_file_location("tldraw_theme", _TOOL)
 tldraw_theme = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(tldraw_theme)
 
+_PLOT = Path(__file__).resolve().parent.parent / "tools" / "plot.py"
+_spec = importlib.util.spec_from_file_location("plot", _PLOT)
+plot = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(plot)
+
 # A drawing is converted once per build, not once per reference, and survives
 # across the rebuilds of "mkdocs serve" unless the file itself changes.
 _CACHE: dict[tuple[str, int], str] = {}
 
-# Destination path inside site_dir -> the drawing that should be written there.
+# Destination path inside site_dir -> the themed SVG to write there as a PNG.
 # Filled while pages are rendered and drained by on_post_build(). Cleared at
 # the start of every build so a drawing removed from an article during
 # "mkdocs serve" stops being published.
-_REFERENCED: dict[str, Path] = {}
+_REFERENCED: dict[str, str] = {}
 
 
 def _themed(source: Path, src_path: str) -> str:
@@ -78,6 +87,8 @@ EMBED = re.compile(r"!\[(?P<title>[^\]]*)\]\(drawing:(?P<src>[^)\s]+)\)")
 # drawing: and absolute URLs, and only relative paths to local files remain.
 PLAIN_SVG = re.compile(r'!\[[^\]]*\]\((?P<src>[^)\s:]+\.svg)(?:\s+"[^"]*")?\)')
 FENCE = re.compile(r"^\s*(?P<fence>```+|~~~+)")
+PLOT_OPEN = re.compile(r"^(?P<indent>\s*)(?P<fence>```+|~~~+)plot\b(?P<attrs>.*)$")
+TITLE = re.compile(r'\btitle="(?P<title>[^"]*)"')
 INLINE_CODE = re.compile(r"(`+[^`]*`+)")
 
 # Matches the opening <svg ...> tag, so the accessible name can be injected.
@@ -93,16 +104,42 @@ def _inline(match: re.Match, page_dir: Path, src_path: str, dest_dir: str) -> st
     if not source.is_file():
         raise PluginError(f"{src_path}: no such drawing: {match.group('src')}")
 
-    _REFERENCED[f"{dest_dir}/{tldraw_theme.published_name(source)}"] = source
+    svg = _themed(source, src_path)
+    _REFERENCED[f"{dest_dir}/{tldraw_theme.published_name(source)}"] = svg
+    return _figure(svg, match.group("title"), match.group("src"), src_path)
 
-    svg = _themed(source, src_path).strip()
+
+def _plot(opening: re.Match, body: list[str], page_dir: Path, src_path: str,
+          dest_dir: str) -> str:
+    title = TITLE.search(opening.group("attrs"))
+    if not title:
+        raise PluginError(
+            f'{src_path}: a plot fence needs a title, as in ```plot title="..."; '
+            "it is the plot's accessible name and its alt text in cross-posts"
+        )
+    # Indented, the <div> would sit inside a Markdown code block or list item
+    # and come out as escaped text rather than a picture.
+    if opening.group("indent"):
+        raise PluginError(f"{src_path}: a plot fence must start at the margin")
+
+    try:
+        svg = plot.render(plot.parse("\n".join(body)), page_dir)
+    except plot.PlotError as error:
+        raise PluginError(f"{src_path}: plot {title.group('title')!r}: {error}") from error
+
+    _REFERENCED[f"{dest_dir}/{tldraw_theme.fingerprint('plot', svg.encode())}"] = svg
+    return _figure(svg, title.group("title"), "plot", src_path)
+
+
+def _figure(svg: str, caption: str, name: str, src_path: str) -> str:
+    svg = svg.strip()
     open_tag = SVG_OPEN.search(svg)
     if not open_tag:
-        raise PluginError(f"{src_path}: {match.group('src')} is not an SVG")
+        raise PluginError(f"{src_path}: {name} is not an SVG")
 
     # role="img" plus a <title> is what makes the drawing announce itself as a
     # single image with a name, instead of as a pile of anonymous paths.
-    title = _escape(match.group("title"))
+    title = _escape(caption)
     labelled = (
         open_tag.group(0).rstrip(">")
         + ' role="img" aria-label="' + title.replace('"', "&quot;") + '">'
@@ -157,9 +194,19 @@ def on_page_markdown(markdown: str, page, config, files) -> str:
             _refuse_plain(match, page_dir, src_path, config)
         return EMBED.sub(lambda m: _inline(m, page_dir, src_path, dest_dir), part)
 
-    out, fence = [], None
+    out, fence, plot_open, plot_body = [], None, None, []
     for line in markdown.split("\n"):
         opening = FENCE.match(line)
+        if plot_open is not None:
+            if opening and opening.group("fence") >= plot_open.group("fence"):
+                out.append(_plot(plot_open, plot_body, page_dir, src_path, dest_dir))
+                plot_open, plot_body = None, []
+            else:
+                plot_body.append(line)
+            continue
+        if fence is None and (match := PLOT_OPEN.match(line)):
+            plot_open = match
+            continue
         if fence is None and opening:
             fence = opening.group("fence")
         elif fence is not None and opening and opening.group("fence") >= fence:
@@ -170,6 +217,8 @@ def on_page_markdown(markdown: str, page, config, files) -> str:
                 for part in INLINE_CODE.split(line)
             )
         out.append(line)
+    if plot_open is not None:
+        raise PluginError(f"{src_path}: a plot fence is never closed")
     return "\n".join(out)
 
 
@@ -203,8 +252,8 @@ def on_post_build(config):
     from PIL import Image
 
     site_dir = Path(config["site_dir"])
-    for dest, source in _REFERENCED.items():
-        svg = tldraw_theme.standalone(_themed(source, dest))
+    for dest, themed in _REFERENCED.items():
+        svg = tldraw_theme.standalone(themed)
         page = site_dir / dest
         page.parent.mkdir(parents=True, exist_ok=True)
         try:
@@ -212,7 +261,7 @@ def on_post_build(config):
                 bytestring=svg.encode("utf-8"), output_width=WIDTH
             )
         except Exception as error:
-            raise PluginError(f"{source}: could not rasterize: {error}") from error
+            raise PluginError(f"{dest}: could not rasterize: {error}") from error
 
         image = Image.open(io.BytesIO(raw))
         # standalone() paints a background, so the alpha channel carries

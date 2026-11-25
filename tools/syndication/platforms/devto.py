@@ -25,8 +25,8 @@ MAX_TAGS = 4
 MARKDOWN_ESCAPE = re.compile(r"\\[!-/:-@\[-`{-~]")
 
 
-def _katex(tex: str) -> str:
-    """Forem's math is a Liquid block tag; it does not read $$."""
+def _katex(tex: str, inline: bool = False) -> str:
+    """Forem's math is a Liquid block tag; it does not read $$ or $."""
     # The body goes through Liquid, so {{ or {% inside the LaTeX would be
     # read as template syntax rather than reaching KaTeX.
     if "{{" in tex or "{%" in tex:
@@ -43,7 +43,7 @@ def _katex(tex: str) -> str:
             f"LaTeX {escaped.group(0)!r} would lose its backslash to dev.to's "
             f"Markdown escapes: {tex[:70]}"
         )
-    return "{% katex %}" + tex + "{% endkatex %}"
+    return "{% katex" + (" inline" if inline else "") + " %}" + tex + "{% endkatex %}"
 
 
 # Forem renders body_markdown through Liquid, so this is a real embed rather
@@ -54,6 +54,7 @@ DIALECT = Dialect(
     # Forem has no Mermaid renderer, so the fence degrades to a code block.
     mermaid=False,
     math=_katex,
+    inline_math=lambda tex: _katex(tex, inline=True),
 )
 
 

@@ -23,7 +23,7 @@ import re
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 
-from .. import tldraw_theme
+from .. import plot, tldraw_theme
 from .posts import Post
 
 # Every construct below is matched only outside fenced and inline code, so an
@@ -124,6 +124,8 @@ class Dialect:
     # How a $$ display-math block is spelled, given its LaTeX on one line.
     # None leaves $$ as written, for a platform (or preview) that reads it.
     math: Callable[[str], str] | None = None
+    # The same for inline $...$ math, given the LaTeX between the dollars.
+    inline_math: Callable[[str], str] | None = None
 
 
 def _linked_thumbnail(video_id: str, caption: str) -> str:
@@ -433,6 +435,52 @@ def _local_asset(post: Post, target: str) -> str | None:
     return _asset_url(post, name) if (post.folder / name).is_file() else None
 
 
+PLOT_OPEN = re.compile(r"^(?P<fence>```+|~~~+)plot\b(?P<attrs>.*)$")
+PLOT_TITLE = re.compile(r'\btitle="(?P<title>[^"]*)"')
+
+
+def _plots(text: str, post: Post, where: str) -> str:
+    """Turn each ```plot fence into the PNG hooks/drawings.py published for it.
+
+    The name is a fingerprint of the SVG, so this draws the plot again to learn
+    it -- the same render() call the hook made, giving the same bytes.
+    """
+    out: list[str] = []
+    fence: str | None = None
+    opening: re.Match | None = None
+    body: list[str] = []
+    for line in text.split("\n"):
+        fenced = FENCE.match(line)
+        if opening is None:
+            # A plot fence quoted inside another code block is an example of
+            # one, not a plot, so only a fence opened at the top level counts.
+            if fence is None and (match := PLOT_OPEN.match(line)):
+                opening = match
+                continue
+            if fence is None and fenced:
+                fence = fenced.group("fence")
+            elif fence is not None and fenced and fenced.group("fence") >= fence:
+                fence = None
+            out.append(line)
+            continue
+        if fenced and fenced.group("fence") >= opening.group("fence"):
+            title = PLOT_TITLE.search(opening.group("attrs"))
+            if not title:
+                raise TransformError(f"{where}: a plot fence has no title=")
+            try:
+                svg = plot.render(plot.parse("\n".join(body)), post.folder)
+            except plot.PlotError as error:
+                raise TransformError(f"{where}: plot: {error}") from error
+            name = tldraw_theme.fingerprint("plot", svg.encode())
+            out.append(f"![{title.group('title')}]({_asset_url(post, name)})")
+            opening, body = None, []
+        else:
+            body.append(line)
+    if opening is not None:
+        raise TransformError(f"{where}: a plot fence is never closed")
+    return "\n".join(out)
+
+
 def _image(match: re.Match, post: Post, dialect: Dialect) -> str:
     alt, target = match.group("alt"), match.group("target")
 
@@ -562,6 +610,12 @@ def _math(text: str, dialect: Dialect, where: str) -> str:
     return "\n".join(out)
 
 
+# Inline $...$ the way arithmatex reads it: no space just inside either
+# dollar, and no digit right after the closing one, so "costs $5 or $10" is
+# left alone. Runs after _math, so $$ blocks are already gone or kept whole.
+INLINE_MATH = re.compile(r"(?<![\\$])\$(?![\s$])(?P<tex>[^$\n]*?[^\s\\])\$(?![$\d])")
+
+
 def to_portable(
     post: Post,
     posts: list[Post],
@@ -584,6 +638,7 @@ def to_portable(
     body = H1.sub("", body, count=1)
     body = MORE.sub("", body)
 
+    body = _plots(body, post, where)
     body = _blocks(body, where)
     body = _fences(body, dialect, where)
     body = _math(body, dialect, where)
@@ -593,6 +648,8 @@ def to_portable(
         part = ICON.sub("", part)
         for pattern, replacement in CRITIC:
             part = pattern.sub(replacement, part)
+        if dialect.inline_math:
+            part = INLINE_MATH.sub(lambda m: dialect.inline_math(m.group("tex")), part)
         return KEYS.sub(lambda m: f"`{m.group(1)}`", part)
 
     body = walk_prose(body, inline)
