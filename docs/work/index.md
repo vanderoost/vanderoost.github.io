@@ -13,7 +13,7 @@ There are two ways to work with me, depending on who you are:
 
 <div class="grid cards" markdown>
 
--   **Consulting for company projects**
+-   **Consulting / company projects**
 
     ---
 
