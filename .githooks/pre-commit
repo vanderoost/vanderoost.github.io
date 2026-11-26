@@ -1,0 +1,9 @@
+#!/bin/sh
+# Compress any PNG or JPEG in this commit and stage the result, so images are
+# committed small and the build only has to copy them. Enabled per clone with:
+#
+#     git config core.hooksPath .githooks
+#
+# Images that are already compressed are skipped, and a missing pngquant only
+# prints a warning, so this never blocks a commit for that reason.
+exec uv run --quiet python -m tools.optimize_images --staged

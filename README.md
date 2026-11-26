@@ -138,6 +138,22 @@ published URL comes from the `slug` in the post's front matter.
 
 Only genuinely shared images belong in `docs/assets/`.
 
+Images are compressed before they are committed, not during the build. A
+pre-commit hook does it: any PNG or JPEG in a commit is compressed (pngquant
+for PNG, quality 60 for JPEG) and the smaller file is what gets committed.
+Enable it once per clone, and install pngquant (`brew install pngquant`):
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Images that are already compressed are skipped, so nothing is compressed
+twice. Without pngquant the hook only warns. To run it by hand instead:
+
+```bash
+uv run python -m tools.optimize_images
+```
+
 YouTube videos use the same image-like syntax, with a `youtube:` target and the
 11-character video id — the part after `v=` in the watch URL:
 

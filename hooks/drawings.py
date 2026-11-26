@@ -228,10 +228,9 @@ WIDTH = 1600
 
 # A drawing is flat colour and antialiasing, so a small palette costs nothing
 # visible and saves about two thirds of the file. Done with Pillow rather than
-# by shelling out to pngquant: the "optimize" plugin cannot reach these files,
-# because they are written after it has already run, and Pillow is a
-# dependency everywhere this builds while pngquant is an apt package CI
-# happens to install.
+# by shelling out to pngquant: these files are written during the build, so
+# tools/optimize_images.py never sees them, and Pillow is a dependency
+# everywhere this builds while pngquant is not installed in CI.
 COLORS = 64
 
 # Matches the rect standalone() paints, so flattening changes nothing.
