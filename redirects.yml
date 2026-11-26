@@ -6,9 +6,16 @@
 # and on a slug that collides with a real page.
 #
 
-# Calendly
+# Calendly. Video descriptions use these short links, so swapping a booking
+# tool or event later is a one-line change here.
 coffee-chat: https://calendly.com/vanderoost/introduction-call
+intro-call: https://calendly.com/vanderoost/introduction-call
 ai-discovery-call: https://calendly.com/vanderoost/ai-assessment
+paid-call: https://calendly.com/vanderoost/one-on-one-help
+
+# Site sections
+newsletter: https://vanderoost.com/#newsletter
+portfolio: https://vanderoost.com/work/#case-studies
 
 # Google docs
 ai-tools: https://docs.google.com/document/d/1wiCcXNlYI8SBDT_mtvwMmS_9GB86y9ynYamH_lXw8sw
