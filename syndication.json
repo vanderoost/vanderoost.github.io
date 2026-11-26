@@ -98,6 +98,17 @@
           "url": "https://dev.to/vanderoost/writing-c-unit-tests-without-a-framework-277b"
         }
       }
+    },
+    "2026-11-13_macos-bootstrap": {
+      "canonical_url": "https://vanderoost.com/articles/2026/11/13/automated-macos-setup-bash-script/",
+      "platforms": {
+        "devto": {
+          "id": "5125467",
+          "payload_hash": "95bf3730d8dfb379c3c2cdf6070ae25f35b247b504be104fa0fceda0c87a0642",
+          "synced_at": "2026-11-26T14:36:33Z",
+          "url": "https://dev.to/vanderoost/setting-up-macos-with-a-bash-one-liner-2hcd"
+        }
+      }
     }
   },
   "version": 1
