@@ -1,5 +1,5 @@
 site_name: vanderoost
-site_description: I automate tech companies
+site_description: I build software from first principles, from C to neural networks
 site_url: https://vanderoost.com
 site_author: Richard van der Oost
 
@@ -7,12 +7,12 @@ nav:
   - About: index.md 
   - Articles:
       - articles/index.md
-  - Case Studies:
-    - Overview: portfolio/index.md
-    - Projects:
-      - portfolio/projects/dentist-appointment-routing.md
-      - portfolio/projects/3d-printing-pipeline.md
-      - portfolio/projects/blendergrid-swarm-engine.md
+  - Work with me:
+      - work/index.md
+      - Case Studies:
+          - portfolio/projects/dentist-appointment-routing.md
+          - portfolio/projects/3d-printing-pipeline.md
+          - portfolio/projects/blendergrid-swarm-engine.md
 
 theme:
   name: material

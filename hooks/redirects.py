@@ -89,10 +89,11 @@ def _check(slug, url, site_dir):
             f"{REDIRECTS_FILE}: target for '{slug}' must be an absolute "
             f"http(s) URL, got {url!r}"
         )
-    # The site is already fully built by the time this runs, so anything still
-    # standing on the slug is a real page. Silently overwriting it would take a
-    # published URL off the site without a trace in the diff.
-    if (site_dir / slug).exists():
+    # The site is already fully built by the time this runs, so an index.html
+    # on the slug is a real page. Silently overwriting it would take a
+    # published URL off the site without a trace in the diff. A bare directory
+    # is fine: /portfolio/ forwards while /portfolio/projects/... stay pages.
+    if (site_dir / slug / "index.html").exists():
         raise PluginError(
             f"{REDIRECTS_FILE}: '{slug}' collides with a page the site already "
             f"builds at /{slug}/"

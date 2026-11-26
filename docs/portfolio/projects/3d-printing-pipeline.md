@@ -202,6 +202,6 @@ repeatable, measurable process. And the ability to grow without growing the team
     30-minute strategy session to discuss your automation challenges and explore how
     we can work together.
 
-    [Book Free Intro Call :material-arrow-top-right:](https://calendly.com/vanderoost/introduction-call){ .md-button .md-button--primary }
+    [Book Free Intro Call :material-arrow-top-right:](/intro-call/){ .md-button .md-button--primary }
 
 </div>
