@@ -2,3 +2,11 @@
 .md-typeset .md-button {
   border-radius: var(--rvo-radius-sm);
 }
+
+/* The alternative to a primary button: filled the same way, in a different
+   color. Hover falls through to Material's accent color, like primary. */
+.md-typeset .md-button--secondary {
+  background-color: var(--rvo-button-secondary-bg);
+  border-color: var(--rvo-button-secondary-bg);
+  color: var(--md-default-bg-color);
+}

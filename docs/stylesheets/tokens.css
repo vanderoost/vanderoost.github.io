@@ -181,4 +181,8 @@
   /* A panel that sits on the page: a slightly lighter (dark mode) or darker
      (light mode) fill instead of a border. */
   --rvo-surface-bg: var(--md-default-fg-color--lightest);
+
+  /* Filled secondary button, next to the primary one */
+  --rvo-button-secondary-bg: var(--rvo-h1-color);
+
 }

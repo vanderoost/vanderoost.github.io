@@ -23,6 +23,31 @@
   border-color: var(--rvo-divider-line-color);
 }
 
+/* Pin the end of a card to its bottom edge. Cards in a row share the tallest
+   card's height, so marking the first element of the closing group, for
+   example the price line above a button, lines that group up across cards:
+
+       **€90 / 60 minutes**
+       { .rvo-card-bottom }
+
+   Only a card with the marker becomes a flex column. In a column, margins
+   between siblings no longer collapse, so bottom margins are dropped: the top
+   margins alone give the same spacing as before. The auto margin then soaks up
+   the spare height, and the padding keeps a minimum gap in the tallest card. */
+.md-typeset .grid.cards > :is(ul, ol) > li:has(> .rvo-card-bottom),
+.md-typeset .grid > .card:has(> .rvo-card-bottom) {
+  display: flex;
+  flex-direction: column;
+}
+.md-typeset .grid.cards > :is(ul, ol) > li:has(> .rvo-card-bottom) > *,
+.md-typeset .grid > .card:has(> .rvo-card-bottom) > * {
+  margin-bottom: 0;
+}
+.md-typeset .grid .rvo-card-bottom {
+  margin-top: auto;
+  padding-top: 1em;
+}
+
 /* Testimonial cards */
 .grid.cards.testimonials {
     grid-template-columns: 1fr !important;
