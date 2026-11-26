@@ -9,7 +9,7 @@ subscribe: true
 
 # Work with me
 
-There are two ways to work with me, depending on who you are.
+There are two ways to work with me, depending on who you are:
 
 <div class="grid cards" markdown>
 
@@ -17,42 +17,41 @@ There are two ways to work with me, depending on who you are.
 
     ---
 
-    I build software that takes repetitive work off your team's plate, from
-    workflow automation to distributed infrastructure. Let's see if your
-    project is a good fit.
+    I build software that takes repetitive admin work off your team's plate.
+
+    Let's discuss your challenges and see if your project is a good fit.
 
     **Free 30-minute intro call**
+    { .rvo-card-bottom }
 
     [Book an intro call :material-arrow-top-right:](/intro-call/){ .md-button .md-button--primary }
 
--   :material-code-braces:{ .lg .middle } **I'm a developer and want 1:1 help**
+-   :material-code-braces:{ .lg .middle } **I want 1:1 help / coaching**
 
     ---
 
-    A paid 60-minute video call. Bring your code or questions: code review, learning C
-    and machine learning from first principles, or getting unstuck on a project.
+    A paid 60-minute video call. Bring your code or questions. Programming help,
+    learning C and machine learning from first principles, or getting unstuck on a
+    project.
 
     **Refund guarantee**: If it's not a good fit, you get your money back.
 
     **€90 / 60 minutes**
+    { .rvo-card-bottom }
 
-    [Book a paid call :material-arrow-top-right:](/paid-call/){ .md-button }
+    [Book a paid call :material-arrow-top-right:](/paid-call/){ .md-button .md-button--secondary }
 
 </div>
 
-Just want to keep learning? [Subscribe to the newsletter](#newsletter) and get
-every new deep-dive in your inbox.
-
 ## For companies
 
-I'm a technical founder with 12 years of experience shipping and running
-software. I find the bottlenecks in a workflow and replace them with systems
-that run themselves, so your team can focus on the work that matters.
+I'm a technical founder with 12 years of experience shipping and running software. I
+find the bottlenecks in a workflow and replace them with systems that run themselves, so
+your team can focus on the work that matters.
 
-I've built distributed cloud computing infrastructure, 3D production
-pipelines, digital 3D printing workflows and automated marketing campaigns.
-Because I've run my own business, I care about whether the work pays for
-itself, not just whether it's technically interesting.
+I've built distributed cloud computing infrastructure, 3D production pipelines, digital
+3D printing workflows and automated marketing campaigns. Because I've run my own
+business, I care about whether the project actually creates value.
 
 ### Case studies
 
@@ -141,5 +140,3 @@ itself, not just whether it's technically interesting.
 ??? note "How do you communicate progress and results?"
     You get weekly progress updates and regular check-in meetings, plus
     documentation of all analyses, findings and recommendations.
-
-[Book a free intro call :material-arrow-top-right:](/intro-call/){ .md-button .md-button--primary }

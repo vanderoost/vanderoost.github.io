@@ -1,0 +1,64 @@
+/* Code blocks, syntax highlighting and terminal output */
+@font-face {
+  font-family: "JetBrains Mono Symbols";
+  src: url("../../assets/fonts/JetBrainsMono-Symbols.woff2") format("woff2");
+  unicode-range: U+2190-2BFF, U+E000-F8FF;
+  font-display: swap;
+}
+
+body {
+  --md-code-font-family: "JetBrains Mono Symbols", var(--md-code-font, _),
+    SFMono-Regular, Consolas, Menlo, monospace;
+}
+
+.md-typeset pre {
+  line-height: var(--rvo-code-line-height);
+}
+/* Terminal plots drawn with block characters (▁ to █), from ```console
+   { .rvo-plot }. At the normal line height the rows have gaps between them. */
+.md-typeset .rvo-plot pre {
+  line-height: 1;
+}
+/* Neighbouring blocks leave a hairline seam where the glyph is a fraction of
+   a pixel narrower than its cell. A thin stroke closes it. Output rows only,
+   so the command line above the plot is not bolded. */
+.md-typeset .rvo-plot .go {
+  -webkit-text-stroke: 0.6px currentColor;
+}
+.md-typeset pre > code,
+.md-typeset .highlighttable .linenos,
+.md-typeset .highlight span.filename {
+  font-size: var(--rvo-code-font-size);
+}
+
+/* Rounded corners for code snippets */
+@media screen and (min-width: 720px) {
+  .highlight {
+    border-radius: var(--rvo-radius-sm);
+    overflow: clip;
+
+  }
+}
+
+.highlight .kc {
+  color: var(--md-code-hl-constant-color);
+}
+.highlight .sa {
+  color: var(--md-code-hl-keyword-color);
+}
+
+.highlight .gd {
+  background-color: var(--rvo-code-del-color);
+}
+.highlight .gi {
+  background-color: var(--rvo-code-ins-color);
+}
+
+/* Terminal colors in console blocks, from hooks/console_colors.py.
+   Tokyonight Day / Night, matching the code highlighting above. */
+.md-typeset .rvo-ansi-red     { color: var(--rvo-ansi-red); }
+.md-typeset .rvo-ansi-green   { color: var(--rvo-ansi-green); }
+.md-typeset .rvo-ansi-yellow  { color: var(--rvo-ansi-yellow); }
+.md-typeset .rvo-ansi-blue    { color: var(--rvo-ansi-blue); }
+.md-typeset .rvo-ansi-magenta { color: var(--rvo-ansi-magenta); }
+.md-typeset .rvo-ansi-cyan    { color: var(--rvo-ansi-cyan); }

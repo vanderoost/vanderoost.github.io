@@ -1,0 +1,173 @@
+/* Site-wide overrides of Material: typography, header, navigation, footer
+   and page layout. */
+/* Typography */
+.md-typeset {
+  font-size: var(--rvo-font-size);
+
+  h1 {
+    font-size: var(--rvo-h1-font-size);
+    color: var(--rvo-h1-color);
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  h2 {
+    color: var(--rvo-h2-color);
+    font-weight: 500;
+  }
+
+  h3 {
+    text-wrap: balance;
+  }
+}
+*::selection {
+  color: var(--md-default-bg-color);
+  background-color: var(--md-primary-fg-color);
+}
+.highlight ::selection,
+.highlighttable ::selection,
+.md-typeset pre ::selection {
+  color: currentColor;
+  background-color: var(--rvo-code-selection-color);
+}
+.md-header__topic:first-child {
+    font-weight: 600;
+}
+.md-tabs__link {
+  font-size: 0.8rem;
+}
+.md-content > article {
+  max-width: min(40rem, 100% - 1.6rem);
+}
+.md-content:not(.md-content--post) > article {
+  margin-inline: auto;
+}
+
+/* The blog post "Back to ..." link is also a `.md-nav__title`, but sits inside
+   `.md-post__back`, which brings its own padding above the divider. */
+.md-nav__title:not(.md-nav__container) {
+  margin: 0 0 1.0rem;
+}
+
+/* Drop the sidebar's "Metadata" label: the icons speak for themselves. Hiding
+   it here rather than blanking the translation avoids leaving an empty line. */
+.md-sidebar--post .md-post__meta:first-of-type .md-post__title {
+  display: none;
+}
+
+@media screen and (max-width: 1219px) {
+  .md-nav--primary .md-nav__title[for="__drawer"] {
+    height: auto;
+    padding: 0.2rem 0.8rem;
+    margin-bottom: 0;
+  }
+}
+.md-nav__list .md-nav__item {
+  margin: 0.6rem 0;
+}
+
+/* Translucent, blurred header. Material has no header-background variable, so
+   the element is targeted directly. The tint keeps text legible over busy
+   content; drop it to `transparent` for pure blur. */
+.md-header {
+  background-color: color-mix(in srgb, var(--md-default-bg-color) 70%, transparent);
+  -webkit-backdrop-filter: blur(0.5rem) saturate(1.6);
+  backdrop-filter: blur(0.5rem) saturate(1.6);
+  color: var(--md-default-fg-color);
+}
+
+/* The shadow class is re-applied by bundle.js on scroll, so the commented-out
+   class in overrides/partials/header.html is not enough to suppress it. */
+.md-header--shadow {
+  box-shadow: none;
+}
+
+/* .md-tabs re-declares its own color, so it does not inherit the header's */
+.md-header__inner > .md-tabs {
+  color: var(--md-default-fg-color);
+}
+
+/* "navigation.instant" progress bar defaults to white, invisible on a light
+   translucent header */
+.md-progress {
+  background: var(--md-accent-fg-color);
+}
+
+/* Navigation tabs inside the header bar (see overrides/partials/header.html).
+   The header is a three-zone flex row: [start zone] [tabs] [end zone]. Both
+   side zones get the same `flex: 1 1 0`, so they always resolve to the same
+   width and the tabs land exactly on the header's centre line — instead of
+   wherever the title and the header buttons happen to balance out. */
+.md-header__inner {
+  gap: 0.4rem;
+}
+
+.md-header__zone {
+  align-items: center;
+  display: flex;
+  flex: 1 1 0;
+}
+
+/* Without this a long page title grows the start zone past its fair share and
+   drags the tabs off centre; with it, the title ellipsises instead. */
+.md-header__zone--start {
+  min-width: 0;
+}
+
+.md-header__zone--end {
+  justify-content: flex-end;
+}
+
+.md-header__inner > .md-tabs {
+  background-color: transparent;
+  flex: 0 0 auto;
+  overflow: visible;
+  width: auto;
+}
+
+.md-header__inner > .md-tabs > .md-grid {
+  margin: 0;
+  max-width: none;
+  padding: 0;
+}
+
+.md-header__inner > .md-tabs .md-tabs__item {
+  height: auto;
+}
+
+.md-header__inner > .md-tabs .md-tabs__link {
+  margin-top: 0;
+}
+
+.md-header--lifted ~ .md-container .md-typeset :target {
+  --md-scroll-margin: 3.6rem;
+}
+
+/* divider lines */
+header.md-header {
+  border-bottom: 1px solid;
+  border-color: var(--rvo-divider-line-color);
+}
+footer.md-footer {
+  border-top: 1px solid;
+  border-color: var(--rvo-divider-line-color);
+
+  .md-footer-meta {
+    border-top: 1px solid;
+    border-color: var(--rvo-divider-line-color);
+  }
+}
+/* Under "Back to ..." in the blog post sidebar. Material already draws it at
+   .05rem (1px here), so only the color needs changing. */
+.md-post__back {
+  border-color: var(--rvo-divider-line-color);
+}
+
+/* Center tables horizontally */
+.md-typeset__scrollwrap {
+  text-align: center;
+}
+
+.md-typeset__scrollwrap table {
+  text-align: start;
+}

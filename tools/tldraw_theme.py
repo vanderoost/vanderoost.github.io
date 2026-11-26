@@ -6,7 +6,7 @@ baked in as literal hex, so a drawing exported in dark mode stays dark on a
 light page. This replaces each baked color with a CSS variable naming the
 tldraw palette entry it came from — #40c057 becomes
 var(--rvo-draw-light-green, #4cb05e) — so one set of definitions in
-extra.css re-themes every drawing on the site at once.
+stylesheets/tokens.css re-themes every drawing on the site at once.
 
 The variables only resolve if the SVG is part of the page's DOM, which is what
 hooks/drawings.py is for. An <img src="drawing.svg"> is a separate document

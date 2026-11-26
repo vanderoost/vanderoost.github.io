@@ -24,7 +24,7 @@ cross-posts receive. The body is YAML, with the keys in KEYS:
     xlabel, ylabel  axis names, "x" and "y" unless given
 
 Every series gets the next color in SERIES. The output colors everything with
---rvo-plot-* variables, Tokyo Night Day and Night in extra.css, so a plot
+--rvo-plot-* variables, Tokyo Night Day and Night in stylesheets/tokens.css, so a plot
 switches with light and dark mode like the code blocks around it.
 
 Written by hand rather than with matplotlib: a function plot is a few dozen
@@ -57,7 +57,7 @@ SAMPLES = 400
 KEYS = {"f", "csv", "x", "y", "xstep", "ystep", "xlabel", "ylabel"}
 
 # Tokyo Night, like the code blocks and console colors: --rvo-plot-* is set
-# per color scheme in extra.css, and the fallback after the comma is the Day
+# per color scheme in stylesheets/tokens.css, and the fallback after the comma is the Day
 # value. It has to be a plain sRGB hex: tldraw_theme.flatten() takes it as is
 # for the PNG that cross-posts get, which is drawn in the light palette.
 INK = "var(--rvo-plot-fg, #3760bf)"

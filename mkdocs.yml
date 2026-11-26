@@ -85,9 +85,16 @@ extra:
       link: https://www.linkedin.com/in/richardvdoost/
 
 extra_css:
-  - stylesheets/extra.css
-  - stylesheets/hero.css
-  - stylesheets/subscribe.css
+  # Order matters: tokens define the variables everything else uses, and
+  # page styles come last so they can refine components.
+  - stylesheets/tokens.css
+  - stylesheets/base.css
+  - stylesheets/components/button.css
+  - stylesheets/components/card.css
+  - stylesheets/components/code.css
+  - stylesheets/components/media.css
+  - stylesheets/components/subscribe.css
+  - stylesheets/pages/home.css
   - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css
 # Drawings are inlined into the page by hooks/drawings.py, so the SVG files
 # themselves are never fetched by a browser. Shipping them anyway duplicated

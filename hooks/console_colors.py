@@ -23,7 +23,7 @@ import re
 
 from mkdocs.exceptions import PluginError
 
-# Mark name -> CSS color name in extra.css.
+# Mark name -> CSS color name in stylesheets/tokens.css.
 COLORS = {
     "red": "red",
     "grn": "green",
