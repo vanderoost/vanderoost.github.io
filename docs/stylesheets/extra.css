@@ -4,6 +4,12 @@
   --rvo-code-line-height: 1.5;
 
   --rvo-h1-font-size: 2.2em;
+
+  /* Corner radii. Large for panels (cards, the subscribe box), small for the
+     controls inside them (buttons, inputs, code blocks). The large radius is
+     roughly small radius + panel padding, so nested corners look concentric. */
+  --rvo-radius-sm: 0.4rem;
+  --rvo-radius-lg: 1.4rem;
 }
 /* Custom colors */
 [data-md-color-scheme="default"] {
@@ -92,6 +98,10 @@
 
 [data-md-color-scheme] {
   --rvo-divider-line-color: oklch(from var(--rvo-h1-color) l c h / 0.07);
+
+  /* A panel that sits on the page: a slightly lighter (dark mode) or darker
+     (light mode) fill instead of a border. */
+  --rvo-surface-bg: var(--md-default-fg-color--lightest);
 }
 
 /* Typography */
@@ -172,7 +182,7 @@ body {
 /* Rounded corners for code snippets */
 @media screen and (min-width: 720px) {
   .highlight {
-    border-radius: 0.4rem;
+    border-radius: var(--rvo-radius-sm);
     overflow: clip;
 
   }
@@ -292,6 +302,36 @@ body {
   --md-scroll-margin: 3.6rem;
 }
 
+/* Buttons: same rounding as the subscribe button */
+.md-typeset .md-button {
+  border-radius: var(--rvo-radius-sm);
+}
+
+/* Grid cards (`<div class="grid cards" markdown>`): a filled surface like the
+   subscribe box instead of Material's hairline border and hover shadow. */
+.md-typeset .grid.cards {
+  gap: 1rem;
+}
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card {
+  background: var(--rvo-surface-bg);
+  border: none;
+  border-radius: var(--rvo-radius-lg);
+  padding: 1.2rem 1.4rem;
+}
+.md-typeset .grid.cards > ul > li:is(:hover, :focus-within),
+.md-typeset .grid.cards > ol > li:is(:hover, :focus-within),
+.md-typeset .grid > .card:is(:hover, :focus-within) {
+  box-shadow: none;
+}
+/* Material's <hr> uses the same color as the surface, so it would vanish */
+.md-typeset .grid.cards > ul > li > hr,
+.md-typeset .grid.cards > ol > li > hr,
+.md-typeset .grid > .card > hr {
+  border-color: var(--rvo-divider-line-color);
+}
+
 /* Testimonial cards */
 .grid.cards.testimonials {
     grid-template-columns: 1fr !important;
@@ -338,7 +378,7 @@ footer.md-footer {
 .md-typeset figure.rvo-diagram {
   background-color: oklch(0.98 0.005 100);
   border: 1px solid var(--rvo-divider-line-color);
-  border-radius: 0.4rem;
+  border-radius: var(--rvo-radius-sm);
   padding: 0.6rem;
 }
 .md-typeset figure.rvo-diagram img {
@@ -371,7 +411,7 @@ footer.md-footer {
   width: 100%;
   height: 100%;
   border: 0;
-  border-radius: 0.4rem;
+  border-radius: var(--rvo-radius-sm);
 }
 
 /* tldraw drawing colors, lifted from tldraw's own light and dark
