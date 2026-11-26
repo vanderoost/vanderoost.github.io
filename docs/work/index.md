@@ -13,28 +13,27 @@ There are two ways to work with me, depending on who you are:
 
 <div class="grid cards" markdown>
 
--   :material-office-building:{ .lg .middle } **I have a project for my company**
+-   **Consulting for company projects**
 
     ---
 
-    I build software that takes repetitive admin work off your team's plate.
-
-    Let's discuss your challenges and see if your project is a good fit.
+    If you need help with an automation project for your company, let's discuss your
+    challenges and see if there's a good fit.
 
     **Free 30-minute intro call**
     { .rvo-card-bottom }
 
     [Book an intro call :material-arrow-top-right:](/intro-call/){ .md-button .md-button--primary }
 
--   :material-code-braces:{ .lg .middle } **I want 1:1 help / coaching**
+-   **1:1 help / coaching**
 
     ---
 
-    A paid 60-minute video call. Bring your code or questions. Programming help,
-    learning C and machine learning from first principles, or getting unstuck on a
-    project.
+    A focused 60-minute video call. Bring your code or questions. Programming help, or
+    getting unstuck on a project.
 
-    **Refund guarantee**: If it's not a good fit, you get your money back.
+    **Refund guarantee**: If I can't help you or it's not a good fit, you get your money
+    back.
 
     **€90 / 60 minutes**
     { .rvo-card-bottom }
