@@ -104,7 +104,7 @@ Edit `mkdocs.yml` to customize your site:
 - Site name and metadata
 - Navigation structure
 - Color scheme and fonts
-- Custom CSS settings in `stylesheets/extra.css`
+- Custom CSS files, in load order (see below)
 - Social links
 - Extensions and plugins
 
@@ -122,7 +122,11 @@ docs/
 │           └── diagram.png           # Images used by this post only
 ├── portfolio/        # Case studies
 ├── assets/           # Site-wide images: logo, favicon, author photo
-└── stylesheets/      # Custom CSS
+└── stylesheets/
+    ├── tokens.css    # Every color, radius and size variable, per scheme
+    ├── base.css      # Material overrides: typography, header, nav, footer
+    ├── components/   # One file per reusable piece: card, button, code, ...
+    └── pages/        # Styles that only apply to one page
 ```
 
 Each post is a folder containing an `index.md` plus the images that post uses.
@@ -181,7 +185,7 @@ Put `<!-- more -->` above the first drawing. Everything before it is the
 excerpt the blog index, the archive and each category page render, and a
 drawing above the separator is inlined into all of them at once.
 
-The 12 drawing colors are defined per scheme in `stylesheets/extra.css`, taken
+The 12 drawing colors are defined per scheme in `stylesheets/tokens.css`, taken
 from tldraw's own light and dark themes so a drawing looks here the way it did
 on the canvas. Edit them there to restyle every drawing on the site at once:
 

@@ -1,0 +1,4 @@
+/* Buttons: same rounding as the subscribe button */
+.md-typeset .md-button {
+  border-radius: var(--rvo-radius-sm);
+}

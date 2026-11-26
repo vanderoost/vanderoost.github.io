@@ -1,0 +1,42 @@
+/* Grid cards (`<div class="grid cards" markdown>`): a filled surface like the
+   subscribe box instead of Material's hairline border and hover shadow. */
+.md-typeset .grid.cards {
+  gap: 1rem;
+}
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card {
+  background: var(--rvo-surface-bg);
+  border: none;
+  border-radius: var(--rvo-radius-lg);
+  padding: 1.2rem 1.4rem;
+}
+.md-typeset .grid.cards > ul > li:is(:hover, :focus-within),
+.md-typeset .grid.cards > ol > li:is(:hover, :focus-within),
+.md-typeset .grid > .card:is(:hover, :focus-within) {
+  box-shadow: none;
+}
+/* Material's <hr> uses the same color as the surface, so it would vanish */
+.md-typeset .grid.cards > ul > li > hr,
+.md-typeset .grid.cards > ol > li > hr,
+.md-typeset .grid > .card > hr {
+  border-color: var(--rvo-divider-line-color);
+}
+
+/* Testimonial cards */
+.grid.cards.testimonials {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem;
+    margin: 1rem 0;
+}
+
+.grid.cards.testimonials > * {
+    margin-top: 0 !important;
+}
+
+/* Style the author name and title */
+.grid.cards.testimonials p:nth-child(2) {
+    margin-top: -0.5rem;
+    color: var(--md-default-fg-color--light);
+    font-size: 0.9rem;
+}
