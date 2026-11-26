@@ -598,7 +598,8 @@ def _math(text: str, dialect: Dialect, where: str) -> str:
             block = []
         elif stripped.startswith("$$") and stripped.endswith("$$") and len(stripped) > 4:
             out.append(dialect.math(stripped[2:-2].strip()))
-        elif "$$" in stripped:
+        # `$$` in inline code is shell's process ID, not math
+        elif "$$" in INLINE_CODE.sub("", stripped):
             raise TransformError(
                 f"{where}: $$ math must open and close on lines of their own, "
                 f"or both on one line: {stripped[:70]}"
